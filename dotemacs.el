@@ -95,14 +95,16 @@ mentioned in an erc channel" t)
 	      (ac-js2-mode)
 	      (local-set-key (kbd "s-<f3>") #'ac-js2-jump-to-definition)))
   
+
   ;; C and C++
-  (add-hook 'c-mode-hook
-          (lambda ()
-	    (flymake-mode)
-	    (semantic-mode)
-	    (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
-            (setq ac-sources '(ac-source-semantic
-			       ac-source-yasnippet))))
+  (defun c-modes-hook ()
+    (flymake-mode)
+    (semantic-mode)
+    (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
+    (setq ac-sources '(ac-source-semantic
+		       ac-source-yasnippet)))
+  (add-hook 'c-mode-hook 'c-modes-hook)
+  (add-hook 'c++-mode-hook 'c-modes-hook)
 
   ;; Common Lisp
   ;; Set your lisp system and, optionally, some contribs Common Lisp
@@ -204,7 +206,7 @@ mentioned in an erc channel" t)
  '(erc-autojoin-channels-alist (quote (("irc.freenode.net" "#mimiga"))))
  '(erc-modules (quote (autojoin button completion dcc fill irccontrols list log match menu move-to-prompt netsplit networks noncommands readonly ring stamp spelling track unmorse)))
  '(erc-nick "Mawile")
- '(erc-nick-uniquifier "_The_Second")
+ '(erc-nick-uniquifier "MawileTheSecond")
  '(erc-port 7000)
  '(erc-server "irc.freenode.net")
  '(erc-try-new-nick-p t)
