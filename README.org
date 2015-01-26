@@ -1,0 +1,20 @@
+#+TITLE:Archenoth's Emacs configuration
+
+This is the Git repo for my Emacs configuration...
+
+The way it is constructed, the file is supposed to be a standalone
+configuration separate from =.emacs=, and simply loaded in.
+
+That way, any private configuration or system-specific configuration
+can take place without making any changes to the core configuration
+in this repo.
+
+So, if you cloned this repo directly into =.emacs.d=, you can simply
+include it with:
+
+#+BEGIN_SRC elisp :tangle ~/.emacs.new :padline no
+  (load "~/.emacs.d/dotemacs/dotemacs.el")
+#+END_SRC
+
+(You can use =C-c C-v t= in while visiting this file in =org-mode= to
+export that code into =~/.emacs.new= if that's all you really need.)
