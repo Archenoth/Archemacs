@@ -9,15 +9,26 @@ That way, any private configuration or system-specific configuration
 can take place without making any changes to the core configuration
 in this repo.
 
-So, if you cloned this repo directly into =.emacs.d=, you can simply
-include it with:
+So, if you cloned this repo directly into =.emacs.d= (Which is highly
+recommended), you can simply include it with:
 
-#+BEGIN_SRC elisp :tangle ~/.emacs.new :padline no
+#+BEGIN_SRC elisp :tangle ~/.emacs :padline no
   (load "~/.emacs.d/dotemacs/dotemacs.el")
 #+END_SRC
 
-(You can use =C-c C-v t= in while visiting this file in =org-mode= to
-export that code into =~/.emacs.new= if that's all you really need.)
+(You can use =C-c C-v t= while visiting this file in =org-mode= to
+export that code into =~/.emacs= if that's all you really need, though
+be warned that this will overwrite your existing =.emacs=)
+
+* Installation in a nutshell
+1. =cd= to =~/.emacs.d=
+2. Run =git clone https://github.com/Archenoth/dotemacs.git=
+3. Open this file in =org-mode=. (=emacs dotemacs/dotemacs.el=)
+4. Tangle with =C-c C-v t=.
+5. Restart Emacs.
+
+Also, optionally, you can byte-compile =dotemacs.el= by visiting it
+and running =M-x byte-compile-file=.
 
 * Configuration that doesn't really translate
 At the very top of [[file:dotemacs.el][dotemacs.el]] you'll see the three variables that
