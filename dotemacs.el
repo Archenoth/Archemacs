@@ -43,9 +43,9 @@ the ones that are not."
                         (rest (cdr packages)))
                     (if (package-installed-p package)
                         (install rest refresh)
-                      (when refresh (package-refresh-contents)
-                            (package-install package)
-                            (install rest nil)))))))
+                      (progn (when refresh (package-refresh-contents))
+                             (package-install package)
+                             (install rest nil)))))))
     (install packages t)))
 
 
