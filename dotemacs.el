@@ -19,6 +19,9 @@
 ;; SSL Support (For ERC primarily)
 (require 'tls)
 
+;; For the Common Lisp-ish stuff in here
+(require 'cl)
+
 ;;;; Hooks
 ;; Flymake
 (add-hook 'perl-mode-hook (lambda () (flymake-mode t)))
