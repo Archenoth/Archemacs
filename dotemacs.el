@@ -16,6 +16,7 @@
 mentioned in an erc channel" t)
 (eval-after-load 'erc '(erc-nick-notify-mode t))
 
+
 ;;;; Hooks
 ;; Flymake
 (add-hook 'perl-mode-hook (lambda () (flymake-mode t)))
@@ -209,19 +210,24 @@ the ones that are not."
   (ac-config-default)
   (add-to-list 'ac-modes 'web-mode)
 
+
   ;; Enable projectile
   (projectile-global-mode))
+
 
 ;; Load the above hook after the package manager has finished doing its thing
 (add-hook 'after-init-hook 'package-config)
 
+
 ;;;; Variables
 (setq create-lockfiles nil) ;; Nasty at times
+
 
 ;;;; Custom keybindings
 (define-key global-map (kbd "s-/") 'ace-jump-mode)
 (define-key global-map (kbd "s-?") 'ace-jump-char-mode)
 (define-key global-map (kbd "<f5>") 'compile)
+
 
 ;; Auto-backups
 (setq backup-by-copying t      ; don't clobber symlinks
@@ -234,8 +240,6 @@ the ones that are not."
 (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
+
 ;; Start global modes
 (show-paren-mode)
-
-;; And finally, load more private configuration
-(load "~/.emacs.d/dotemacs/private.el")
