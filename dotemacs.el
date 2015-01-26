@@ -1,3 +1,15 @@
+;;; External links... The part you need to pay attention to if you aren't me.
+;; http://tkf.github.io/emacs-jedi/latest/
+(setq jedi:server-command '("/usr/local/bin/jediepcserver"))
+;; http://www.clisp.org/
+(setq inferior-lisp-program "/usr/bin/clisp")
+;; You can get this from here: https://languagetool.org/
+(setq langtool-language-tool-jar
+             "/home/archenoth/Documents/apps/LanguageTool/LanguageTool.jar")
+
+
+;;; The rest should be independant
+
 ;; Package Manager URLs
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("marmalade" . "http://marmalade-repo.org/packages/")
@@ -6,16 +18,6 @@
 
 ;; SSL Support (For ERC primarily)
 (require 'tls)
-
-
-;; Speaking of which... ERC stuff
-(add-to-list 'load-path "~/.emacs.d/erc-extras" t)
-(load "~/.emacs.d/extern/erc-nick-notify.el")
-(autoload 'erc-nick-notify-mode "erc-nick-notify"
-  "Minor mode that calls `erc-nick-notify-cmd' when his nick gets
-mentioned in an erc channel" t)
-(eval-after-load 'erc '(erc-nick-notify-mode t))
-
 
 ;;;; Hooks
 ;; Flymake
@@ -105,7 +107,6 @@ the ones that are not."
   ;; Jedi, for Python sweetness
   (add-hook 'python-mode-hook
             (lambda ()
-              (setq jedi:server-command '("/usr/local/bin/jediepcserver"))
               (jedi:ac-setup)
               (setq jedi:complete-on-dot t)))
 
@@ -141,7 +142,6 @@ the ones that are not."
 
   ;; Common Lisp
   ;; Set your lisp system and, optionally, some contribs Common Lisp
-  (setq inferior-lisp-program "/usr/bin/clisp")
   (setq slime-contribs '(slime-fancy))
   (add-hook 'slime-mode-hook 'set-up-slime-ac)
   (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
@@ -201,9 +201,7 @@ the ones that are not."
        (setq org-export-latex-listings 'minted)
 
        ;; LanguageTool setup
-       (require 'langtool)
-       (setq langtool-language-tool-jar
-             "/home/archenoth/Documents/apps/LanguageTool/LanguageTool.jar"))))
+       (require 'langtool))))
 
 
   ;; Start global package modes
