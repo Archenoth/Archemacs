@@ -1,10 +1,16 @@
+;; Package Manager URLs
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+			 ("marmalade" . "http://marmalade-repo.org/packages/")
+			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+
+
 ;; SSL Support (For ERC primarily)
 (require 'tls)
+
 
 ;; Speaking of which... ERC stuff
 (add-to-list 'load-path "~/.emacs.d/erc-extras" t)
 (load "~/.emacs.d/extern/erc-nick-notify.el")
-;(load "~/.emacs.d/extern/erc-tab.el")
 (autoload 'erc-nick-notify-mode "erc-nick-notify"
   "Minor mode that calls `erc-nick-notify-cmd' when his nick gets
 mentioned in an erc channel" t)
@@ -15,17 +21,50 @@ mentioned in an erc channel" t)
 (add-hook 'perl-mode-hook (lambda () (flymake-mode t)))
 (add-hook 'php-mode-hook (lambda () (flymake-mode t)))
 
-;; Feature mode
-(add-hook 'feature-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-s-r") 'jump-to-cucumber-step)))
 
 ;; Making boolean question less annoying
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; My little package checker and installer
+(defun check-packages (&rest packages)
+  (let ((updated nil))
+    (mapc (lambda (package)
+            (unless (package-installed-p package)
+              (progn (unless updated (package-refresh-contents))
+                     (package-install package))))
+          packages)))
+
+
 ;; Post-package-loading hook
 (defun package-config ()
-  ;;;; Package Requires
+  ;; Ensuring packages are installed
+  (check-packages 'yasnippet 'web-mode 'undo-tree 'sublime-themes
+'sr-speedbar 'speed-type 'sokoban 'slime 'skewer-mode
+'simple-httpd 's 'rsense 'robe 'queue 'python-environment
+'projectile 'powerline 'popup 'plsql 'pkg-info 'php-mode 'pcre2el
+'paredit 'nurumacs 'noflet 'multiple-cursors 'markdown-mode
+'markdown-mode+ 'magit 'lua-mode 'let-alist 'langtool
+'js2-refactor 'js2-mode 'jedi 'inf-ruby 'htmlize
+'helm-projectile-all 'helm-projectile 'helm-emmet 'helm 'grizzl
+'graphviz-dot-mode 'goto-last-change 'goto-chg 'git-rebase-mode
+'git-commit-mode 'flymake-ruby 'flymake-jshint 'flymake-easy
+'flymake-csslint 'flycheck 'feature-mode 'f 'expand-region 'evil
+'espuds 'erefactor 'erc-nick-notify 'epl 'epc 'enh-ruby-mode
+'emmet-mode 'emacs-eclim 'ecukes 'deferred 'dash
+'cucumber-goto-step 'ctable 'concurrent 'commander 'clojure-mode
+'cider 'base16-theme 'auto-complete 'async 'apache-mode 'ansi
+'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet)
+
+  ;; Feature mode
+  (add-hook 'feature-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-s-r") 'jump-to-cucumber-step)))
+
+
+  ;; Markdown
+  (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+
+
   ;; Nurumacs, base16-tomorrow theme, and powerline... Bad in NOX though.
   (if (display-graphic-p)
       (progn
@@ -33,10 +72,12 @@ mentioned in an erc channel" t)
         ;(require 'nurumacs)
         (load-theme 'base16-tomorrow)))
 
+
   ;; Expand region
   (require 'expand-region)
   (global-set-key (kbd "s-SPC") 'er/expand-region)
   (global-set-key (kbd "s-S-SPC") 'er/contract-region)
+
 
   ;; Multiple-cursors
   (require 'multiple-cursors)
@@ -44,6 +85,7 @@ mentioned in an erc channel" t)
   (global-set-key (kbd "C-s-s") 'mc/mark-all-like-this)
   (global-set-key (kbd "M-s-s") 'mc/mark-next-symbol-like-this)
   (global-set-key (kbd "s-S") 'mc/mark-sgml-tag-pair)
+
 
   ;; Robe mode, flymake-ruby etc... Ruby support
   (add-hook 'ruby-mode-hook 'robe-mode)
@@ -55,6 +97,7 @@ mentioned in an erc channel" t)
               (add-to-list 'ac-sources 'ac-source-rsense-method)
               (add-to-list 'ac-sources 'ac-source-rsense-constant)))
 
+
   ;; Jedi, for Python sweetness
   (add-hook 'python-mode-hook
             (lambda ()
@@ -62,12 +105,14 @@ mentioned in an erc channel" t)
               (jedi:ac-setup)
               (setq jedi:complete-on-dot t)))
 
+
   ;; Projectile
   (require 'grizzl)
   (setq projectile-enable-caching t)
   (setq projectile-completion-system 'grizzl)
   (global-set-key (kbd "s-f") 'helm-projectile)
   (global-set-key (kbd "C-s-f") 'helm-projectile-all)
+
 
   ;; JavaScript
   (require 'flymake-jshint)
@@ -89,6 +134,7 @@ mentioned in an erc channel" t)
   (add-hook 'c-mode-hook 'c-modes-hook)
   (add-hook 'c++-mode-hook 'c-modes-hook)
 
+
   ;; Common Lisp
   ;; Set your lisp system and, optionally, some contribs Common Lisp
   (setq inferior-lisp-program "/usr/bin/clisp")
@@ -97,6 +143,7 @@ mentioned in an erc channel" t)
   (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
   (eval-after-load "auto-complete"
     '(add-to-list 'ac-modes 'slime-repl-mode))
+
 
   ;; ELISP
   (require 'erefactor)
@@ -109,8 +156,10 @@ mentioned in an erc channel" t)
   (add-hook 'emacs-lisp-mode-hook 'el-hook)
   (add-hook 'lisp-interaction-mode-hook 'el-hook)
 
+
   ;; CIDER, Clojure
   (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+
 
   ;; Web Mode for HTML, JSPs, etc...
   (add-to-list 'auto-mode-alist '("\\.[sj]?html?\\'" . web-mode))
@@ -131,6 +180,7 @@ mentioned in an erc channel" t)
   (add-hook 'web-mode-hook 'web-mode-hook)
   (add-hook 'sgml-mode-hook 'ac-emmet-html-setup)
   (add-hook 'css-mode-hook 'ac-emmet-css-setup)
+
 
   ;; Org mode
   (require 'org-install)
@@ -156,20 +206,14 @@ mentioned in an erc channel" t)
   (ac-config-default)
   (add-to-list 'ac-modes 'web-mode)
 
+  ;; Enable projectile
   (projectile-global-mode))
 
+;; Load the above hook after the package manager has finished doing its thing
 (add-hook 'after-init-hook 'package-config)
 
 ;;;; Variables
 (setq create-lockfiles nil) ;; Nasty at times
-
-;; Markdown
-(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-
-;; Package Manager URLs
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 ;;;; Custom keybindings
 (define-key global-map (kbd "s-/") 'ace-jump-mode)
