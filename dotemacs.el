@@ -25,8 +25,11 @@ mentioned in an erc channel" t)
 ;; Making boolean question less annoying
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+
 ;; My little package checker and installer
 (defun check-packages (&rest packages)
+  "Checks if the passed in packages are installed, and installs
+the ones that are not."
   (let ((updated nil))
     (mapc (lambda (package)
             (unless (package-installed-p package)
