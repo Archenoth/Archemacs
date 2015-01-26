@@ -33,12 +33,17 @@
 (defun check-packages (&rest packages)
   "Checks if the passed in packages are installed, and installs
 the ones that are not."
-  (let ((updated nil))
-    (mapc (lambda (package)
-            (unless (package-installed-p package)
-              (progn (unless updated (package-refresh-contents))
-                     (package-install package))))
-          packages)))
+  (cl-labels
+      ((install (packages refresh)
+                (when packages
+                  (let ((package (car packages))
+                        (rest (cdr packages)))
+                    (if (package-installed-p package)
+                        (install rest refresh)
+                      (when refresh (package-refresh-contents)
+                            (package-install package)
+                            (install rest nil)))))))
+    (install packages t)))
 
 
 ;; Post-package-loading hook
@@ -71,11 +76,10 @@ the ones that are not."
   (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
 
-  ;; Nurumacs, base16-tomorrow theme, and powerline... Bad in NOX though.
+  ;; Base16-tomorrow theme, and powerline... Bad in NOX though.
   (if (display-graphic-p)
       (progn
         (powerline-center-theme)
-        ;(require 'nurumacs)
         (load-theme 'base16-tomorrow)))
 
 
