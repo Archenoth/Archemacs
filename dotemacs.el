@@ -20,7 +20,7 @@
 (require 'tls)
 
 ;; For the Common Lisp-ish stuff in here
-(require 'cl)
+(require 'cl-lib)
 
 ;;;; Hooks
 ;; Flymake
