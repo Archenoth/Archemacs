@@ -136,6 +136,13 @@ the ones that are not."
 	      (local-set-key (kbd "s-<f3>") #'ac-js2-jump-to-definition)))
   
 
+  ;; Java
+  (add-hook 'java-mode-hook
+            (lambda ()
+              ;; Because these tend to be a lot longer than 80 width
+              ;; and wrapping is ugly.
+              (toggle-truncate-lines t)))
+
   ;; C and C++
   (defun c-modes-hook ()
     (flymake-mode)
