@@ -31,6 +31,8 @@
 ;; Making boolean question less annoying
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; Just in case
+(package-initialize)
 
 ;; My little package checker and installer
 (defun check-packages (&rest packages)
