@@ -31,6 +31,9 @@
 ;; Making boolean question less annoying
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; Remove unsightly toolbar
+(tool-bar-mode 0)
+
 ;; Just in case
 (package-initialize)
 
