@@ -199,6 +199,7 @@ the ones that are not."
     (setq web-mode-script-offset 2)
     (emmet-mode 1)
     (setq emmet-indentation 2)
+    (toggle-truncate-lines t)
     (yas-minor-mode 1))
   (add-hook 'web-mode-hook 'web-mode-hook)
   (add-hook 'sgml-mode-hook 'ac-emmet-html-setup)
