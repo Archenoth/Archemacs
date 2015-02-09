@@ -150,7 +150,6 @@ the ones that are not."
 
   ;; C and C++
   (defun c-modes-hook ()
-    (flymake-mode)
     (semantic-mode)
     (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
     (setq ac-sources '(ac-source-semantic
