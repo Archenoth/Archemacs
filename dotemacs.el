@@ -57,22 +57,15 @@ the ones that are not."
 ;; Post-package-loading hook
 (defun package-config ()
   ;; Ensuring packages are installed
-  (check-packages 'yasnippet 'web-mode 'undo-tree 'sublime-themes
-'sr-speedbar 'speed-type 'sokoban 'slime 'skewer-mode
-'simple-httpd 's 'rsense 'robe 'queue 'python-environment
-'projectile 'powerline 'popup 'plsql 'pkg-info 'php-mode 'pcre2el
-'paredit 'nurumacs 'noflet 'multiple-cursors 'markdown-mode
-'markdown-mode+ 'magit 'lua-mode 'let-alist 'langtool
-'js2-refactor 'js2-mode 'jedi 'inf-ruby 'htmlize
-'helm-projectile-all 'helm-projectile 'helm-emmet 'helm 'grizzl
-'graphviz-dot-mode 'goto-last-change 'goto-chg 'git-rebase-mode
-'git-commit-mode 'flymake-ruby 'flymake-jshint 'flymake-easy
-'flymake-csslint 'flycheck 'feature-mode 'f 'expand-region 'evil
-'espuds 'erefactor 'erc-nick-notify 'epl 'epc 'enh-ruby-mode
-'emmet-mode 'emacs-eclim 'ecukes 'deferred 'dash
-'cucumber-goto-step 'ctable 'concurrent 'commander 'clojure-mode
-'cider 'base16-theme 'auto-complete 'async 'apache-mode 'ansi
-'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet)
+  (check-packages 'yasnippet 'web-mode 'slime 'rsense 'robe
+'projectile 'powerline 'plsql 'php-mode 'paredit 'nurumacs
+'multiple-cursors 'markdown-mode+ 'magit 'lua-mode 'langtool
+'js2-refactor 'jedi 'htmlize 'helm-projectile-all 'helm-emmet
+'grizzl 'graphviz-dot-mode 'flymake-ruby 'flymake-jshint
+'flymake-easy 'flymake-csslint 'flycheck 'feature-mode
+'expand-region 'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode
+'emmet-mode 'ecukes 'cucumber-goto-step 'cider 'base16-theme
+'apache-mode 'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet)
 
   ;; Feature mode
   (add-hook 'feature-mode-hook
