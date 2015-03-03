@@ -2,7 +2,7 @@
 ;; http://tkf.github.io/emacs-jedi/latest/
 (setq jedi:server-command '("/usr/local/bin/jediepcserver"))
 ;; http://www.clisp.org/
-(setq inferior-lisp-program "/usr/bin/clisp")
+(setq inferior-lisp-program "/usr/bin/sbcl")
 ;; You can get this from here: https://languagetool.org/
 (setq langtool-language-tool-jar
              "/home/archenoth/Documents/apps/LanguageTool/LanguageTool.jar")
@@ -65,7 +65,8 @@ the ones that are not."
 'flymake-easy 'flymake-csslint 'flycheck 'feature-mode
 'expand-region 'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode
 'emmet-mode 'ecukes 'cucumber-goto-step 'cider 'base16-theme
-'apache-mode 'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet)
+'apache-mode 'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet
+'edbi-minor-mode)
 
   ;; Feature mode
   (add-hook 'feature-mode-hook
@@ -123,6 +124,19 @@ the ones that are not."
   (global-set-key (kbd "s-f") 'helm-projectile)
   (global-set-key (kbd "C-s-f") 'helm-projectile-all)
 
+
+  ;;;; Soon, when statements besides SELECT work
+  ;; Database stuff
+  ;; (add-hook 'sql-mode-hook
+  ;;           (lambda ()
+  ;;             (edbi-minor-mode)
+  ;;             (auto-complete-mode t)
+  ;;             (make-local-variable 'ac-sources)
+  ;;             (setq ac-sources '(ac-source-words-in-same-mode-buffers
+  ;;                                ac-source-edbi:tables
+  ;;                                ac-source-edbi:columns
+  ;;                                ac-source-edbi:types
+  ;;                                ac-source-edbi:keywords))))
 
   ;; JavaScript
   (require 'flymake-jshint)
