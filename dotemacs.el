@@ -245,7 +245,7 @@ the ones that are not."
 
 ;;;; Variables
 (setq create-lockfiles nil) ;; Nasty at times
-
+(setq-default indent-tabs-mode nil) ;; Screws up in other editors and Github
 
 ;;;; Custom keybindings
 (define-key global-map (kbd "s-/") 'ace-jump-mode)
