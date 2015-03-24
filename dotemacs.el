@@ -21,6 +21,8 @@
 
 ;; Remove unsightly toolbar
 (tool-bar-mode 0)
+;; And fringes
+(fringe-mode 0)
 
 ;; Just in case
 (package-initialize)
