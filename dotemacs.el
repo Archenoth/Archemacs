@@ -31,25 +31,20 @@
 (defun check-packages (&rest packages)
   "Checks if the passed in packages are installed, and installs
 the ones that are not."
-  (cl-labels
-      ((install (packages refresh)
-                (when packages
-                  (let ((package (car packages))
-                        (rest (cdr packages)))
-                    (if (package-installed-p package)
-                        (install rest refresh)
-                      (progn (when refresh (package-refresh-contents))
-                             (package-install package)
-                             (install rest nil)))))))
-    (install packages t)))
-
-
+  (cl-loop for package in packages
+           for refreshed = nil
+           unless (package-installed-p package)
+             unless refreshed do (package-refresh-contents)
+               and do (setq refreshed t)
+             end
+           and do (package-install package)))
+    
 ;; Post-package-loading hook
 (defun package-config ()
   ;; Ensuring packages are installed
-  (check-packages 'yasnippet 'web-mode 'slime 'rsense 'robe
-'projectile 'powerline 'plsql 'php-mode 'paredit 'nurumacs
-'multiple-cursors 'markdown-mode+ 'magit 'lua-mode 'langtool
+  (check-packages 'multiple-cursors 'web-mode 'slime 'rsense
+'robe 'projectile 'powerline 'plsql 'php-mode 'paredit 'nurumacs
+'yasnippet 'markdown-mode+ 'magit 'lua-mode 'langtool
 'js2-refactor 'jedi 'htmlize 'helm-projectile-all 'helm-emmet
 'grizzl 'graphviz-dot-mode 'flymake-ruby 'flymake-jshint
 'flymake-easy 'flymake-csslint 'flycheck 'feature-mode
