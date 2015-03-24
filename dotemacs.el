@@ -1,15 +1,3 @@
-;;; External links... The part you need to pay attention to if you aren't me.
-;; http://tkf.github.io/emacs-jedi/latest/
-(setq jedi:server-command '("/usr/local/bin/jediepcserver"))
-;; http://www.clisp.org/
-(setq inferior-lisp-program "/usr/bin/sbcl")
-;; You can get this from here: https://languagetool.org/
-(setq langtool-language-tool-jar
-             "/home/archenoth/Documents/apps/LanguageTool/LanguageTool.jar")
-
-
-;;; The rest should be independant
-
 ;; Package Manager URLs
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("marmalade" . "http://marmalade-repo.org/packages/")

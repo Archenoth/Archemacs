@@ -32,26 +32,21 @@ Also, optionally, you can byte-compile =dotemacs.el= by visiting it
 and running =M-x byte-compile-file=.
 
 * Configuration that doesn't really translate
-At the very top of [[file:dotemacs.el][dotemacs.el]] you'll see the three variables that
-you /will/ need to change if you wish to use the functionality:
+There are a few packages that require a little bit more
+configuration, after you install everything...
 
+Below is a sample configuration that you can use as a template to set
+up your own.
 #+BEGIN_SRC elisp
-  ;;; External links... The part you need to pay attention to if you aren't me.
+  ;;; External links... The part you need to pay attention to if you aren't me
+  ;;; and want to use the packages mentioned below.
+  ;; Jedi for Python
   ;; http://tkf.github.io/emacs-jedi/latest/
   (setq jedi:server-command '("/usr/local/bin/jediepcserver"))
-  ;; http://www.clisp.org/
-  (setq inferior-lisp-program "/usr/bin/clisp")
+  ;; SLIME (Common Lisp)
+  ;; http://www.sbcl.org/
+  (setq inferior-lisp-program "/usr/bin/sbcl")
+  ;; Langtool, for grammar checking in org-mode and friends
   ;; You can get this from here: https://languagetool.org/
-  (setq langtool-language-tool-jar
-               "/home/archenoth/Documents/apps/LanguageTool/LanguageTool.jar")
+  (setq langtool-language-tool-jar "/opt/LanguageTool/LanguageTool.jar")
 #+END_SRC
-
-The comments list the places you can find the things these variables
-point at.
-
-The only one that is worth noting is the =inferior-lisp-program=,
-which does not actually have to be =clisp=. but can be most any
-Common Lisp implementation. [[http://www.sbcl.org/][SBCL]], for example, is way faster, and has
-documentation built-in with =ac-slime=, which is very handy if you
-are learning Lisp or like having documentation right in front of you
-when you code.
