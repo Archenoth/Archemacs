@@ -34,10 +34,9 @@ the ones that are not."
   (cl-loop for package in packages
            for refreshed = nil
            unless (package-installed-p package)
-             unless refreshed do (package-refresh-contents)
-               and do (setq refreshed t)
-             end
-           and do (package-install package)))
+             unless refreshed do (progn (package-refresh-contents)
+                                        (setq refreshed t))
+             and do (package-install package)))
     
 ;; Post-package-loading hook
 (defun package-config ()
