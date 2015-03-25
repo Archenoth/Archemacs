@@ -32,7 +32,7 @@
   "Checks if the passed in packages are installed, and installs
 the ones that are not."
   (cl-loop for package in packages
-           for refreshed = nil
+           with refreshed = nil
            unless (package-installed-p package)
              unless refreshed
                do (package-refresh-contents)
@@ -46,7 +46,7 @@ the ones that are not."
   (check-packages 'multiple-cursors 'web-mode 'slime 'rsense
 'robe 'projectile 'powerline 'plsql 'php-mode 'paredit 'nurumacs
 'yasnippet 'markdown-mode+ 'magit 'lua-mode 'langtool
-'js2-refactor 'jedi 'htmlize 'helm-projectile-all 'helm-emmet
+'js2-refactor 'jedi 'htmlize 'helm-projectile 'helm-emmet
 'grizzl 'graphviz-dot-mode 'flymake-ruby 'flymake-jshint
 'flymake-easy 'flymake-csslint 'flycheck 'feature-mode
 'expand-region 'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode
