@@ -2,6 +2,8 @@
 
 This is the Git repo for my Emacs configuration...
 
+[[file:./archenothEmacs.png]]
+
 The way it is constructed, the file is supposed to be a standalone
 configuration separate from =.emacs=, and simply loaded in.
 
