@@ -14,7 +14,7 @@
 ;; Flymake
 (add-hook 'perl-mode-hook (lambda () (flymake-mode t)))
 (add-hook 'php-mode-hook (lambda () (flymake-mode t)))
-
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Making boolean question less annoying
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -39,7 +39,7 @@ the ones that are not."
                and do (setq refreshed t)
              end
            and do (package-install package)))
-    
+
 ;; Post-package-loading hook
 (defun package-config ()
   ;; Ensuring packages are installed
@@ -118,7 +118,7 @@ the ones that are not."
 	    (lambda ()
 	      (ac-js2-mode)
 	      (local-set-key (kbd "s-<f3>") #'ac-js2-jump-to-definition)))
-  
+
 
   ;; Java
   (add-hook 'java-mode-hook
@@ -229,7 +229,7 @@ the ones that are not."
 (setq backup-by-copying t      ; don't clobber symlinks
       backup-directory-alist
       '(("." . "~/.saves"))    ; don't litter my fs tree
-      delete-old-versions t 
+      delete-old-versions t
       kept-new-versions 6
       kept-old-versions 2
       version-control t)       ; use versioned backups
