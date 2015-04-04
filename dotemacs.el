@@ -11,10 +11,10 @@
 (require 'cl-lib)
 
 ;;;; Hooks
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 ;; Flymake
 (add-hook 'perl-mode-hook (lambda () (flymake-mode t)))
 (add-hook 'php-mode-hook (lambda () (flymake-mode t)))
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Making boolean question less annoying
 (defalias 'yes-or-no-p 'y-or-n-p)
