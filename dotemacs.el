@@ -148,14 +148,17 @@ the ones that are not."
 
   ;; ELISP
   (require 'erefactor)
+
   ;; Hook for all ELISP modes
   (defun el-hook ()
     (define-key emacs-lisp-mode-map "\C-c\C-v" erefactor-map)
     (erefactor-lazy-highlight-turn-on)
     (eldoc-mode t))
   ;; And assigning to said modes
+
   (add-hook 'emacs-lisp-mode-hook 'el-hook)
   (add-hook 'lisp-interaction-mode-hook 'el-hook)
+  (add-hook 'ielm-mode-hook 'el-hook)
 
 
   ;; CIDER, Clojure
