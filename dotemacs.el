@@ -1,8 +1,8 @@
+;; -*- lexical-binding: t -*-
 ;; Package Manager URLs
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("marmalade" . "http://marmalade-repo.org/packages/")
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
-
 
 ;; SSL Support (For ERC primarily)
 (require 'tls)
@@ -21,7 +21,7 @@
 
 ;; Remove unsightly toolbar
 (tool-bar-mode 0)
-;; And fringes
+;; And fringes until we want to explicitly enable them
 (fringe-mode 0)
 
 ;; Just in case
@@ -52,7 +52,7 @@ the ones that are not."
 'expand-region 'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode
 'emmet-mode 'ecukes 'cucumber-goto-step 'cider 'base16-theme
 'apache-mode 'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet
-'edbi-minor-mode)
+'edbi-minor-mode 'firecode-theme)
 
   ;; Feature mode
   (add-hook 'feature-mode-hook
@@ -64,11 +64,63 @@ the ones that are not."
   (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
 
-  ;; Base16-tomorrow theme, and powerline... Bad in NOX though.
+  ;; Base16-tomorrow and firecode themes, fullscreen, and
+  ;; powerline... Bad in NOX though.
   (if (display-graphic-p)
-      (progn
+      (let ((fullscreen-faces
+             '((default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal))))
+               (fringe ((t (:background "#111" :width expanded))))
+               (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
+               (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
+               (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t)))
+            (windowed-faces
+             '((default ((t (:family "Inconsolata" :foundry "unknown" :slant normal :weight normal :height 98 :width normal))))
+               (scroll-bar ((t nil)))
+               (vertical-border ((nil (:foreground "#191919")))))))
+
+
+        (defun set-default-window-size ()
+          "Sets the default window size..."
+          (interactive)
+          (modify-frame-parameters
+           (selected-frame)
+           '((width . 80) (heigth . 34))))
+
+        ;; Toggleable themes
+        (defun set-fullscreen-theme ()
+          "Sets the default theme I use for maximixed Emacs"
+          (enable-theme 'firecode)
+          (apply #'custom-set-faces fullscreen-faces)
+          (fringe-mode '(20 . 0))
+          (scroll-bar-mode -1)
+          (menu-bar-mode -1))
+
+        (defun set-window-theme ()
+          "Sets the default theme I use for Windowed Emacs"
+          (enable-theme 'base16-tomorrow)
+          (apply #'custom-set-faces windowed-faces)
+          (fringe-mode 0)
+          (scroll-bar-mode 1)
+          (menu-bar-mode 1))
+
+        (let ((is-fullscreen nil))
+          (defun toggle-fullscreen ()
+            (interactive)
+            (if is-fullscreen
+                (progn
+                  (set-frame-parameter nil 'fullscreen nil)
+                  (setq is-fullscreen nil)
+                  (set-window-theme))
+              (progn
+                (set-frame-parameter nil 'fullscreen 'fullboth)
+                (setq is-fullscreen t)
+                (set-fullscreen-theme)))))
+
         (powerline-center-theme)
-        (load-theme 'base16-tomorrow)))
+        (load-theme 'base16-tomorrow)
+        (set-window-theme)
+        (set-default-window-size)
+        (global-set-key (kbd "<f11>") 'toggle-fullscreen)))
 
 
   ;; Expand region
@@ -226,7 +278,6 @@ the ones that are not."
 (define-key global-map (kbd "s-/") 'ace-jump-mode)
 (define-key global-map (kbd "s-?") 'ace-jump-char-mode)
 (define-key global-map (kbd "<f5>") 'compile)
-
 
 ;; Auto-backups
 (setq backup-by-copying t      ; don't clobber symlinks
