@@ -3,6 +3,7 @@
 This is the Git repo for my Emacs configuration...
 
 Windowed:
+
 [[file:./windowed.png]]
 
 And Fullscreen: (Toggled with [F11])
