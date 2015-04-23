@@ -191,7 +191,7 @@ the ones that are not."
 
   ;; Common Lisp
   ;; Set your lisp system and, optionally, some contribs Common Lisp
-  (setq slime-contribs '(slime-fancy))
+  (setq slime-contribs '(slime-fancy slime-asdf))
   (add-hook 'slime-mode-hook 'set-up-slime-ac)
   (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
   (eval-after-load "auto-complete"
