@@ -225,6 +225,12 @@ the ones that are not."
   (add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
   (setq web-mode-engines-alist  '(("jsp" . "\\.tag\\'")))
 
+  ;; SQL, fix buffer escaping
+  (add-hook 'sql-mode-hook
+            (lambda ()
+              (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
+
+
   (defun web-mode-hook ()
     "Hooks for Web mode."
     (setq web-mode-html-offset 2)
