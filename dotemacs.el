@@ -97,7 +97,7 @@ the ones that are not."
 
         (defun set-window-theme ()
           "Sets the default theme I use for Windowed Emacs"
-          (enable-theme 'base16-tomorrow)
+          (enable-theme 'base16-tomorrow-dark)
           (apply #'custom-set-faces windowed-faces)
           (fringe-mode 0)
           (scroll-bar-mode 1)
@@ -117,7 +117,7 @@ the ones that are not."
                 (set-fullscreen-theme)))))
 
         (powerline-center-theme)
-        (load-theme 'base16-tomorrow)
+        (load-theme 'base16-tomorrow-dark)
         (set-window-theme)
         (set-default-window-size)
         (global-set-key (kbd "<f11>") 'toggle-fullscreen)))
