@@ -586,7 +586,7 @@ files fast is very handy:
   (projectile-global-mode)
 #+END_SRC
 
-And Since that is how I end the package hook, so lets close it:
+And since that is how I end the package hook, so lets close it:
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   )
 #+END_SRC
