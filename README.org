@@ -1,6 +1,6 @@
 #+TITLE:Archenoth's Emacs configuration
 
-This is the Git repo for my Emacs configuration...
+This is the Git repo for [[file:./Archenoth-config.org][my Emacs configuration...]]
 
 Windowed:
 
@@ -20,7 +20,8 @@ So, if you cloned this repo directly into =.emacs.d= (Which is highly
 recommended), you can simply include it with:
 
 #+BEGIN_SRC elisp :tangle ~/.emacs :padline no
-  (load "~/.emacs.d/dotemacs/dotemacs.el")
+  (require 'ob-tangle)
+  (org-babel-load-file "~/.emacs.d/dotemacs/Archenoth-config.org")
 #+END_SRC
 
 (You can use =C-c C-v t= while visiting this file in =org-mode= to
@@ -32,18 +33,17 @@ be warned that this will overwrite your existing =.emacs=)
 2. Run =git clone https://github.com/Archenoth/dotemacs.git=
 3. Open this file in =org-mode=. (=emacs dotemacs/README.org=)
 4. Tangle with =C-c C-v t= (Or if you have stuff in your =.emacs=,
-   copy the above line into it instead.).
+   copy the above lines into it instead.).
 5. Restart Emacs.
-
-Also, optionally, you can byte-compile =dotemacs.el= by visiting it
-and running =M-x byte-compile-file=.
 
 * Configuration that doesn't really translate
 There are a few packages that require a little bit more
 configuration, after you install everything...
 
 Below is a sample configuration that you can use as a template to set
-up your own.
+up your own:
+
+(This would go into your =~/.emacs=)
 #+BEGIN_SRC elisp
   ;;; External links... The part you need to pay attention to if you aren't me
   ;;; and want to use the packages mentioned below.
