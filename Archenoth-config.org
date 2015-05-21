@@ -158,7 +158,7 @@ the [[Package checker and installer][package checker]] above:
    'grizzl 'graphviz-dot-mode 'flymake-ruby 'flymake-jshint
    'flymake-easy 'flymake-csslint 'flycheck 'feature-mode
    'expand-region 'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode
-   'emmet-mode 'ecukes 'cucumber-goto-step 'cider 'base16-theme
+   'emmet-mode 'ecukes 'cucumber-goto-step 'cider 'firebelly-theme
    'apache-mode 'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet
    'edbi-minor-mode 'firecode-theme 'sauron)
 #+END_SRC
@@ -217,65 +217,69 @@ I have a bunch more visual configuration besides what is in the
 It is all dependant on whether or not we are running in NOX or
 not. This definition is kind of a monster:
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Base16-tomorrow and firecode themes, fullscreen, and
-  ;; powerline... Bad in NOX though.
-  (if (display-graphic-p)
-      (let ((fullscreen-faces
-             '((default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal))))
-               (fringe ((t (:background "#111" :width expanded))))
-               (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
-               (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
-               (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t)))
-            (windowed-faces
-             '((default ((t (:family "Inconsolata" :foundry "unknown" :slant normal :weight normal :height 98 :width normal))))
-               (scroll-bar ((t nil)))
-               (vertical-border ((nil (:foreground "#191919")))))))
+   ;; Firebelly and firecode themes, fullscreen, and powerline... Bad in
+   ;; NOX though.
+   (if (display-graphic-p)
+       (let ((fullscreen-faces
+              '((default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal))))
+                (fringe ((t (:background "#111" :width expanded))))
+                (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
+                (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
+                (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t)))
+             (windowed-faces
+              '((default ((t (:family "Inconsolata" :foundry "unknown" :slant normal :weight normal :height 98 :width normal))))
+                (scroll-bar ((t nil)))
+                (font-lock-function-name-face ((t (:foreground "#fff"))))
+                (font-lock-variable-name-face ((t (:foreground "#ddd"))))
+                (font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "steel blue"))))
+                (font-lock-comment-face ((t (:foreground "steel blue"))))
+                (vertical-border ((nil (:foreground "#191919")))))))
 
 
-        (defun set-default-window-size ()
-          "Sets the default window size..."
-          (interactive)
-          (modify-frame-parameters
-           (selected-frame)
-           '((width . 80) (height . 34))))
+         (defun set-default-window-size ()
+           "Sets the default window size..."
+           (interactive)
+           (modify-frame-parameters
+            (selected-frame)
+            '((width . 80) (height . 34))))
 
-        ;; Toggleable themes
-        (defun set-fullscreen-theme ()
-          "Sets the default theme I use for maximixed Emacs"
-          (enable-theme 'firecode)
-          (disable-theme 'base16-tomorrow-dark)
-          (apply #'custom-set-faces fullscreen-faces)
-          (fringe-mode '(20 . 0))
-          (scroll-bar-mode -1)
-          (menu-bar-mode -1))
+         ;; Toggleable themes
+         (defun set-fullscreen-theme ()
+           "Sets the default theme I use for maximixed Emacs"
+           (enable-theme 'firecode)
+           (disable-theme 'firebelly)
+           (apply #'custom-set-faces fullscreen-faces)
+           (fringe-mode '(20 . 0))
+           (scroll-bar-mode -1)
+           (menu-bar-mode -1))
 
-        (defun set-window-theme ()
-          "Sets the default theme I use for Windowed Emacs"
-          (enable-theme 'base16-tomorrow-dark)
-          (disable-theme 'firecode)
-          (apply #'custom-set-faces windowed-faces)
-          (fringe-mode 0)
-          (scroll-bar-mode 1)
-          (menu-bar-mode 1))
+         (defun set-window-theme ()
+           "Sets the default theme I use for Windowed Emacs"
+           (enable-theme 'firebelly)
+           (disable-theme 'firecode)
+           (apply #'custom-set-faces windowed-faces)
+           (fringe-mode 0)
+           (scroll-bar-mode 1)
+           (menu-bar-mode 1))
 
-        (let ((is-fullscreen nil))
-          (defun toggle-fullscreen ()
-            (interactive)
-            (if is-fullscreen
-                (progn
-                  (set-frame-parameter nil 'fullscreen nil)
-                  (setq is-fullscreen nil)
-                  (set-window-theme))
-              (progn
-                (set-frame-parameter nil 'fullscreen 'fullboth)
-                (setq is-fullscreen t)
-                (set-fullscreen-theme)))))
+         (let ((is-fullscreen nil))
+           (defun toggle-fullscreen ()
+             (interactive)
+             (if is-fullscreen
+                 (progn
+                   (set-frame-parameter nil 'fullscreen nil)
+                   (setq is-fullscreen nil)
+                   (set-window-theme))
+               (progn
+                 (set-frame-parameter nil 'fullscreen 'fullboth)
+                 (setq is-fullscreen t)
+                 (set-fullscreen-theme)))))
 
-        (powerline-center-theme)
-        (load-theme 'base16-tomorrow-dark)
-        (set-window-theme)
-        (set-default-window-size)
-        (global-set-key (kbd "<f11>") 'toggle-fullscreen)))
+         (powerline-center-theme)
+         (load-theme 'firebelly)
+         (set-window-theme)
+         (set-default-window-size)
+         (global-set-key (kbd "<f11>") 'toggle-fullscreen)))
 #+END_SRC
 
 What this does is it allows me to toggle between two style
