@@ -1,8 +1,8 @@
 #+TITLE:My Emacs config
 #+STARTUP: hidestars
 
-Neat thing... You can use =org-mode= files as your Emacs
-configuration...
+Neat thing -- You can use =org-mode= files as your Emacs
+configuration..!
 
 Below is my Emacs configuration along with descriptions of what each
 piece does:
@@ -96,7 +96,7 @@ simple... So, I alias =yes-or-no-p= to the single-keystroke
 equivalent:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Making boolean question less annoying
+  ;; Make boolean questions less annoying
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
@@ -105,7 +105,7 @@ I don't care too much for the default appearance of Emacs... I
 generally like to remove the toolbar at the top of the screen:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Remove unsightly toolbar
+  ;; Remove unsightly toolbar...
   (tool-bar-mode 0)
 #+END_SRC
 
@@ -113,7 +113,7 @@ And remove fringes when in a windowed mode... And since that is the
 default when we start up Emacs:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; And fringes until we want to explicitly enable them
+  ;; ...and fringes until we want to explicitly enable them
   (fringe-mode 0)
 #+END_SRC
 
@@ -589,7 +589,7 @@ files fast is very handy:
   (projectile-global-mode)
 #+END_SRC
 
-And since that is how I end the package hook, so lets close it:
+And since that is how I end the package hook, let's close it:
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   )
 #+END_SRC
@@ -645,11 +645,11 @@ I also generally like having a compile command as [F5]:
   (define-key global-map (kbd "<f5>") 'compile)
 #+END_SRC
 
-No, compiling is not always relevant, but a quick command-line is
-useful in even those times.
+No, compiling is not always relevant, but it doubles as a quick
+command-line, which is almost always useful.
 
 * Auto-backup config
-Stolen from [[http://emacswiki.org/emacs/BackupDirectory][here]]... Very useful to have backup files not mes sup the
+Stolen from [[http://emacswiki.org/emacs/BackupDirectory][here]]... Very useful to have backup files not mess up the
 current folder, and yet still exist:
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Auto-backups
