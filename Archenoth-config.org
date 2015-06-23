@@ -185,20 +185,6 @@ no need for Sauron to be its own frame:
   (setq sauron-separate-frame nil)
 #+END_SRC
 
-** Feature mode
-#+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; Feature mode
-#+END_SRC
-
-Since I work with [[http://cukes.info/][Cucumber]] feature files reasonably often, I find it
-useful to be able to jump right to the definition of some cucumber
-step I am looking at:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'feature-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-s-r") 'jump-to-cucumber-step)))
-#+END_SRC
-
 ** Markdown mode
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   ;; Markdown
@@ -423,7 +409,7 @@ do... I only have one real tweak to make:
               (toggle-truncate-lines t)))
 #+END_SRC
 
-*** C and C+
+*** C and C++
 Emacs' [[info:Semantic][Semantic]] mode is really good at C... I have not tested it
 extensively with C++ though.
 
@@ -542,6 +528,20 @@ files so it acts like a proper escape:
               (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
 #+END_SRC
 
+*** Feature
+#+BEGIN_SRC emacs-lisp :tangle yes :eval no
+  ;; Feature mode
+#+END_SRC
+
+Since I work with [[http://cukes.info/][Cucumber]] feature files reasonably often, I find it
+useful to be able to jump right to the definition of some cucumber
+step I am looking at:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'feature-mode-hook
+            (lambda ()
+              (local-set-key (kbd "s-<f3>") 'jump-to-cucumber-step)))
+#+END_SRC
+
 ** Org Mode
 Org mode gets quite a few updates through the package manager, so I
 have moved my default Org configuration into the package hook.
@@ -559,7 +559,6 @@ source files from Org mode, =auto-fill=, and syntax coloring:
        (progn
          (flyspell-mode t)
          (auto-fill-mode t)
-         (require 'org-latex)
          (setq-default indent-tabs-mode nil)
          (setq org-src-fontify-natively t)
          (setq org-export-latex-listings 'minted)
