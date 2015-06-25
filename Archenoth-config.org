@@ -539,6 +539,9 @@ step I am looking at:
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'feature-mode-hook
             (lambda ()
+              (local-set-key (kbd "C-c C-c") 'feature-verify-scenario-at-pos)
+              (local-set-key (kbd "C-c C-k") 'feature-verify-all-scenarios-in-buffer)
+              (local-set-key (kbd "<f5>") 'feature-verify-all-scenarios-in-project)
               (local-set-key (kbd "s-<f3>") 'jump-to-cucumber-step)))
 #+END_SRC
 
