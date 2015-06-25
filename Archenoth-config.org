@@ -55,7 +55,7 @@ ELISP, so I include this library to make up for it:
 
 * Package-less configuration
 The following configuration does not require any external packages to
-be loaded... That will come later in the eventual [[Package kook][package hook]].
+be loaded... That will come later in the eventual [[Package hook][package hook]].
 
 ** Hooks
 Hooks! A few small tweaks to suit my work style.
