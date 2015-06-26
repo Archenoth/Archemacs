@@ -121,7 +121,7 @@ default:
 
 Now, lets sue this to install all the packages we need if they don't
 exist already:
-#+BEGIN_SRC elisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle yes
   ;; Ensuring packages are installed
   (check-packages
    'multiple-cursors 'web-mode 'slime 'rsense
