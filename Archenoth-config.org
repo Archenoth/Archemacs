@@ -16,6 +16,10 @@ style of developing with =let= closures and have-at-you:
 #+END_SRC
 
 * Setting up
+This section is for setting up configuration that does not need any
+fancy packages and for configuring the package manager itself before
+working with it.
+
 ** Setting up the package manager
 The package manager in Emacs is pretty sweet, but the default repos
 are quite limited in their selection of packages... So instead, I add
@@ -55,7 +59,8 @@ ELISP, so I include this library to make up for it:
 
 * Package-less configuration
 The following configuration does not require any external packages to
-be loaded... That will come later in the eventual [[Package hook][package hook]].
+be loaded... That will come after the [[Package checker and installer]]
+does its thing.
 
 ** Hooks
 Hooks! A few small tweaks to suit my work style.
@@ -119,7 +124,7 @@ default:
              and do (package-install package)))
 #+END_SRC
 
-Now, lets sue this to install all the packages we need if they don't
+Now, lets use this to install all the packages we need if they don't
 exist already:
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Ensuring packages are installed
@@ -152,8 +157,39 @@ messages set a variable: =sauron-alert=:
                 (setq sauron-alert t))))
 #+END_SRC
 
-And because I get notified of high-priority events normally, I have
-no need for Sauron to be its own frame:
+The above means you can do something like the following:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (when (boundp 'sauron-alert)
+    "Code goes here for when Suaron sees something, yo.")
+#+END_SRC
+
+And of course, to set it back to nothingness:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (makunbound 'sauron-alert)
+#+END_SRC
+
+I actually use this in the modeline and have the modeline use the
+following function to generate a spooky eye that notifies me if Sauron
+has seen something of interest with clickable text to bring me to the
+Sauron buffer:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun make-sauron-text ()
+    "Creates a clickable Sauron text that switches to the Sauron
+  buffer."
+    (let ((map (make-keymap)))
+      (define-key map [follow-link]
+        (lambda (pos)
+          (makunbound 'sauron-alert)
+          (switch-to-buffer "*Sauron*")))
+      (propertize " 0"
+                  'keymap map
+                  'face 'compilation-error
+                  'help-echo "Sauron has seen something"
+                  'pointer 'hand)))
+#+END_SRC
+
+And because I get notified of high-priority events normally with the
+above, I have no need for Sauron to be its own frame:
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq sauron-separate-frame nil)
 #+END_SRC
@@ -187,11 +223,11 @@ default when we start up Emacs:
 #+END_SRC
 
 As for in-depth styling, I generally like to switch between two
-different appearances depending on whether or not Emacs if fullscreen
+different appearances depending on whether or not Emacs is fullscreen
 or not.
 
 ** Fullscreen style
-Which we have defaults for fullscreen here:
+The defaults for fullscreen are:
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq fullscreen-faces
         (if (boundp 'fullscreen-theme)
@@ -228,7 +264,7 @@ These are the default faces for windowed Emacs windows.
 
 As you can see, if there is a =windowed-theme= variable set before
 this file is initialized, this will use that as opposed to the
-default.
+defaults below.
 
 That way we don't need to dig into this config file to change it.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -320,7 +356,7 @@ of text, be it code or whatever.
 
 * Multiple Cursors
 From the famous [[https://www.youtube.com/watch?v=jNa3axo40qM][Emacs Rocks video]] where it was introduced to the
-masses, my configuration for this super-handy mode (Pretty much just
+masses, my configuration for this super-handy mode is as follows (Just
 keybindings):
 
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -347,7 +383,7 @@ project really fast:
 #+END_SRC
 
 * Language mode setup
-Following are the package-loaded language support configurations:
+The following are package-loaded language support configurations:
 
 ** Ruby
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
@@ -568,9 +604,10 @@ files so it acts like a proper escape:
   ;; Feature mode
 #+END_SRC
 
-Since I work with [[http://cukes.info/][Cucumber]] feature files reasonably often, I find it
-useful to be able to jump right to the definition of some cucumber
-step I am looking at:
+Since I work with [[https://cucumber.io/][Cucumber]] feature files reasonably often, I find it
+useful to be able to jump right to the definition of some Cucumber
+step I am looking at. I also like Slime's evaluation bindings, so I
+emulate those here:
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'feature-mode-hook
             (lambda ()
@@ -581,29 +618,30 @@ step I am looking at:
 #+END_SRC
 
 * Org Mode
-Org mode gets quite a few updates through the package manager, so I
-have moved my default Org configuration into the package hook.
-
-This includes support for spell checking, grammar checking, tangling
-source files from Org mode, =auto-fill=, and syntax coloring:
+My Org mode setup includes support for spell checking, grammar
+checking, tangling source files from Org mode, =auto-fill=, and syntax
+coloring:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-    ;; Org mode
-    (require 'org-install)
-    (require 'ob-tangle)
-    (add-hook
-     'org-mode-hook
-     (lambda ()
-       (progn
-         (flyspell-mode t)
-         (auto-fill-mode t)
-         (setq-default indent-tabs-mode nil)
-         (setq org-src-fontify-natively t)
-         (setq org-export-latex-listings 'minted)
+  ;; Org mode
+  (require 'org-install)
+  (require 'ob-tangle)
+  (add-hook
+   'org-mode-hook
+   (lambda ()
+     (progn
+       (flyspell-mode t)
+       (auto-fill-mode t)
+       (setq-default indent-tabs-mode nil)
+       (setq org-src-fontify-natively t)
+       (setq org-export-latex-listings 'minted)
 
-         ;; LanguageTool setup
-         (require 'langtool))))
+       ;; LanguageTool setup
+       (require 'langtool))))
 #+END_SRC
+
+Nothing too crazy, because most of Org's default configuration is
+pretty sweet.
 
 * Starting global package modes
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
