@@ -100,23 +100,6 @@ equivalent:
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-* Style options
-I don't care too much for the default appearance of Emacs... I
-generally like to remove the toolbar at the top of the screen:
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Remove unsightly toolbar...
-  (tool-bar-mode 0)
-#+END_SRC
-
-And remove fringes when in a windowed mode... And since that is the
-default when we start up Emacs:
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; ...and fringes until we want to explicitly enable them
-  (fringe-mode 0)
-#+END_SRC
-
 * Package checker and installer
 I wrote a little package checker and installer so that I would not
 have to worry about manually installing packages I like to have by
@@ -136,18 +119,8 @@ default:
              and do (package-install package)))
 #+END_SRC
 
-* Package hook
-After the package manager and packages are initialized, I like to
-run a hook called =package-config= that starts like so:
-#+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; Post-package-loading hook
-  (defun package-config ()
-#+END_SRC
-
-** Making sure packages are installed
-First line of business in this hook is to make sure that all of the
-packages I like to have by default are installed... I do this using
-the [[Package checker and installer][package checker]] above:
+Now, lets sue this to install all the packages we need if they don't
+exist already:
 #+BEGIN_SRC elisp
   ;; Ensuring packages are installed
   (check-packages
@@ -163,7 +136,7 @@ the [[Package checker and installer][package checker]] above:
    'edbi-minor-mode 'firecode-theme 'sauron)
 #+END_SRC
 
-** Sauron
+* Sauron
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   ;; Supremely useful monitor -- Sauron
 #+END_SRC
@@ -185,7 +158,7 @@ no need for Sauron to be its own frame:
   (setq sauron-separate-frame nil)
 #+END_SRC
 
-** Markdown mode
+* Markdown mode
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   ;; Markdown
 #+END_SRC
@@ -196,83 +169,145 @@ automagically start for files with the =.md= file extension, so:
   (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 #+END_SRC
 
-** Package-loaded theme configuration
-I have a bunch more visual configuration besides what is in the
-[[Style options]] section.
+* Style options
+I don't care too much for the default appearance of Emacs... I
+generally like to remove the toolbar at the top of the screen:
 
-It is all dependant on whether or not we are running in NOX or
-not. This definition is kind of a monster:
 #+BEGIN_SRC emacs-lisp :tangle yes
-   ;; Firebelly and firecode themes, fullscreen, and powerline... Bad in
-   ;; NOX though.
-   (if (display-graphic-p)
-       (let ((fullscreen-faces
-              '((default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal))))
-                (fringe ((t (:background "#111" :width expanded))))
-                (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
-                (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
-                (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t)))
-             (windowed-faces
-              '((default ((t (:family "Inconsolata" :foundry "unknown" :slant normal :weight normal :height 98 :width normal))))
-                (scroll-bar ((t nil)))
-                (font-lock-function-name-face ((t (:foreground "#fff"))))
-                (font-lock-variable-name-face ((t (:foreground "#ddd"))))
-                (font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "steel blue"))))
-                (font-lock-comment-face ((t (:foreground "steel blue"))))
-                (vertical-border ((nil (:foreground "#191919")))))))
+  ;; Remove unsightly toolbar...
+  (tool-bar-mode 0)
+#+END_SRC
 
+And remove fringes when in a windowed mode... And since that is the
+default when we start up Emacs:
 
-         (defun set-default-window-size ()
-           "Sets the default window size..."
-           (interactive)
-           (modify-frame-parameters
-            (selected-frame)
-            '((width . 80) (height . 34))))
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; ...and fringes until we want to explicitly enable them
+  (fringe-mode 0)
+#+END_SRC
 
-         ;; Toggleable themes
-         (defun set-fullscreen-theme ()
-           "Sets the default theme I use for maximixed Emacs"
-           (enable-theme 'firecode)
-           (disable-theme 'firebelly)
-           (apply #'custom-set-faces fullscreen-faces)
-           (fringe-mode '(20 . 0))
-           (scroll-bar-mode -1)
-           (menu-bar-mode -1))
+As for in-depth styling, I generally like to switch between two
+different appearances depending on whether or not Emacs if fullscreen
+or not.
 
-         (defun set-window-theme ()
-           "Sets the default theme I use for Windowed Emacs"
-           (enable-theme 'firebelly)
-           (disable-theme 'firecode)
-           (apply #'custom-set-faces windowed-faces)
-           (fringe-mode 0)
-           (scroll-bar-mode 1)
-           (menu-bar-mode 1))
+** Fullscreen style
+Which we have defaults for fullscreen here:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq fullscreen-faces
+        (if (boundp 'fullscreen-theme)
+            fullscreen-theme
+          '((fringe ((t (:background "#111" :width expanded))))
+            (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
+            (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
+            (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t))))
+#+END_SRC
 
-         (let ((is-fullscreen nil))
-           (defun toggle-fullscreen ()
-             (interactive)
-             (if is-fullscreen
-                 (progn
-                   (set-frame-parameter nil 'fullscreen nil)
-                   (setq is-fullscreen nil)
-                   (set-window-theme))
-               (progn
-                 (set-frame-parameter nil 'fullscreen 'fullboth)
-                 (setq is-fullscreen t)
-                 (set-fullscreen-theme)))))
+This essentially is just a minimal set of sane defaults for
+fullscreen, though if the variable =fullscreen-theme= is set, those
+faces will be used instead of the default.
 
-         (powerline-center-theme)
-         (load-theme 'firebelly)
-         (set-window-theme)
-         (set-default-window-size)
-         (global-set-key (kbd "<f11>") 'toggle-fullscreen)))
+Of course, we need some way to apply it. The following is the
+definition for the function that will handle the logic for what
+happens when we switch from windowed to fullscreen:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun set-fullscreen-theme ()
+    "Sets the default theme I use for maximixed Emacs"
+    (interactive)
+    (enable-theme 'firecode)
+    (disable-theme 'firebelly)
+    (apply #'custom-set-faces fullscreen-faces)
+    (fringe-mode '(20 . 0))
+    (scroll-bar-mode -1)
+    (menu-bar-mode -1))
+#+END_SRC
+
+Now for windowed!
+
+** Windowed style
+These are the default faces for windowed Emacs windows.
+
+As you can see, if there is a =windowed-theme= variable set before
+this file is initialized, this will use that as opposed to the
+default.
+
+That way we don't need to dig into this config file to change it.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq windowed-faces
+        (if (boundp 'windowed-theme)
+            windowed-theme
+          '((scroll-bar ((t nil)))
+            (font-lock-function-name-face ((t (:foreground "#fff"))))
+            (font-lock-variable-name-face ((t (:foreground "#ddd"))))
+            (font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "steel blue"))))
+            (font-lock-comment-face ((t (:foreground "steel blue"))))
+            (vertical-border ((nil (:foreground "#191919")))))))
+#+END_SRC
+
+Since switching to windowed mode has some strange results with frame
+sizing, here is a function that can restore the size back to the
+normal windowed state:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun set-default-window-size ()
+    "Sets the default window size..."
+    (interactive)
+    (modify-frame-parameters
+     (selected-frame)
+     '((width . 80) (height . 34))))
+#+END_SRC
+
+And now, just like in [[Fullscreen style]], here is the function that gets
+called to handle switching from fullscreen to windowed:
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun set-window-theme ()
+    "Sets the default theme I use for Windowed Emacs"
+    (interactive)
+    (enable-theme 'firebelly)
+    (disable-theme 'firecode)
+    (apply #'custom-set-faces windowed-faces)
+    (fringe-mode 0)
+    (scroll-bar-mode 1)
+    (menu-bar-mode 1)
+    (set-default-window-size))
+#+END_SRC
+
+Spifftastic! Now time to put it all together...
+
+** The actual style logic
+As for whether to apply these themes, it is all dependant on whether
+or not we are running in NOX or not:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Firebelly and firecode themes, fullscreen, and powerline... Bad in
+  ;; NOX though.
+  (when (display-graphic-p)
+      (let ((is-fullscreen nil))
+        (defun toggle-fullscreen ()
+          "Toggles fullscreen emacs"
+          (interactive)
+          (if is-fullscreen
+              (progn
+                (set-frame-parameter nil 'fullscreen nil)
+                (setq is-fullscreen nil)
+                (set-window-theme))
+            (progn
+              (set-frame-parameter nil 'fullscreen 'fullboth)
+              (setq is-fullscreen t)
+              (set-fullscreen-theme)))))
+
+    ;; Load both themes for later
+    (load-theme 'firecode t t)
+    (load-theme 'firebelly t t)
+
+    (powerline-center-theme)
+    (set-window-theme)
+    (global-set-key (kbd "<f11>") 'toggle-fullscreen))
 #+END_SRC
 
 What this does is it allows me to toggle between two style
 configurations, one for fullscreen mode, the other for windowed with
 the [F11] key.
 
-** Expand Region
+* Expand Region
 Expand Region is a very handy package for selecting arbitrary blocks
 of text, be it code or whatever.
 
@@ -283,7 +318,7 @@ of text, be it code or whatever.
   (global-set-key (kbd "s-S-SPC") 'er/contract-region)
 #+END_SRC
 
-** Multiple Cursors
+* Multiple Cursors
 From the famous [[https://www.youtube.com/watch?v=jNa3axo40qM][Emacs Rocks video]] where it was introduced to the
 masses, my configuration for this super-handy mode (Pretty much just
 keybindings):
@@ -297,7 +332,7 @@ keybindings):
   (global-set-key (kbd "s-S") 'mc/mark-sgml-tag-pair)
 #+END_SRC
 
-** Projectile
+* Projectile
 Another really handy usability mode: Projectile!
 
 I use Projectile with Helm to browse to files in the current (Or any)
@@ -311,10 +346,10 @@ project really fast:
   (global-set-key (kbd "C-s-f") 'helm-projectile-all)
 #+END_SRC
 
-** Language mode setup
+* Language mode setup
 Following are the package-loaded language support configurations:
 
-*** Ruby
+** Ruby
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   ;; Ruby support
 #+END_SRC
@@ -349,7 +384,7 @@ for code assist:
               (add-to-list 'ac-sources 'ac-source-rsense-constant)))
 #+END_SRC
 
-*** Python
+** Python
 I don't really write Python, but for the times I do, Jedi is neat:
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Jedi, for Python sweetness
@@ -359,7 +394,7 @@ I don't really write Python, but for the times I do, Jedi is neat:
               (setq jedi:complete-on-dot t)))
 #+END_SRC
 
-*** JavaScript
+** JavaScript
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   ;; JavaScript
 #+END_SRC
@@ -394,7 +429,7 @@ which are integrated with =flymake=:
   (require 'flymake-jshint)
 #+END_SRC
 
-*** Java
+** Java
 I don't do much Java in Emacs, that generally is the job of Eclipse
 because of its super-intelligent support, integration with
 everything, and ridiculous debugger capabilities... But when I
@@ -409,7 +444,7 @@ do... I only have one real tweak to make:
               (toggle-truncate-lines t)))
 #+END_SRC
 
-*** C and C++
+** C and C++
 Emacs' [[info:Semantic][Semantic]] mode is really good at C... I have not tested it
 extensively with C++ though.
 
@@ -428,7 +463,7 @@ But with it, we get definition jumping and some quite intelligent
   (add-hook 'c++-mode-hook 'c-modes-hook)
 #+END_SRC
 
-*** Common Lisp
+** Common Lisp
 The Common Lisp setup is largely just setting up Slime and Slime's
 =autocomplete= source according to [[https://github.com/slime/slime][their Github page]].
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -443,7 +478,7 @@ The Common Lisp setup is largely just setting up Slime and Slime's
 
 Nothing really special here.
 
-*** ELISP
+** ELISP
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   ;; ELISP
 #+END_SRC
@@ -475,7 +510,7 @@ modes:
   (add-hook 'ielm-mode-hook 'el-hook)
 #+END_SRC
 
-*** Clojure
+** Clojure
 All I do for Clojure is turn on =eldoc-mode=. The rest is handled by
 CIDER:
 
@@ -484,7 +519,7 @@ CIDER:
   (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 #+END_SRC
 
-*** HTML, JSP, PHP, and so on...
+** HTML, JSP, PHP, and so on...
 For most markup-centric web development, I start up =web-mode=:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -517,7 +552,7 @@ define.
   (add-hook 'css-mode-hook 'ac-emmet-css-setup)
 #+END_SRC
 
-*** SQL
+** SQL
 Emacs seems to fail at escaping backslashes in SQL files... So I have
 slightly modified the syntax entry for the backslash character in SQL
 files so it acts like a proper escape:
@@ -528,7 +563,7 @@ files so it acts like a proper escape:
               (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
 #+END_SRC
 
-*** Feature
+** Feature
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   ;; Feature mode
 #+END_SRC
@@ -545,7 +580,7 @@ step I am looking at:
               (local-set-key (kbd "s-<f3>") 'jump-to-cucumber-step)))
 #+END_SRC
 
-** Org Mode
+* Org Mode
 Org mode gets quite a few updates through the package manager, so I
 have moved my default Org configuration into the package hook.
 
@@ -570,7 +605,7 @@ source files from Org mode, =auto-fill=, and syntax coloring:
          (require 'langtool))))
 #+END_SRC
 
-** Starting global package modes
+* Starting global package modes
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
   ;; Start global package modes
 #+END_SRC
@@ -590,19 +625,6 @@ files fast is very handy:
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Enable projectile
   (projectile-global-mode)
-#+END_SRC
-
-And since that is how I end the package hook, let's close it:
-#+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  )
-#+END_SRC
-
-* Setting the the package hook
-Now that the package configuration hook is complete, we can assign it
-like so:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Load the above hook after the package manager has finished doing its thing
-  (add-hook 'after-init-hook 'package-config)
 #+END_SRC
 
 * Variables
@@ -685,3 +707,4 @@ is always useful in my experience:
 * Metadata                                                         :noexport:
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
 #  LocalWords:  config http TLS tls alist Matz JSPs langtool
+#  LocalWords:  Spifftastic
