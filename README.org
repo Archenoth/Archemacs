@@ -5,9 +5,11 @@ days... So here is the Git repo for [[file:./Archenoth-config.org][my Emacs conf
 
 * Screenshots
 Windowed:
+
 [[file:./windowed.png]]
 
 And Fullscreen: (Toggled with [F11])
+
 [[file:./fullscreen.png]]
 
 * About
