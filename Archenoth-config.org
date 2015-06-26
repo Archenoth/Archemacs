@@ -1,7 +1,7 @@
 #+TITLE:My Emacs config
 #+STARTUP: hidestars
 
-It's pretty sweet you can use literate programming as configuration
+It's pretty sweet you can use [[info:org#Working with source code][literate programming as configuration]]
 for something that often has a lot of configuration.
 
 Below is my Emacs configuration along with descriptions of what each
