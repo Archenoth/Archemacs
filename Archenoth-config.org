@@ -1,8 +1,8 @@
 #+TITLE:My Emacs config
 #+STARTUP: hidestars
 
-Neat thing -- You can use =org-mode= files as your Emacs
-configuration..!
+It's pretty sweet you can use literate programming as configuration
+for something that often has a lot of configuration.
 
 Below is my Emacs configuration along with descriptions of what each
 piece does:
@@ -15,12 +15,15 @@ style of developing with =let= closures and have-at-you:
   ;; -*- lexical-binding: t -*-
 #+END_SRC
 
-* Setting up
-This section is for setting up configuration that does not need any
-fancy packages and for configuring the package manager itself before
-working with it.
+Also, I include this library to make up for some of the other missing
+features from Common Lisp:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; For other Common Lisp-ish stuff in here
+  (require 'cl-lib)
+#+END_SRC
 
-** Setting up the package manager
+
+* Setting up the package manager
 The package manager in Emacs is pretty sweet, but the default repos
 are quite limited in their selection of packages... So instead, I add
 a couple more repos. (I am sure almost everyone has this in their
@@ -32,80 +35,25 @@ configuration somewhere)
                ("melpa" . "http://melpa.milkbox.net/packages/")))
 #+END_SRC
 
-And, just in case the package manager is not loaded by default:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Just in case
-  (package-initialize)
-#+END_SRC
-
-** Requiring prerequisites
-Before we get too far, we want to require a couple of libraries...
-
-First of all, we want to include TLS... This is for =erc-tls=, yes,
-but I believe it will also be used for all other pieces of Emacs that
-use SSL. (Like the package manager eventually.)
+Then, we want to require TLS... This is for =erc-tls=, yes, but I
+believe it will also be used for all other pieces of Emacs that use
+SSL. (Like the package manager eventually, hence its location in the
+config file.)
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; SSL Support (For ERC primarily)
   (require 'tls)
 #+END_SRC
 
-Again, because of my use of Common Lisp, I miss a few features in
-ELISP, so I include this library to make up for it:
-
+And then we initialize the package manager, anything past this line
+has the entirety of the installed packages available:
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; For the Common Lisp-ish stuff in here
-  (require 'cl-lib)
+  ;; Just in case
+  (package-initialize)
 #+END_SRC
 
-* Package-less configuration
-The following configuration does not require any external packages to
-be loaded... That will come after the [[Package checker and installer]]
-does its thing.
+** Package checker and installer
+What about if there are no packages? Or some are missing?
 
-** Hooks
-Hooks! A few small tweaks to suit my work style.
-
-#+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;;;; Hooks
-#+END_SRC
-
-First of all, I dislike having messy whitespace in the files I am
-working with, so I am sure to delete trailing whitespace whenever I
-save a file... (This might become a problem sometime down the line,
-but so far everything is good.)
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
-#+END_SRC
-
-*** Flymake
-Of course, there are a few modes that I like to have Flymake.
-enabled on by default...
-#+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; Flymake
-#+END_SRC
-
-Of those, we have =perl-mode=:
-#+BEGIN_SRC emacs-lisp :tangle yes :padline no
-  (add-hook 'perl-mode-hook (lambda () (flymake-mode t)))
-#+END_SRC
-
-And =php-mode=:
-#+BEGIN_SRC emacs-lisp :tangle yes :padline no
-  (add-hook 'php-mode-hook (lambda () (flymake-mode t)))
-#+END_SRC
-
-** Yes and No questions
-Having to type "yes" is annoying when I just want to do something
-simple... So, I alias =yes-or-no-p= to the single-keystroke
-equivalent:
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Make boolean questions less annoying
-  (defalias 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-
-* Package checker and installer
 I wrote a little package checker and installer so that I would not
 have to worry about manually installing packages I like to have by
 default:
@@ -141,69 +89,6 @@ exist already:
    'edbi-minor-mode 'firecode-theme 'sauron)
 #+END_SRC
 
-* Sauron
-#+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; Supremely useful monitor -- Sauron
-#+END_SRC
-
-The all-seeing eye, Sauron is quite useful, though I want to add some
-functionality to the modeline with it, so I make higher-priority
-messages set a variable: =sauron-alert=:
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'sauron-event-added-functions
-            (lambda (what priority message &optional event)
-              (when (<= 4 priority)
-                (setq sauron-alert t))))
-#+END_SRC
-
-The above means you can do something like the following:
-#+BEGIN_SRC emacs-lisp :tangle no
-  (when (boundp 'sauron-alert)
-    "Code goes here for when Suaron sees something, yo.")
-#+END_SRC
-
-And of course, to set it back to nothingness:
-#+BEGIN_SRC emacs-lisp :tangle no
-  (makunbound 'sauron-alert)
-#+END_SRC
-
-I actually use this in the modeline and have the modeline use the
-following function to generate a spooky eye that notifies me if Sauron
-has seen something of interest with clickable text to bring me to the
-Sauron buffer:
-#+BEGIN_SRC emacs-lisp :tangle no
-  (defun make-sauron-text ()
-    "Creates a clickable Sauron text that switches to the Sauron
-  buffer."
-    (let ((map (make-keymap)))
-      (define-key map [follow-link]
-        (lambda (pos)
-          (makunbound 'sauron-alert)
-          (switch-to-buffer "*Sauron*")))
-      (propertize " 0"
-                  'keymap map
-                  'face 'compilation-error
-                  'help-echo "Sauron has seen something"
-                  'pointer 'hand)))
-#+END_SRC
-
-And because I get notified of high-priority events normally with the
-above, I have no need for Sauron to be its own frame:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (setq sauron-separate-frame nil)
-#+END_SRC
-
-* Markdown mode
-#+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; Markdown
-#+END_SRC
-
-As of the time of writing, I don't think markdown mode has it set
-automagically start for files with the =.md= file extension, so:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-#+END_SRC
 
 * Style options
 I don't care too much for the default appearance of Emacs... I
@@ -343,91 +228,192 @@ What this does is it allows me to toggle between two style
 configurations, one for fullscreen mode, the other for windowed with
 the [F11] key.
 
-* Expand Region
-Expand Region is a very handy package for selecting arbitrary blocks
-of text, be it code or whatever.
 
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Expand region
-  (require 'expand-region)
-  (global-set-key (kbd "s-SPC") 'er/expand-region)
-  (global-set-key (kbd "s-S-SPC") 'er/contract-region)
-#+END_SRC
-
-* Multiple Cursors
-From the famous [[https://www.youtube.com/watch?v=jNa3axo40qM][Emacs Rocks video]] where it was introduced to the
-masses, my configuration for this super-handy mode is as follows (Just
-keybindings):
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Multiple-cursors
-  (require 'multiple-cursors)
-  (global-set-key (kbd "s-s") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-s-s") 'mc/mark-all-like-this)
-  (global-set-key (kbd "M-s-s") 'mc/mark-next-symbol-like-this)
-  (global-set-key (kbd "s-S") 'mc/mark-sgml-tag-pair)
-#+END_SRC
-
-* Projectile
-Another really handy usability mode: Projectile!
-
-I use Projectile with Helm to browse to files in the current (Or any)
-project really fast:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Projectile
-  (require 'grizzl)
-  (setq projectile-enable-caching t)
-  (setq projectile-completion-system 'grizzl)
-  (global-set-key (kbd "s-f") 'helm-projectile)
-  (global-set-key (kbd "C-s-f") 'helm-projectile-all)
-#+END_SRC
-
-* Language mode setup
+* Languages
 The following are package-loaded language support configurations:
 
-** Ruby
+** Language agonistic
+This section is all about the setup that is about programming, but not
+for a particular language.
+
+*** Flymake
+Of course, there are a few modes that I like to have Flymake.
+enabled on by default...
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; Ruby support
+  ;; Flymake
 #+END_SRC
 
-The default Ruby mode in Emacs is pretty good, partially because it
-was [[http://www.slideshare.net/yukihiro_matz/how-emacs-changed-my-life][written by Matz himself.]] But there is still room for improvement:
-
-First off, when =ruby-mode= is loaded, we also want to load
-=robe-mode=, which allows for using an interactive Ruby instance for
-completion...
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'ruby-mode-hook 'robe-mode)
+Of those, we have =perl-mode=:
+#+BEGIN_SRC emacs-lisp :tangle yes :padline no
+  (add-hook 'perl-mode-hook (lambda () (flymake-mode t)))
 #+END_SRC
 
-And for error checking, we use =flymake-ruby=:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'ruby-mode-hook 'flymake-ruby-load)
+And =php-mode=:
+#+BEGIN_SRC emacs-lisp :tangle yes :padline no
+  (add-hook 'php-mode-hook (lambda () (flymake-mode t)))
 #+END_SRC
 
-There is an Enhanced Ruby Mode =enh-ruby=, though it is a bit finicky
-currently, so I don't load it by default... But for the times I do
-use it, I have defined this hook to configure it to use =robe-mode=
-like normal Ruby mode and set up a bunch of =autocomplete= sources
-for code assist:
+*** Autocomplete
+Autocomplete is magnificent. I will have it enabled for almost every
+programming mode in existence.
+
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'enh-ruby-mode-hook
+  (ac-config-default)
+  (add-to-list 'ac-modes 'web-mode)
+#+END_SRC
+
+I added =web-mode= to the =ac-modes= list here because I think
+=ac-modes= is set when you start =autocomplete= with
+=ac-config-default=.
+
+*** Compile
+I generally like having a compile command as [F5]:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (define-key global-map (kbd "<f5>") 'compile)
+#+END_SRC
+
+No, compiling is not always relevant to all languages, but it doubles
+as a quick command-line, which is almost always useful.
+
+** C and C++
+Emacs' [[info:Semantic][Semantic]] mode is really good at C... I have not tested it
+extensively with C++ though.
+
+But with it, we get definition jumping and some quite intelligent
+=autocomplete=... So I simply define the jumping keybinding, the
+=autocomplete= sources, and add it to both C and C++ modes as hooks:
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; C and C++
+  (defun c-modes-hook ()
+    (semantic-mode)
+    (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
+    (setq ac-sources '(ac-source-semantic
+               ac-source-yasnippet)))
+  (add-hook 'c-mode-hook 'c-modes-hook)
+  (add-hook 'c++-mode-hook 'c-modes-hook)
+#+END_SRC
+
+** Clojure
+All I do for Clojure is turn on =eldoc-mode=. The rest is handled by
+CIDER:
+
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; CIDER, Clojure
+  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+#+END_SRC
+
+** Common Lisp
+The Common Lisp setup is largely just setting up Slime and Slime's
+=autocomplete= source according to [[https://github.com/slime/slime][their Github page]].
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Common Lisp
+  ;; Set your lisp system and, optionally, some contribs Common Lisp
+  (setq slime-contribs '(slime-fancy slime-asdf))
+  (add-hook 'slime-mode-hook 'set-up-slime-ac)
+  (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+  (add-to-list 'ac-modes 'slime-repl-mode)
+#+END_SRC
+
+Nothing really special here.
+
+** ELISP
+#+BEGIN_SRC emacs-lisp :tangle yes :eval no
+  ;; ELISP
+#+END_SRC
+My ELISP configuration is largely just setting up =erefactor= and then
+adding it to the three ELISP modes.
+
+So first I require the package:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (require 'erefactor)
+#+END_SRC
+
+Then I define a hook that turns on =erefactor='s scope highlighting,
+=eldoc-mode=, and defines a key for to start refactoring:
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Hook for all ELISP modes
+  (defun el-hook ()
+    (define-key emacs-lisp-mode-map "\C-c\C-v" erefactor-map)
+    (erefactor-lazy-highlight-turn-on)
+    (eldoc-mode t))
+#+END_SRC
+
+Then I simply assign the function as a hook for all of the ELISP
+modes:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; And assigning to said modes
+  (add-hook 'emacs-lisp-mode-hook 'el-hook)
+  (add-hook 'lisp-interaction-mode-hook 'el-hook)
+  (add-hook 'ielm-mode-hook 'el-hook)
+#+END_SRC
+
+** Feature
+#+BEGIN_SRC emacs-lisp :tangle yes :eval no
+  ;; Feature mode
+#+END_SRC
+
+Since I work with [[https://cucumber.io/][Cucumber]] feature files reasonably often, I find it
+useful to be able to jump right to the definition of some Cucumber
+step I am looking at. I also like Slime's evaluation bindings, so I
+emulate those here:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'feature-mode-hook
             (lambda ()
-              (robe-mode)
-              (add-to-list 'ac-sources 'ac-source-robe)
-              (add-to-list 'ac-sources 'ac-source-rsense-method)
-              (add-to-list 'ac-sources 'ac-source-rsense-constant)))
+              (local-set-key (kbd "C-c C-c") 'feature-verify-scenario-at-pos)
+              (local-set-key (kbd "C-c C-k") 'feature-verify-all-scenarios-in-buffer)
+              (local-set-key (kbd "<f5>") 'feature-verify-all-scenarios-in-project)
+              (local-set-key (kbd "s-<f3>") 'jump-to-cucumber-step)))
 #+END_SRC
 
-** Python
-I don't really write Python, but for the times I do, Jedi is neat:
+** HTML, JSP, PHP, and so on...
+For most markup-centric web development, I start up =web-mode=:
+
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Jedi, for Python sweetness
-  (add-hook 'python-mode-hook
+  ;; Web Mode for HTML, JSPs, etc...
+  (add-to-list 'auto-mode-alist '("\\.[sj]?html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.phtml$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.php[34]?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
+  (setq web-mode-engines-alist  '(("jsp" . "\\.tag\\'")))
+#+END_SRC
+
+I also start up [[http://emmet.io/][Emmet]] for =web-mode=, any =sgml-mode= derivative, and
+for =css-mode=...
+
+I also have a few other =web-mode= tweaks in the =web-mode-hook= I
+define.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun web-mode-hook ()
+    "Hooks for Web mode."
+    (setq web-mode-html-offset 2)
+    (setq web-mode-css-offset 2)
+    (setq web-mode-script-offset 2)
+    (emmet-mode 1)
+    (setq emmet-indentation 2)
+    (toggle-truncate-lines t)
+    (yas-minor-mode 1))
+  (add-hook 'web-mode-hook 'web-mode-hook)
+  (add-hook 'sgml-mode-hook 'ac-emmet-html-setup)
+  (add-hook 'css-mode-hook 'ac-emmet-css-setup)
+#+END_SRC
+
+** Java
+I don't do much Java in Emacs, that generally is the job of Eclipse
+because of its super-intelligent support, integration with
+everything, and ridiculous debugger capabilities... But when I
+do... I only have one real tweak to make:
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Java
+  (add-hook 'java-mode-hook
             (lambda ()
-              (jedi:ac-setup)
-              (setq jedi:complete-on-dot t)))
+              ;; Because these tend to be a lot longer than 80 width
+              ;; and wrapping is ugly.
+              (toggle-truncate-lines t)))
 #+END_SRC
 
 ** JavaScript
@@ -465,127 +451,60 @@ which are integrated with =flymake=:
   (require 'flymake-jshint)
 #+END_SRC
 
-** Java
-I don't do much Java in Emacs, that generally is the job of Eclipse
-because of its super-intelligent support, integration with
-everything, and ridiculous debugger capabilities... But when I
-do... I only have one real tweak to make:
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Java
-  (add-hook 'java-mode-hook
-            (lambda ()
-              ;; Because these tend to be a lot longer than 80 width
-              ;; and wrapping is ugly.
-              (toggle-truncate-lines t)))
-#+END_SRC
-
-** C and C++
-Emacs' [[info:Semantic][Semantic]] mode is really good at C... I have not tested it
-extensively with C++ though.
-
-But with it, we get definition jumping and some quite intelligent
-=autocomplete=... So I simply define the jumping keybinding, the
-=autocomplete= sources, and add it to both C and C++ modes as hooks:
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; C and C++
-  (defun c-modes-hook ()
-    (semantic-mode)
-    (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
-    (setq ac-sources '(ac-source-semantic
-               ac-source-yasnippet)))
-  (add-hook 'c-mode-hook 'c-modes-hook)
-  (add-hook 'c++-mode-hook 'c-modes-hook)
-#+END_SRC
-
-** Common Lisp
-The Common Lisp setup is largely just setting up Slime and Slime's
-=autocomplete= source according to [[https://github.com/slime/slime][their Github page]].
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Common Lisp
-  ;; Set your lisp system and, optionally, some contribs Common Lisp
-  (setq slime-contribs '(slime-fancy slime-asdf))
-  (add-hook 'slime-mode-hook 'set-up-slime-ac)
-  (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-  (eval-after-load "auto-complete"
-    '(add-to-list 'ac-modes 'slime-repl-mode))
-#+END_SRC
-
-Nothing really special here.
-
-** ELISP
+** Markdown mode
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; ELISP
-#+END_SRC
-My ELISP configuration is largely just setting up =erefactor= and then
-adding it to the three ELISP modes.
-
-So first I require the package:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (require 'erefactor)
+  ;; Markdown
 #+END_SRC
 
-Then I define a hook that turns on =erefactor='s scope highlighting,
-=eldoc-mode=, and defines a key for to start refactoring:
-
+As of the time of writing, I don't think markdown mode has it set
+automagically start for files with the =.md= file extension, so:
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Hook for all ELISP modes
-  (defun el-hook ()
-    (define-key emacs-lisp-mode-map "\C-c\C-v" erefactor-map)
-    (erefactor-lazy-highlight-turn-on)
-    (eldoc-mode t))
+  (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 #+END_SRC
 
-Then I simply assign the function as a hook for all of the ELISP
-modes:
+** Python
+I don't really write Python, but for the times I do, Jedi is neat:
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; And assigning to said modes
-  (add-hook 'emacs-lisp-mode-hook 'el-hook)
-  (add-hook 'lisp-interaction-mode-hook 'el-hook)
-  (add-hook 'ielm-mode-hook 'el-hook)
+  ;; Jedi, for Python sweetness
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (jedi:ac-setup)
+              (setq jedi:complete-on-dot t)))
 #+END_SRC
 
-** Clojure
-All I do for Clojure is turn on =eldoc-mode=. The rest is handled by
-CIDER:
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; CIDER, Clojure
-  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+** Ruby
+#+BEGIN_SRC emacs-lisp :tangle yes :eval no
+  ;; Ruby support
 #+END_SRC
 
-** HTML, JSP, PHP, and so on...
-For most markup-centric web development, I start up =web-mode=:
+The default Ruby mode in Emacs is pretty good, partially because it
+was [[http://www.slideshare.net/yukihiro_matz/how-emacs-changed-my-life][written by Matz himself.]] But there is still room for improvement:
+
+First off, when =ruby-mode= is loaded, we also want to load
+=robe-mode=, which allows for using an interactive Ruby instance for
+completion...
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Web Mode for HTML, JSPs, etc...
-  (add-to-list 'auto-mode-alist '("\\.[sj]?html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.phtml$" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.php[34]?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
-  (setq web-mode-engines-alist  '(("jsp" . "\\.tag\\'")))
+  (add-hook 'ruby-mode-hook 'robe-mode)
 #+END_SRC
 
-I also start up [[http://emmet.io/][Emmet]] for =web-mode=, any =sgml-mode= derivative, and
-for =css-mode=...
-
-I also have a few other =web-mode= tweaks in the =web-mode-hook= I
-define.
+And for error checking, we use =flymake-ruby=:
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (defun web-mode-hook ()
-    "Hooks for Web mode."
-    (setq web-mode-html-offset 2)
-    (setq web-mode-css-offset 2)
-    (setq web-mode-script-offset 2)
-    (emmet-mode 1)
-    (setq emmet-indentation 2)
-    (toggle-truncate-lines t)
-    (yas-minor-mode 1))
-  (add-hook 'web-mode-hook 'web-mode-hook)
-  (add-hook 'sgml-mode-hook 'ac-emmet-html-setup)
-  (add-hook 'css-mode-hook 'ac-emmet-css-setup)
+  (add-hook 'ruby-mode-hook 'flymake-ruby-load)
+#+END_SRC
+
+There is an Enhanced Ruby Mode =enh-ruby=, though it is a bit finicky
+currently, so I don't load it by default... But for the times I do
+use it, I have defined this hook to configure it to use =robe-mode=
+like normal Ruby mode and set up a bunch of =autocomplete= sources
+for code assist:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'enh-ruby-mode-hook
+            (lambda ()
+              (robe-mode)
+              (add-to-list 'ac-sources 'ac-source-robe)
+              (add-to-list 'ac-sources 'ac-source-rsense-method)
+              (add-to-list 'ac-sources 'ac-source-rsense-constant)))
 #+END_SRC
 
 ** SQL
@@ -599,25 +518,131 @@ files so it acts like a proper escape:
               (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
 #+END_SRC
 
-** Feature
+
+* Utility
+The following are things that are nice to have set up during normal
+Emacs usage, but aren't for any type of task in particular.
+
+** Sauron
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; Feature mode
+  ;; Supremely useful monitor -- Sauron
 #+END_SRC
 
-Since I work with [[https://cucumber.io/][Cucumber]] feature files reasonably often, I find it
-useful to be able to jump right to the definition of some Cucumber
-step I am looking at. I also like Slime's evaluation bindings, so I
-emulate those here:
+The all-seeing eye, Sauron is quite useful, though I want to add some
+functionality to the modeline with it, so I make higher-priority
+messages set a variable: =sauron-alert=:
+
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'feature-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-c C-c") 'feature-verify-scenario-at-pos)
-              (local-set-key (kbd "C-c C-k") 'feature-verify-all-scenarios-in-buffer)
-              (local-set-key (kbd "<f5>") 'feature-verify-all-scenarios-in-project)
-              (local-set-key (kbd "s-<f3>") 'jump-to-cucumber-step)))
+  (add-hook 'sauron-event-added-functions
+            (lambda (what priority message &optional event)
+              (when (<= 4 priority)
+                (setq sauron-alert t))))
 #+END_SRC
+
+The above means you can do something like the following:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (when (boundp 'sauron-alert)
+    "Code goes here for when Suaron sees something, yo.")
+#+END_SRC
+
+And of course, to set it back to nothingness:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (makunbound 'sauron-alert)
+#+END_SRC
+
+I actually use this in the modeline and have the modeline use the
+following function to generate a spooky eye that notifies me if Sauron
+has seen something of interest with clickable text to bring me to the
+Sauron buffer:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun make-sauron-text ()
+    "Creates a clickable Sauron text that switches to the Sauron
+  buffer."
+    (let ((map (make-keymap)))
+      (define-key map [follow-link]
+        (lambda (pos)
+          (makunbound 'sauron-alert)
+          (switch-to-buffer "*Sauron*")))
+      (propertize " 0"
+                  'keymap map
+                  'face 'compilation-error
+                  'help-echo "Sauron has seen something"
+                  'pointer 'hand)))
+#+END_SRC
+
+And because I get notified of high-priority events normally with the
+above, I have no need for Sauron to be its own frame:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq sauron-separate-frame nil)
+#+END_SRC
+
+** Expand Region
+Expand Region is a very handy package for selecting arbitrary blocks
+of text, be it code or whatever.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Expand region
+  (require 'expand-region)
+  (global-set-key (kbd "s-SPC") 'er/expand-region)
+  (global-set-key (kbd "s-S-SPC") 'er/contract-region)
+#+END_SRC
+
+** Multiple Cursors
+From the famous [[https://www.youtube.com/watch?v=jNa3axo40qM][Emacs Rocks video]] where it was introduced to the
+masses, my configuration for this super-handy mode is as follows (Just
+keybindings):
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Multiple-cursors
+  (require 'multiple-cursors)
+  (global-set-key (kbd "s-s") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-s-s") 'mc/mark-all-like-this)
+  (global-set-key (kbd "M-s-s") 'mc/mark-next-symbol-like-this)
+  (global-set-key (kbd "s-S") 'mc/mark-sgml-tag-pair)
+#+END_SRC
+
+** Projectile
+Another really handy usability mode: Projectile!
+
+I use Projectile with Helm to browse to files in the current (Or any)
+project really fast:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Projectile
+  (require 'grizzl)
+  (setq projectile-enable-caching t)
+  (setq projectile-completion-system 'grizzl)
+  (global-set-key (kbd "s-f") 'helm-projectile)
+  (global-set-key (kbd "C-s-f") 'helm-projectile-all)
+#+END_SRC
+
+And since I want to enable Projectile everywhere, because jumping
+between files fast is very handy:
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Enable projectile
+  (projectile-global-mode)
+#+END_SRC
+
+** Ace jump mode
+=ace-jump-mode= is very handy for navigation regardless of mode, so:
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (define-key global-map (kbd "s-/") 'ace-jump-mode)
+  (define-key global-map (kbd "s-?") 'ace-jump-char-mode)
+#+END_SRC
+
+** Show parenthesis mode
+To my knowledge, there is not a single mode where this minor mode
+isn't helpful or mildly amusing.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (show-paren-mode)
+#+END_SRC
+
 
 * Org Mode
+Org mode deserves a section for itself because it is just that
+important.
+
 My Org mode setup includes support for spell checking, grammar
 checking, tangling source files from Org mode, =auto-fill=, and syntax
 coloring:
@@ -643,27 +668,6 @@ coloring:
 Nothing too crazy, because most of Org's default configuration is
 pretty sweet.
 
-* Starting global package modes
-#+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; Start global package modes
-#+END_SRC
-
-There are a few modes that I want available everywhere... Such as
-=autocomplete=:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (ac-config-default)
-  (add-to-list 'ac-modes 'web-mode)
-#+END_SRC
-
-I added =web-mode= to the =ac-modes= list because I think =ac-modes=
-is set when you start =autocomplete= with =ac-config-default=.
-
-I also want to enable Projectile everywhere, because jumping between
-files fast is very handy:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Enable projectile
-  (projectile-global-mode)
-#+END_SRC
 
 * Variables
 #+BEGIN_SRC emacs-lisp :tangle yes :eval no
@@ -689,29 +693,7 @@ their tabs are different from yours:
 
 Come at me bro.
 
-* Global keybindings
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;; Custom keybindings
-#+END_SRC
-
-There are a few keybindings that I want globally in Emacs, for
-example, =ace-jump-mode= is very handy for navigation regardless of
-mode:
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (define-key global-map (kbd "s-/") 'ace-jump-mode)
-  (define-key global-map (kbd "s-?") 'ace-jump-char-mode)
-#+END_SRC
-
-I also generally like having a compile command as [F5]:
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (define-key global-map (kbd "<f5>") 'compile)
-#+END_SRC
-
-No, compiling is not always relevant, but it doubles as a quick
-command-line, which is almost always useful.
-
-* Auto-backup config
+** Auto-backup config
 Stolen from [[http://emacswiki.org/emacs/BackupDirectory][here]]... Very useful to have backup files not mess up the
 current folder, and yet still exist:
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -727,22 +709,40 @@ current folder, and yet still exist:
   (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 #+END_SRC
 
-* Starting global modes
-#+BEGIN_SRC emacs-lisp :tangle yes :eval no
-  ;; Start global modes
-#+END_SRC
-This is the section where I enable global modes that are not provided
-by external packages like in the "[[Starting global package modes]]"
-section...
 
-I only really have one though, and that is =show-paren-mode=, which
-is always useful in my experience:
+* Aliases
+Aliases to replace one piece of functionality with another is
+super-handy.
+
+** Yes and No questions
+Having to type "yes" is annoying when I just want to do something
+simple... So, I alias =yes-or-no-p= to the single-keystroke
+equivalent:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (show-paren-mode)
+  ;; Make boolean questions less annoying
+  (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
+
+
+* Hooks
+Hooks! A few small tweaks to suit my work style.
+
+#+BEGIN_SRC emacs-lisp :tangle yes :eval no
+  ;;;; Hooks
+#+END_SRC
+
+First of all, I dislike having messy whitespace in the files I am
+working with, so I am sure to delete trailing whitespace whenever I
+save a file... (This might become a problem sometime down the line,
+but so far everything is good.)
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
 
 * Metadata                                                         :noexport:
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
 #  LocalWords:  config http TLS tls alist Matz JSPs langtool
-#  LocalWords:  Spifftastic
+#  LocalWords:  Spifftastic Autocomplete

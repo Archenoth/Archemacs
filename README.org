@@ -1,14 +1,16 @@
 #+TITLE:Archenoth's Emacs configuration
 
-This is the Git repo for [[file:./Archenoth-config.org][my Emacs configuration...]]
+Org-mode Emacs configuration is what all the cool kids are doing these
+days... So here is the Git repo for [[file:./Archenoth-config.org][my Emacs configuration...]]
 
+* Screenshots
 Windowed:
-
 [[file:./windowed.png]]
 
 And Fullscreen: (Toggled with [F11])
 [[file:./fullscreen.png]]
 
+* About
 The way it is constructed, the file is supposed to be a standalone
 configuration separate from =.emacs=, and simply loaded in.
 
@@ -35,25 +37,3 @@ be warned that this will overwrite your existing =.emacs=)
 4. Tangle with =C-c C-v t= (Or if you have stuff in your =.emacs=,
    copy the above lines into it instead.).
 5. Restart Emacs.
-
-* Configuration that doesn't really translate
-There are a few packages that require a little bit more
-configuration, after you install everything...
-
-Below is a sample configuration that you can use as a template to set
-up your own:
-
-(This would go into your =~/.emacs=)
-#+BEGIN_SRC elisp
-  ;;; External links... The part you need to pay attention to if you aren't me
-  ;;; and want to use the packages mentioned below.
-  ;; Jedi for Python
-  ;; http://tkf.github.io/emacs-jedi/latest/
-  (setq jedi:server-command '("/usr/local/bin/jediepcserver"))
-  ;; SLIME (Common Lisp)
-  ;; http://www.sbcl.org/
-  (setq inferior-lisp-program "/usr/bin/sbcl")
-  ;; Langtool, for grammar checking in org-mode and friends
-  ;; You can get this from here: https://languagetool.org/
-  (setq langtool-language-tool-jar "/opt/LanguageTool/LanguageTool.jar")
-#+END_SRC
