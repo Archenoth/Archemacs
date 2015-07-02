@@ -76,17 +76,16 @@ Now, lets use this to install all the packages we need if they don't
 exist already:
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Ensuring packages are installed
-  (check-packages
-   'multiple-cursors 'web-mode 'slime 'rsense
-   'robe 'projectile 'powerline 'plsql 'php-mode 'paredit 'nurumacs
+  (check-packages 'multiple-cursors 'web-mode 'slime 'rsense 'robe
+   'projectile 'powerline 'plsql 'php-mode 'paredit 'nurumacs
    'yasnippet 'markdown-mode+ 'magit 'lua-mode 'langtool
    'js2-refactor 'jedi 'htmlize 'helm-projectile 'helm-emmet
    'grizzl 'graphviz-dot-mode 'flymake-ruby 'flymake-jshint
-   'flymake-easy 'flymake-csslint 'flycheck 'feature-mode
-   'expand-region 'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode
-   'emmet-mode 'ecukes 'cucumber-goto-step 'cider 'firebelly-theme
-   'apache-mode 'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet
-   'edbi-minor-mode 'firecode-theme 'sauron)
+   'flymake-easy 'flymake-csslint 'feature-mode 'expand-region
+   'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode 'emmet-mode
+   'ecukes 'cucumber-goto-step 'cider 'firebelly-theme 'apache-mode
+   'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet 'edbi-minor-mode
+   'firecode-theme 'sauron)
 #+END_SRC
 
 
