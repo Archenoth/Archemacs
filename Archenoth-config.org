@@ -104,7 +104,8 @@ default when we start up Emacs:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; ...and fringes until we want to explicitly enable them
-  (fringe-mode 0)
+  (when (fboundp 'fringe-mode)
+    (fringe-mode 0))
 #+END_SRC
 
 As for in-depth styling, I generally like to switch between two
