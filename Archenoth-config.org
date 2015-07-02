@@ -288,7 +288,8 @@ But with it, we get definition jumping and some quite intelligent
   (defun c-modes-hook ()
     (semantic-mode)
     (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
-    (setq ac-sources '(ac-source-semantic
+    (semantic-idle-summary-mode 1)
+    (setq ac-sources '(ac-source-semantic-raw
                ac-source-yasnippet)))
   (add-hook 'c-mode-hook 'c-modes-hook)
   (add-hook 'c++-mode-hook 'c-modes-hook)
