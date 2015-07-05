@@ -379,6 +379,7 @@ For most markup-centric web development, I start up =web-mode=:
   (add-to-list 'auto-mode-alist '("\\.phtml$" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.php[34]?\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.ejs$" . web-mode))
   (setq web-mode-engines-alist  '(("jsp" . "\\.tag\\'")))
 #+END_SRC
 
