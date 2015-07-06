@@ -407,15 +407,17 @@ define.
 I don't do much Java in Emacs, that generally is the job of Eclipse
 because of its super-intelligent support, integration with
 everything, and ridiculous debugger capabilities... But when I
-do... I only have one real tweak to make:
+do... I only have two real tweaks to make:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Java
-  (add-hook 'java-mode-hook
-            (lambda ()
-              ;; Because these tend to be a lot longer than 80 width
-              ;; and wrapping is ugly.
-              (toggle-truncate-lines t)))
+    ;; Java
+    (add-hook 'java-mode-hook
+              (lambda ()
+                ;; Because these tend to be a lot longer than 80 width
+                ;; and wrapping is ugly.
+                (toggle-truncate-lines t)
+                ;; I also prefer 2 spaces for indentation, not 4.
+                (setq c-basic-offset 2)))
 #+END_SRC
 
 ** JavaScript
@@ -727,7 +729,7 @@ equivalent:
 #+END_SRC
 
 ** New windows? No thanks.
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   ;; Stop creating new windows! Reuse the same one as much as you can.
   (defalias 'pop-to-buffer 'switch-to-buffer)
 #+END_SRC
