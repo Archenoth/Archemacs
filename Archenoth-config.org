@@ -726,6 +726,12 @@ equivalent:
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
+** New windows? No thanks.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Stop creating new windows! Reuse the same one as much as you can.
+  (defalias 'pop-to-buffer 'switch-to-buffer)
+#+END_SRC
+
 
 * Hooks
 Hooks! A few small tweaks to suit my work style.
