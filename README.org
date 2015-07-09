@@ -39,3 +39,31 @@ be warned that this will overwrite your existing =.emacs=)
 4. Tangle with =C-c C-v t= (Or if you have stuff in your =.emacs=,
    copy the above lines into it instead.).
 5. Restart Emacs.
+
+* Conventions and Keybindings
+I try to keep some conventions between modes in my configuration; The
+following are keybindings that will generally do something similar in
+all applicable modes:
+
+| Key     | Action                          |
+|---------+---------------------------------|
+| s-<f3>  | Jump to definition              |
+| <f5>    | Compile project / Run all files |
+| C-c C-c | Run current block               |
+| C-c C-k | Run file                        |
+
+As for keybindings for global modes:
+
+| Key   | Action                         |
+|-------+--------------------------------|
+| s-f   | Helm find file in project      |
+| s-S-f | Helm find file in all projects |
+| <f11> | Toggle Fullscreen              |
+| s-S   | Multiple cursors next line     |
+| M-s-S | Multiple cursors selection     |
+| C-s-S | Multiple cursors mark all      |
+| s-/   | Ace jump word beginnings       |
+| s-?   | Ace jump all characters        |
+
+I tend to like using the Super key because not many things in Emacs
+are bound to it.
