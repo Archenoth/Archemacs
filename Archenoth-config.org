@@ -729,6 +729,7 @@ equivalent:
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
+
 * Hooks
 Hooks! A few small tweaks to suit my work style.
 
