@@ -201,37 +201,37 @@ Spifftastic! Now time to put it all together...
 As for whether to apply these themes, it is all dependant on whether
 or not we are running in NOX or not:
 #+BEGIN_SRC emacs-lisp
-      ;; Firebelly and firecode themes, fullscreen, and powerline... Bad in
-      ;; NOX though.
-      (when (display-graphic-p)
-        (let ((is-fullscreen nil))
-          (defun toggle-fullscreen ()
-            "Toggles fullscreen emacs"
-            (interactive)
-            (if is-fullscreen
-                (progn
-                  (set-frame-parameter nil 'fullscreen nil)
-                  (setq is-fullscreen nil)
-                  (set-window-theme))
-              (progn
-                (set-frame-parameter nil 'fullscreen 'fullboth)
-                (setq is-fullscreen t)
-                (set-fullscreen-theme))))
+  ;; Firebelly and firecode themes, fullscreen, and powerline... Bad in
+  ;; NOX though.
+  (when (display-graphic-p)
+    (let ((is-fullscreen nil))
+      (defun toggle-fullscreen ()
+        "Toggles fullscreen emacs"
+        (interactive)
+        (if is-fullscreen
+            (progn
+              (set-frame-parameter nil 'fullscreen nil)
+              (setq is-fullscreen nil)
+              (set-window-theme))
+          (progn
+            (set-frame-parameter nil 'fullscreen 'fullboth)
+            (setq is-fullscreen t)
+            (set-fullscreen-theme))))
 
-          (defun my-display-buffer (args)
-            (destructuring-bind (buffer-or-name &optional action frame) args
-              (let ((action (unless (and is-fullscreen (null frame) (eq action t)) action)))
-                (list buffer-or-name action frame)))))
+      (defun my-display-buffer (args)
+        (destructuring-bind (buffer-or-name &optional action frame) args
+          (let ((action (unless (and is-fullscreen (null frame) (eq action t)) action)))
+            (list buffer-or-name action frame)))))
 
-        (advice-add 'display-buffer :filter-args #'my-display-buffer)
+    (advice-add 'display-buffer :filter-args #'my-display-buffer)
 
-        ;; Load both themes for later
-        (load-theme 'firecode t t)
-        (load-theme 'firebelly t t)
+    ;; Load both themes for later
+    (load-theme 'firecode t t)
+    (load-theme 'firebelly t t)
 
-        (powerline-center-theme)
-        (set-window-theme)
-        (global-set-key (kbd "<f11>") 'toggle-fullscreen))
+    (powerline-center-theme)
+    (set-window-theme)
+    (global-set-key (kbd "<f11>") 'toggle-fullscreen))
 #+END_SRC
 
 What this does is it allows me to toggle between two style
