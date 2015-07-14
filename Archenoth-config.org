@@ -667,6 +667,7 @@ coloring:
        (setq-default indent-tabs-mode nil)
        (setq org-src-fontify-natively t)
        (setq org-export-latex-listings 'minted)
+       (local-set-key (kbd "C-c a") 'org-agenda)
 
        ;; LanguageTool setup
        (require 'langtool))))
