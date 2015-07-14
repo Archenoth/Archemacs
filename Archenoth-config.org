@@ -238,6 +238,10 @@ What this does is it allows me to toggle between two style
 configurations, one for fullscreen mode, the other for windowed with
 the [F11] key.
 
+I also wrote a piece of advice for =display-buffer= to try and not
+create new windows when in fullscreen mode, because that can be
+terribly annoying when trying to focus.
+
 
 * Languages
 The following are package-loaded language support configurations:
@@ -682,6 +686,9 @@ coloring:
 
 Nothing too crazy, because most of Org's default configuration is
 pretty sweet.
+
+I /did/, however, have to add the =org-agenda= keybinding, since it
+appears to not be bound by default.
 
 
 * Variables
