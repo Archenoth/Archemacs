@@ -87,7 +87,7 @@ exist already:
    'flymake-easy 'flymake-csslint 'feature-mode 'expand-region
    'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode 'emmet-mode
    'ecukes 'cucumber-goto-step 'cider 'firebelly-theme 'apache-mode
-   'ace-jump-mode 'ac-slime 'ac-js2 'ac-emmet 'edbi-minor-mode
+   'avy 'ac-slime 'ac-js2 'ac-emmet 'edbi-minor-mode
    'firecode-theme 'sauron)
 #+END_SRC
 
@@ -541,6 +541,14 @@ files so it acts like a proper escape:
 The following are things that are nice to have set up during normal
 Emacs usage, but aren't for any type of task in particular.
 
+** Evil
+I find that one of the first things I do when I start Emacs recently
+is start Evil... I may as well just put it in my config.
+
+#+BEGIN_SRC emacs-lisp
+  (evil-mode 1)
+#+END_SRC
+
 ** Sauron
 #+BEGIN_SRC emacs-lisp :eval no
   ;; Supremely useful monitor -- Sauron
@@ -640,12 +648,20 @@ between files fast is very handy:
   (projectile-global-mode)
 #+END_SRC
 
-** Ace jump mode
-=ace-jump-mode= is very handy for navigation regardless of mode, so:
+** Avy
+=Avy= is a [[http://emacsredux.com/blog/2015/07/19/ace-jump-mode-is-dead-long-live-avy/][re-imagining of ace-jump-mode]], which allows for very fast
+jumping around a buffer.
 
+It is very handy for navigation regardless of mode, so:
 #+BEGIN_SRC emacs-lisp
-  (define-key global-map (kbd "s-/") 'ace-jump-mode)
-  (define-key global-map (kbd "s-?") 'ace-jump-char-mode)
+  (define-key global-map (kbd "s-/") 'avy-goto-subword-1)
+  (define-key global-map (kbd "s-?") 'avy-goto-char)
+#+END_SRC
+
+And since effective motions are essential to Evil:
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-motion-state-map (kbd "p") #'avy-goto-subword-1)
+  (define-key evil-motion-state-map (kbd "P") #'avy-goto-char)
 #+END_SRC
 
 ** Show parenthesis mode
@@ -766,5 +782,5 @@ but so far everything is good.)
 
 * Metadata                                                         :noexport:
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
-#  LocalWords:  config http TLS tls alist Matz JSPs langtool
+#  LocalWords:  config http TLS tls alist Matz JSPs langtool Avy JSP
 #  LocalWords:  Spifftastic Autocomplete
