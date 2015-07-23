@@ -200,47 +200,90 @@ Spifftastic! Now time to put it all together...
 ** The actual style logic
 As for whether to apply these themes, it is all dependant on whether
 or not we are running in NOX or not:
-#+BEGIN_SRC emacs-lisp
+
+So first, the general idea behind this style logic is that it will
+only exist when we have a graphical version of Emacs running... It
+will also keep track of whether or not we are in fullscreen or not in
+a little =let= closure:
+#+BEGIN_SRC emacs-lisp :noweb yes
   ;; Firebelly and firecode themes, fullscreen, and powerline... Bad in
   ;; NOX though.
   (when (display-graphic-p)
     (let ((is-fullscreen nil))
-      (defun toggle-fullscreen ()
-        "Toggles fullscreen emacs"
-        (interactive)
-        (if is-fullscreen
-            (progn
-              (set-frame-parameter nil 'fullscreen nil)
-              (setq is-fullscreen nil)
-              (set-window-theme))
-          (progn
-            (set-frame-parameter nil 'fullscreen 'fullboth)
-            (setq is-fullscreen t)
-            (set-fullscreen-theme))))
+      <<toggle-fullscreen>>
 
-      (defun my-display-buffer (args)
-        (destructuring-bind (buffer-or-name &optional action frame) args
-          (let ((action (unless (and is-fullscreen (null frame) (eq action t)) action)))
-            (list buffer-or-name action frame)))))
+      <<display-buffer-advice>>)
 
-    (advice-add 'display-buffer :filter-args #'my-display-buffer)
-
-    ;; Load both themes for later
-    (load-theme 'firecode t t)
-    (load-theme 'firebelly t t)
-
-    (powerline-center-theme)
-    (set-window-theme)
-    (global-set-key (kbd "<f11>") 'toggle-fullscreen))
+    <<toggle-style-initialization>>)
 #+END_SRC
 
-What this does is it allows me to toggle between two style
-configurations, one for fullscreen mode, the other for windowed with
-the [F11] key.
+What we want here is something that allows me to toggle between two
+style configurations, one for fullscreen mode, the other for windowed
+with the [F11] key.
 
 I also wrote a piece of advice for =display-buffer= to try and not
 create new windows when in fullscreen mode, because that can be
 terribly annoying when trying to focus.
+
+
+For the =<<toggle-fullscreen>>=, we create a function that will
+interactively toggle between two modes, fullscreen and not.
+
+When switching to a modes, the frame parameters are changed, the
+lexical =is-fullscreen= variable is set to the correct value, and the
+correct theme defined above is chosen:
+#+NAME:toggle-fullscreen
+#+BEGIN_SRC emacs-lisp :eval no :tangle no
+  (defun toggle-fullscreen ()
+    "Toggles fullscreen emacs"
+    (interactive)
+    (if is-fullscreen
+        (progn
+          (set-frame-parameter nil 'fullscreen nil)
+          (setq is-fullscreen nil)
+          (set-window-theme))
+      (progn
+        (set-frame-parameter nil 'fullscreen 'fullboth)
+        (setq is-fullscreen t)
+        (set-fullscreen-theme))))
+#+END_SRC
+
+I also want to make an advised version of =display-buffer=, because I
+really dislike having windows pop up when I am in fullscreen mode.
+
+So, in =<<display-buffer-advice>>=, I have created a function that can
+act as "=:filter-args=" advice. It will, when the =is-fullscreen=
+variable is set, make sure the =action= variable is not set to "=t=",
+because that will pop up a new window if =display-buffer= is called
+with it:
+#+NAME:display-buffer-advice
+#+BEGIN_SRC emacs-lisp :tangle no :eval no
+  (defun my-display-buffer (args)
+    (destructuring-bind (buffer-or-name &optional action frame) args
+      (let ((action (unless (and is-fullscreen (null frame) (eq action t)) action)))
+        (list buffer-or-name action frame))))
+#+END_SRC
+
+And of course, there is the initialization code I have at
+=<<toggle-style-initialization>>=:
+#+NAME:toggle-style-initialization
+#+BEGIN_SRC emacs-lisp :tangle no :eval no
+  (advice-add 'display-buffer :filter-args #'my-display-buffer)
+
+  ;; Load both themes for later
+  (load-theme 'firecode t t)
+  (load-theme 'firebelly t t)
+
+  (powerline-center-theme)
+  (set-window-theme)
+  (global-set-key (kbd "<f11>") 'toggle-fullscreen)
+#+END_SRC
+
+This just adds the advice defined above, loads the two themes for each
+screen mode, loads =powerline=, sets the [[Windowed style][windowed theme]], and binds
+=<f11>= to the toggle function.
+
+That's about the extent of my style logic.
 
 
 * Languages
