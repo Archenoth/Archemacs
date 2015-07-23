@@ -221,17 +221,11 @@ What we want here is something that allows me to toggle between two
 style configurations, one for fullscreen mode, the other for windowed
 with the [F11] key.
 
-I also wrote a piece of advice for =display-buffer= to try and not
-create new windows when in fullscreen mode, because that can be
-terribly annoying when trying to focus.
+I also want a piece of advice for =display-buffer= to prefer to not
+create new windows when in fullscreen mode.
 
-
-For the =<<toggle-fullscreen>>=, we create a function that will
-interactively toggle between two modes, fullscreen and not.
-
-When switching to a modes, the frame parameters are changed, the
-lexical =is-fullscreen= variable is set to the correct value, and the
-correct theme defined above is chosen:
+For the "=<<toggle-fullscreen>>=" above, we create a function that
+will interactively toggle between two modes, fullscreen and not:
 #+NAME:toggle-fullscreen
 #+BEGIN_SRC emacs-lisp :eval no :tangle no
   (defun toggle-fullscreen ()
@@ -248,8 +242,13 @@ correct theme defined above is chosen:
         (set-fullscreen-theme))))
 #+END_SRC
 
-I also want to make an advised version of =display-buffer=, because I
-really dislike having windows pop up when I am in fullscreen mode.
+When switching to a modes, the frame parameters are changed, the
+lexical =is-fullscreen= variable is set to the correct value, and the
+correct theme defined above is chosen.
+
+After that, I want to make an advised version of =display-buffer=,
+because I really dislike having windows pop up when I am in fullscreen
+mode.
 
 So, in =<<display-buffer-advice>>=, I have created a function that can
 act as "=:filter-args=" advice. It will, when the =is-fullscreen=
@@ -264,7 +263,12 @@ with it:
         (list buffer-or-name action frame))))
 #+END_SRC
 
-And of course, there is the initialization code I have at
+This, of course, doesn't stop explicit actions from creating new
+windows, but it deters a lot of the defaults that drive me up the
+wall. (Like popping up a new window for Code blocks and for Org
+menus.)
+
+Now, of course, there is the initialization code I have at
 =<<toggle-style-initialization>>=:
 #+NAME:toggle-style-initialization
 #+BEGIN_SRC emacs-lisp :tangle no :eval no
@@ -283,7 +287,7 @@ This just adds the advice defined above, loads the two themes for each
 screen mode, loads =powerline=, sets the [[Windowed style][windowed theme]], and binds
 =<f11>= to the toggle function.
 
-That's about the extent of my style logic.
+That's about the extent of my style logic. Nothing too scary.
 
 
 * Languages
