@@ -199,12 +199,12 @@ Spifftastic! Now time to put it all together...
 
 ** The actual style logic
 As for whether to apply these themes, it is all dependant on whether
-or not we are running in NOX or not:
+or not we are running in NOX:
 
-So first, the general idea behind this style logic is that it will
-only exist when we have a graphical version of Emacs running... It
-will also keep track of whether or not we are in fullscreen or not in
-a little =let= closure:
+The general idea behind this style logic is that it will only exist
+when we have a graphical version of Emacs running... It will also keep
+track of whether or not we are in fullscreen in a little =let=
+closure:
 #+BEGIN_SRC emacs-lisp :noweb yes
   ;; Firebelly and firecode themes, fullscreen, and powerline... Bad in
   ;; NOX though.
@@ -242,19 +242,15 @@ will interactively toggle between two modes, fullscreen and not:
         (set-fullscreen-theme))))
 #+END_SRC
 
-When switching to a modes, the frame parameters are changed, the
+When switching to a mode, the frame parameters are changed, the
 lexical =is-fullscreen= variable is set to the correct value, and the
 correct theme defined above is chosen.
 
-After that, I want to make an advised version of =display-buffer=,
-because I really dislike having windows pop up when I am in fullscreen
-mode.
-
-So, in =<<display-buffer-advice>>=, I have created a function that can
-act as "=:filter-args=" advice. It will, when the =is-fullscreen=
-variable is set, make sure the =action= variable is not set to "=t=",
-because that will pop up a new window if =display-buffer= is called
-with it:
+After that, in "=<<display-buffer-advice>>=", I have created a
+function that can act as "=:filter-args=" advice. It will, when the
+=is-fullscreen= variable is set, make sure the =action= parameter is
+not set to "=t=" when calling =display-buffer=, because that will pop
+up a new window:
 #+NAME:display-buffer-advice
 #+BEGIN_SRC emacs-lisp :tangle no :eval no
   (defun my-display-buffer (args)
@@ -268,8 +264,8 @@ windows, but it deters a lot of the defaults that drive me up the
 wall. (Like popping up a new window for Code blocks and for Org
 menus.)
 
-Now, of course, there is the initialization code I have at
-=<<toggle-style-initialization>>=:
+Now, of course, here is the initialization code I have at
+"=<<toggle-style-initialization>>=":
 #+NAME:toggle-style-initialization
 #+BEGIN_SRC emacs-lisp :tangle no :eval no
   (advice-add 'display-buffer :filter-args #'my-display-buffer)
@@ -283,7 +279,7 @@ Now, of course, there is the initialization code I have at
   (global-set-key (kbd "<f11>") 'toggle-fullscreen)
 #+END_SRC
 
-This just adds the advice defined above, loads the two themes for each
+This just adds the advice defined above, loads the themes for each
 screen mode, loads =powerline=, sets the [[Windowed style][windowed theme]], and binds
 =<f11>= to the toggle function.
 
@@ -830,4 +826,4 @@ but so far everything is good.)
 * Metadata                                                         :noexport:
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
 #  LocalWords:  config http TLS tls alist Matz JSPs langtool Avy JSP
-#  LocalWords:  Spifftastic Autocomplete
+#  LocalWords:  Spifftastic Autocomplete NOX
