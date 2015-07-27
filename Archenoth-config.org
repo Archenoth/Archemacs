@@ -2,6 +2,7 @@
 #+AUTHOR:Archenoth
 #+STARTUP: hidestars
 #+PROPERTY: header-args:emacs-lisp :tangle yes
+#+PROPERTY: header-args :results silent
 
 It's pretty sweet you can use [[info:org#Working with source code][literate programming as configuration]]
 for something that often has a lot of configuration.
@@ -88,7 +89,31 @@ exist already:
    'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode 'emmet-mode
    'ecukes 'cucumber-goto-step 'cider 'firebelly-theme 'apache-mode
    'avy 'ac-slime 'ac-js2 'ac-emmet 'edbi-minor-mode
-   'firecode-theme 'sauron)
+   'firecode-theme 'sauron 'tern-auto-complete)
+#+END_SRC
+
+
+* Convenience functions
+Sometimes, its nice to have a few functions to make my configuration
+easier and more modular... That is the purpose of this section.
+
+** Path file checker
+This is a function I wrote to check to see if there is any file in the
+current path that matches the passed in filename... The purpose behind
+this was to be able to check if there are binaries that Emacs can use
+for particular functionality... (Like [[JavaScript][Tern]] for example; I would only
+want to enable its functionality if a "=tern=" binary existed
+somewhere on the system:
+#+BEGIN_SRC emacs-lisp
+  (defun exec-exists-p (filename)
+    "Checks to see if Emacs can see a file in the execution path.
+
+  Returns \"t\" if the passed in filename exists in any of the
+  executable search directories (\"exec-path\"). Returns \"nil\"
+  otherwise."
+    (cl-reduce (lambda (acc dir)
+                 (or acc (file-exists-p (concat dir "/" filename))))
+               exec-path :initial-value nil))
 #+END_SRC
 
 
@@ -254,7 +279,7 @@ up a new window:
 #+NAME:display-buffer-advice
 #+BEGIN_SRC emacs-lisp :tangle no :eval no
   (defun my-display-buffer (args)
-    (destructuring-bind (buffer-or-name &optional action frame) args
+    (cl-destructuring-bind (buffer-or-name &optional action frame) args
       (let ((action (unless (and is-fullscreen (null frame) (eq action t)) action)))
         (list buffer-or-name action frame))))
 #+END_SRC
@@ -488,26 +513,66 @@ parser in the =js2-mode= package, which is very well-written.
   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 #+END_SRC
 
-And using this parser, we get things like =js2-refactor=, which
-allows for advanced automatic refactoring like renaming variables and
-extracting code blocks with intelligent attention to scope:
-
+We also possibly have [[http://ternjs.net][=Tern=]], which gives us even *more* advanced
+JavaScript IDE functionality like cross-file references, type
+inference, and lots of other neat things... But it requires an
+external executable. That means we need to check to see if it is set
+up on this system. Either way, we will want to act accordingly:
 #+BEGIN_SRC emacs-lisp
-  (require 'js2-refactor)
+  (defvar *tern-exists* (exec-exists-p "tern")
+    "Whether or not we can use Tern on this system. Set to \"t\"
+    when we can, or \"nil\" when we can't.")
+#+END_SRC
+
+We will use the above for a number of checks to determine our strategy
+for setting up our JavaScript functionality.
+
+Of course, if Tern does not exist, we can install it with the
+following (Assuming we have [[https://www.npmjs.com/][=npm=]]):
+#+BEGIN_SRC sh :dir /sudo::
+  npm install -g tern
+#+END_SRC
+
+Now, if =Tern= does not exist, we can also use js2's parser, for
+things like =js2-refactor=, which allows for advanced automatic
+refactoring such as renaming variables and extracting code blocks with
+intelligent attention to scope (But it's only local to the current
+file as of the time of writing):
+#+BEGIN_SRC emacs-lisp
+  (unless *tern-exists*
+    (require 'js2-refactor)
+    (local-set-key (kbd "s-r") 'js2r-rename-var))
 #+END_SRC
 
 There is also great =autocomplete= support with =ac-js2=... And that
-allows for scope-intelligent jumping to definitions:
-
+allows for scope-intelligent jumping to definitions... I still want
+=js2='s =autocomplete= for local variables because IMO it is superior
+to Tern, but having two jumping bindings is redundant, so I disable
+this one if we have =Tern=:
 #+BEGIN_SRC emacs-lisp
-    (add-hook 'js2-mode-hook
-          (lambda ()
-            (ac-js2-mode)
-            (local-set-key (kbd "s-<f3>") #'ac-js2-jump-to-definition)))
+  (add-hook 'js2-mode-hook
+        (lambda ()
+          (ac-js2-mode)
+          (unless *tern-exists*
+            (local-set-key (kbd "s-<f3>") #'ac-js2-jump-to-definition))))
 #+END_SRC
 
-And even without =js2=, we still have external tools like =jshint=
-which are integrated with =flymake=:
+Now, finally, the =Tern= configuration if we have it on this
+system... It uses an Node.js process to give us essentially a
+JavaScript IDE:
+#+BEGIN_SRC emacs-lisp
+  (when *tern-exists*
+    (add-hook 'js2-mode-hook
+              (lambda ()
+                (setq-local ac-sources nil)
+                (tern-mode)
+                (tern-ac-setup)
+                (local-set-key (kbd "s-r") 'tern-rename-variable)
+                (local-set-key (kbd "s-<f3>") 'tern-find-definition))))
+#+END_SRC
+
+Also, lastly, I have [[http://jshint.com/][=jshint=]] loaded in case I feel like linting my
+JavaScript beyond the things that =js2= pulls up.
 #+BEGIN_SRC emacs-lisp
   (require 'flymake-jshint)
 #+END_SRC
@@ -826,4 +891,4 @@ but so far everything is good.)
 * Metadata                                                         :noexport:
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
 #  LocalWords:  config http TLS tls alist Matz JSPs langtool Avy JSP
-#  LocalWords:  Spifftastic Autocomplete NOX
+#  LocalWords:  Spifftastic Autocomplete NOX js executables args
