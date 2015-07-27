@@ -62,8 +62,8 @@ As for keybindings for global modes:
 | s-S   | Multiple cursors next line     |
 | M-s-S | Multiple cursors selection     |
 | C-s-S | Multiple cursors mark all      |
-| s-/   | Ace jump word beginnings       |
-| s-?   | Ace jump all characters        |
+| s-/   | Avy jump word beginnings     |
+| s-?   | Avy jump all characters      |
 
 I tend to like using the Super key because not many things in Emacs
 are bound to it.

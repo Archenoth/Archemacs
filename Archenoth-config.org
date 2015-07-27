@@ -103,7 +103,7 @@ current path that matches the passed in filename... The purpose behind
 this was to be able to check if there are binaries that Emacs can use
 for particular functionality... (Like [[JavaScript][Tern]] for example; I would only
 want to enable its functionality if a "=tern=" binary existed
-somewhere on the system:
+somewhere on the system):
 #+BEGIN_SRC emacs-lisp
   (defun exec-exists-p (filename)
     "Checks to see if Emacs can see a file in the execution path.
