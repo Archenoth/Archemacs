@@ -513,7 +513,7 @@ parser in the =js2-mode= package, which is very well-written.
   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 #+END_SRC
 
-We also possibly have [[http://ternjs.net][=Tern=]], which gives us even *more* advanced
+We also possibly have [[http://ternjs.net][Tern]], which gives us even *more* advanced
 JavaScript IDE functionality like cross-file references, type
 inference, and lots of other neat things... But it requires an
 external executable. That means we need to check to see if it is set
@@ -528,7 +528,7 @@ We will use the above for a number of checks to determine our strategy
 for setting up our JavaScript functionality.
 
 Of course, if Tern does not exist, we can install it with the
-following (Assuming we have [[https://www.npmjs.com/][=npm=]]):
+following (Assuming we have [[https://www.npmjs.com/][npm]]):
 #+BEGIN_SRC sh :dir /sudo::
   npm install -g tern
 #+END_SRC
@@ -571,7 +571,7 @@ JavaScript IDE:
                 (local-set-key (kbd "s-<f3>") 'tern-find-definition))))
 #+END_SRC
 
-Also, lastly, I have [[http://jshint.com/][=jshint=]] loaded in case I feel like linting my
+Also, lastly, I have [[http://jshint.com/][jshint]] loaded in case I feel like linting my
 JavaScript beyond the things that =js2= pulls up.
 #+BEGIN_SRC emacs-lisp
   (require 'flymake-jshint)
