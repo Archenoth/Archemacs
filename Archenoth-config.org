@@ -442,7 +442,7 @@ Since I work with [[https://cucumber.io/][Cucumber]] feature files reasonably of
 useful to be able to jump right to the definition of some Cucumber
 step I am looking at. I also like Slime's evaluation bindings, so I
 emulate those here:
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :padline no
   (add-hook 'feature-mode-hook
             (lambda ()
               (local-set-key (kbd "C-c C-c") 'feature-verify-scenario-at-pos)
@@ -509,7 +509,7 @@ do... I only have two real tweaks to make:
 The support for JavaScript in Emacs is ridiculous. We have an entire
 parser in the =js2-mode= package, which is very well-written.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :padline no
   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 #+END_SRC
 
@@ -584,7 +584,7 @@ JavaScript beyond the things that =js2= pulls up.
 
 As of the time of writing, I don't think markdown mode has it set
 automagically start for files with the =.md= file extension, so:
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :padline no
   (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 #+END_SRC
 
@@ -610,7 +610,7 @@ First off, when =ruby-mode= is loaded, we also want to load
 =robe-mode=, which allows for using an interactive Ruby instance for
 completion...
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :padline no
   (add-hook 'ruby-mode-hook 'robe-mode)
 #+END_SRC
 
@@ -666,7 +666,7 @@ The all-seeing eye, Sauron is quite useful, though I want to add some
 functionality to the modeline with it, so I make higher-priority
 messages set a variable: =sauron-alert=:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :padline no
   (add-hook 'sauron-event-added-functions
             (lambda (what priority message &optional event)
               (when (<= 4 priority)
@@ -825,7 +825,7 @@ to have to customize them from their defaults.
 ** Lock Files
 I really don't like Emacs lockfiles... They are annoying and mess up
 an otherwise clean folder:
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :padline no
   (setq create-lockfiles nil) ;; Nasty at times
 #+END_SRC
 
@@ -883,7 +883,7 @@ working with, so I am sure to delete trailing whitespace whenever I
 save a file... (This might become a problem sometime down the line,
 but so far everything is good.)
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :padline no
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+END_SRC
 
