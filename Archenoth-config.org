@@ -111,8 +111,8 @@ somewhere on the system):
   Returns \"t\" if the passed in filename exists in any of the
   executable search directories (\"exec-path\"). Returns \"nil\"
   otherwise."
-    (cl-reduce (lambda (acc dir)
-                 (or acc (file-exists-p (concat dir "/" filename))))
+    (cl-reduce (lambda (exists dir)
+                 (or exists (file-exists-p (concat dir "/" filename))))
                exec-path :initial-value nil))
 #+END_SRC
 
