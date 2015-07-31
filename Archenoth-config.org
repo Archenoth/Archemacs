@@ -341,12 +341,7 @@ programming mode in existence.
 
 #+BEGIN_SRC emacs-lisp
   (ac-config-default)
-  (add-to-list 'ac-modes 'web-mode)
 #+END_SRC
-
-I added =web-mode= to the =ac-modes= list here because I think
-=ac-modes= is set when you start =autocomplete= with
-=ac-config-default=.
 
 *** Compile
 I generally like having a compile command as [F5]:
@@ -533,11 +528,11 @@ following (Assuming we have [[https://www.npmjs.com/][npm]]):
   npm install -g tern
 #+END_SRC
 
-Now, if =Tern= does not exist, we can also use js2's parser, for
-things like =js2-refactor=, which allows for advanced automatic
-refactoring such as renaming variables and extracting code blocks with
-intelligent attention to scope (But it's only local to the current
-file as of the time of writing):
+Now, if Tern does not exist, we can also use js2's parser, for things
+like =js2-refactor=, which allows for advanced automatic refactoring
+such as renaming variables and extracting code blocks with intelligent
+attention to scope (But it's only local to the current file as of the
+time of writing):
 #+BEGIN_SRC emacs-lisp
   (unless *tern-exists*
     (require 'js2-refactor)
@@ -548,7 +543,7 @@ There is also great =autocomplete= support with =ac-js2=... And that
 allows for scope-intelligent jumping to definitions... I still want
 =js2='s =autocomplete= for local variables because IMO it is superior
 to Tern, but having two jumping bindings is redundant, so I disable
-this one if we have =Tern=:
+this one if we have Tern:
 #+BEGIN_SRC emacs-lisp
   (add-hook 'js2-mode-hook
         (lambda ()
@@ -557,7 +552,7 @@ this one if we have =Tern=:
             (local-set-key (kbd "s-<f3>") #'ac-js2-jump-to-definition))))
 #+END_SRC
 
-Now, finally, the =Tern= configuration if we have it on this
+Now, finally, the Tern configuration if we have it on this
 system... It uses an Node.js process to give us essentially a
 JavaScript IDE:
 #+BEGIN_SRC emacs-lisp
