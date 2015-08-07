@@ -873,6 +873,7 @@ Hooks! A few small tweaks to suit my work style.
   ;;;; Hooks
 #+END_SRC
 
+** Whitespace begone!
 First of all, I dislike having messy whitespace in the files I am
 working with, so I am sure to delete trailing whitespace whenever I
 save a file... (This might become a problem sometime down the line,
@@ -883,7 +884,28 @@ but so far everything is good.)
 #+END_SRC
 
 
+* Bindings
+#+BEGIN_SRC emacs-lisp :eval no
+  ;;;; Non-specific bindings
+#+END_SRC
+This is a section for key and event bindings that don't fit anywhere
+else.
+
+** USR1 signal
+When I am running Emacs, I don't always think about starting a server
+of it, because I simply don't need it... But what happens if something
+terrible happens to my desktop manager and Emacs is still intact? I
+can't do a lot with it...
+
+That is why I am going to make =kill -USR1 $(pidof emacs)= start an
+Emacs server.
+
+#+BEGIN_SRC emacs-lisp :padline no
+  (define-key special-event-map (kbd "<sigusr1>") 'server-start)
+#+END_SRC
+
+
 * Metadata                                                         :noexport:
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
 #  LocalWords:  config http TLS tls alist Matz JSPs langtool Avy JSP
-#  LocalWords:  Spifftastic Autocomplete NOX js executables args
+#  LocalWords:  Spifftastic Autocomplete NOX js executables args USR
