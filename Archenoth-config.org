@@ -1,8 +1,16 @@
 #+TITLE:My Emacs config
 #+AUTHOR:Archenoth
+:SETTINGS:
 #+STARTUP: hidestars
+#+OPTIONS: tags:not-in-toc todo:nil toc:nil
+#+TAGS: Bindings(b) Hooks(h) Functions(f) Advice(a)
+#+PROPERTY: header-args :results silent :exports both :eval never-export
 #+PROPERTY: header-args:emacs-lisp :tangle yes
-#+PROPERTY: header-args :results silent
+#+DRAWERS: SETTINGS
+#+LATEX_HEADER: \usepackage{parskip}
+#+TOC: headlines 3
+#+LATEX: \pagebreak
+:END:
 
 It's pretty sweet you can use [[info:org#Working with source code][literate programming as configuration]]
 for something that often has a lot of configuration.
@@ -55,7 +63,7 @@ has the entirety of the installed packages available:
   (package-initialize)
 #+END_SRC
 
-** Package checker and installer
+** Package checker and installer                                  :Functions:
 What about if there are no packages? Or some are missing?
 
 I wrote a little package checker and installer so that I would not
@@ -97,7 +105,7 @@ exist already:
 Sometimes, its nice to have a few functions to make my configuration
 easier and more modular... That is the purpose of this section.
 
-** Path file checker
+** Path file checker                                              :Functions:
 This is a function I wrote to check to see if there is any file in the
 current path that matches the passed in filename... The purpose behind
 this was to be able to check if there are binaries that Emacs can use
@@ -146,9 +154,16 @@ The defaults for fullscreen are:
         (if (boundp 'fullscreen-theme)
             fullscreen-theme
           '((fringe ((t (:background "#111" :width expanded))))
-            (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
-            (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
-            (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t))))
+            (linum ((t (:inherit (shadow default)
+                                 :background "#111"
+                                 :foreground "#e0e0e0"))) t)
+            (pe/directory-face ((t (:inherit dired-directory
+                                             :weight normal
+                                             :height 0.9))) t)
+            (pe/file-face ((t (:inherit default
+                                        :background "#111"
+                                        :weight normal
+                                        :height 0.9))) t))))
 #+END_SRC
 
 This essentially is just a minimal set of sane defaults for
@@ -187,9 +202,10 @@ That way we don't need to dig into this config file to change it.
           '((scroll-bar ((t nil)))
             (font-lock-function-name-face ((t (:foreground "#fff"))))
             (font-lock-variable-name-face ((t (:foreground "#ddd"))))
-            (font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "steel blue"))))
             (font-lock-comment-face ((t (:foreground "steel blue"))))
-            (vertical-border ((nil (:foreground "#191919")))))))
+            (vertical-border ((nil (:foreground "#191919"))))
+            (font-lock-comment-delimiter-face
+             ((t (:inherit font-lock-comment-face :foreground "steel blue")))))))
 #+END_SRC
 
 Since switching to windowed mode has some strange results with frame
@@ -222,7 +238,7 @@ called to handle switching from fullscreen to windowed:
 
 Spifftastic! Now time to put it all together...
 
-** The actual style logic
+** The actual style logic                         :Bindings:Functions:Advice:
 As for whether to apply these themes, it is all dependant on whether
 or not we are running in NOX:
 
@@ -311,7 +327,7 @@ screen mode, loads =powerline=, sets the [[Windowed style][windowed theme]], and
 That's about the extent of my style logic. Nothing too scary.
 
 
-* Languages
+* Languages                                                           :Hooks:
 The following are package-loaded language support configurations:
 
 ** Language agonistic
@@ -343,7 +359,7 @@ programming mode in existence.
   (ac-config-default)
 #+END_SRC
 
-*** Compile
+*** Compile                                                        :Bindings:
 I generally like having a compile command as [F5]:
 #+BEGIN_SRC emacs-lisp
   (define-key global-map (kbd "<f5>") 'compile)
@@ -352,7 +368,7 @@ I generally like having a compile command as [F5]:
 No, compiling is not always relevant to all languages, but it doubles
 as a quick command-line, which is almost always useful.
 
-** C and C++
+** C and C++                                                       :Bindings:
 Emacs' [[info:Semantic][Semantic]] mode is really good at C... I have not tested it
 extensively with C++ though.
 
@@ -396,7 +412,7 @@ The Common Lisp setup is largely just setting up Slime and Slime's
 
 Nothing really special here.
 
-** ELISP
+** ELISP                                                           :Bindings:
 #+BEGIN_SRC emacs-lisp :eval no
   ;; ELISP
 #+END_SRC
@@ -428,7 +444,7 @@ modes:
   (add-hook 'ielm-mode-hook 'el-hook)
 #+END_SRC
 
-** Feature
+** Feature                                                         :Bindings:
 #+BEGIN_SRC emacs-lisp :eval no
   ;; Feature mode
 #+END_SRC
@@ -497,7 +513,7 @@ do... I only have two real tweaks to make:
                 (setq c-basic-offset 2)))
 #+END_SRC
 
-** JavaScript
+** JavaScript                                                      :Bindings:
 #+BEGIN_SRC emacs-lisp :eval no
   ;; JavaScript
 #+END_SRC
@@ -652,7 +668,7 @@ is start Evil... I may as well just put it in my config.
   (evil-mode 1)
 #+END_SRC
 
-** Sauron
+** Sauron                                                             :Hooks:
 #+BEGIN_SRC emacs-lisp :eval no
   ;; Supremely useful monitor -- Sauron
 #+END_SRC
@@ -705,7 +721,7 @@ above, I have no need for Sauron to be its own frame:
   (setq sauron-separate-frame nil)
 #+END_SRC
 
-** Expand Region
+** Expand Region                                                   :Bindings:
 Expand Region is a very handy package for selecting arbitrary blocks
 of text, be it code or whatever.
 
@@ -716,7 +732,7 @@ of text, be it code or whatever.
   (global-set-key (kbd "s-S-SPC") 'er/contract-region)
 #+END_SRC
 
-** Multiple Cursors
+** Multiple Cursors                                                :Bindings:
 From the famous [[https://www.youtube.com/watch?v=jNa3axo40qM][Emacs Rocks video]] where it was introduced to the
 masses, my configuration for this super-handy mode is as follows (Just
 keybindings):
@@ -730,7 +746,7 @@ keybindings):
   (global-set-key (kbd "s-S") 'mc/mark-sgml-tag-pair)
 #+END_SRC
 
-** Projectile
+** Projectile                                                      :Bindings:
 Another really handy usability mode: Projectile!
 
 I use Projectile with Helm to browse to files in the current (Or any)
@@ -751,7 +767,7 @@ between files fast is very handy:
   (projectile-global-mode)
 #+END_SRC
 
-** Avy
+** Avy                                                             :Bindings:
 =Avy= is a [[http://emacsredux.com/blog/2015/07/19/ace-jump-mode-is-dead-long-live-avy/][re-imagining of ace-jump-mode]], which allows for very fast
 jumping around a buffer.
 
@@ -776,7 +792,7 @@ isn't helpful or mildly amusing.
 #+END_SRC
 
 
-* Org Mode
+* Org Mode                                                   :Bindings:Hooks:
 Org mode deserves a section for itself because it is just that
 important.
 
@@ -866,7 +882,7 @@ equivalent:
 #+END_SRC
 
 
-* Hooks
+* Hooks                                                               :Hooks:
 Hooks! A few small tweaks to suit my work style.
 
 #+BEGIN_SRC emacs-lisp :eval no
@@ -884,7 +900,7 @@ but so far everything is good.)
 #+END_SRC
 
 
-* Bindings
+* Bindings                                                         :Bindings:
 #+BEGIN_SRC emacs-lisp :eval no
   ;;;; Non-specific bindings
 #+END_SRC
