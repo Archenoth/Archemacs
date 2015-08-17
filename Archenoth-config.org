@@ -296,7 +296,9 @@ up a new window:
 #+BEGIN_SRC emacs-lisp :tangle no :eval no
   (defun my-display-buffer (args)
     (cl-destructuring-bind (buffer-or-name &optional action frame) args
-      (let ((action (unless (and is-fullscreen (null frame) (eq action t)) action)))
+      (let ((action (unless (and is-fullscreen (null frame)
+                                 (or (eq action t) (eq action 'other-window)))
+                      action)))
         (list buffer-or-name action frame))))
 #+END_SRC
 
