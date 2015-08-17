@@ -302,6 +302,13 @@ up a new window:
         (list buffer-or-name action frame))))
 #+END_SRC
 
+I also check for =other-window= explicitly, because some commands like
+=compile-goto-error= opens new windows regardless of other settings by
+passing this value into =display-buffer=. This is really annoying
+when, for example, you are trying to =grep= a project, you click on a
+result, and it pops up as new window in your otherwise-fullscreen
+environment.
+
 This, of course, doesn't stop explicit actions from creating new
 windows, but it deters a lot of the defaults that drive me up the
 wall. (Like popping up a new window for Code blocks and for Org
