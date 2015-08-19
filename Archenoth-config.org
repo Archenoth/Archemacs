@@ -834,6 +834,17 @@ pretty sweet.
 I /did/, however, have to add the =org-agenda= keybinding, since it
 appears to not be bound by default.
 
+As for evaluation, especially evaluation with images, It kinda annoys
+me that I have to re-run =org-redisplay-inline-images= whenever I eval
+a code block that spits out an image, so [[http://emacs.stackexchange.com/a/9813/2039][I stole this snippet]] to fix
+it:
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-babel-after-execute-hook
+            (lambda ()
+              (when org-inline-image-overlays
+                (org-redisplay-inline-images))))
+#+END_SRC
+
 
 * Variables
 #+BEGIN_SRC emacs-lisp :eval no
@@ -934,3 +945,4 @@ Emacs server.
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
 #  LocalWords:  config http TLS tls alist Matz JSPs langtool Avy JSP
 #  LocalWords:  Spifftastic Autocomplete NOX js executables args USR
+#  LocalWords:  Org's
