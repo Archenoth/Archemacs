@@ -1,8 +1,10 @@
 #+TITLE:My Emacs config
 #+AUTHOR:Archenoth
+#+EMAIL:archenoth@gmail.com
 :SETTINGS:
 #+STARTUP: hidestars
 #+OPTIONS: tags:not-in-toc todo:nil toc:nil
+#+FILETAGS: Config
 #+TAGS: Bindings(b) Hooks(h) Functions(f) Advice(a)
 #+PROPERTY: header-args :results silent :exports both :eval never-export
 #+PROPERTY: header-args:emacs-lisp :tangle yes
