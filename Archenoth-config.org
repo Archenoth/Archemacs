@@ -824,7 +824,6 @@ coloring:
        (setq-default indent-tabs-mode nil)
        (setq org-src-fontify-natively t)
        (setq org-export-latex-listings 'minted)
-       (local-set-key (kbd "C-c a") 'org-agenda)
 
        ;; LanguageTool setup
        (require 'langtool))))
@@ -832,9 +831,6 @@ coloring:
 
 Nothing too crazy, because most of Org's default configuration is
 pretty sweet.
-
-I /did/, however, have to add the =org-agenda= keybinding, since it
-appears to not be bound by default.
 
 As for evaluation, especially evaluation with images, It kinda annoys
 me that I have to re-run =org-redisplay-inline-images= whenever I eval
@@ -846,6 +842,15 @@ it:
               (when org-inline-image-overlays
                 (org-redisplay-inline-images))))
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; Global org-mode bindings
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (global-set-key (kbd "C-c l") 'org-store-link)
+#+END_SRC
+
+I /did/, however, bind a few global Org-mode commands, things that can
+be useful anywhere...
 
 
 * Variables
