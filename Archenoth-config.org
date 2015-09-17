@@ -847,6 +847,7 @@ it:
   ;; Global org-mode bindings
   (global-set-key (kbd "C-c a") 'org-agenda)
   (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c n") 'org-capture)
 #+END_SRC
 
 I /did/, however, bind a few global Org-mode commands, things that can
