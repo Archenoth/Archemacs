@@ -517,6 +517,8 @@ do... I only have two real tweaks to make:
     ;; Java
     (add-hook 'java-mode-hook
               (lambda ()
+                ;; Because Semantic jumping in Java is gnarly
+                (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
                 ;; Because these tend to be a lot longer than 80 width
                 ;; and wrapping is ugly.
                 (toggle-truncate-lines t)
