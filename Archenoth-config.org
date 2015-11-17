@@ -90,7 +90,7 @@ Now, lets use this to install all the packages we need if they don't
 exist already:
 #+BEGIN_SRC emacs-lisp
   ;; Ensuring packages are installed
-  (check-packages 'multiple-cursors 'web-mode 'slime 'rsense 'robe
+  (check-packages 'multiple-cursors 'web-mode 'rsense 'robe
    'projectile 'powerline 'plsql 'php-mode 'paredit 'nurumacs
    'yasnippet 'markdown-mode+ 'magit 'lua-mode 'langtool
    'js2-refactor 'jedi 'htmlize 'helm-projectile 'helm-emmet
@@ -98,8 +98,8 @@ exist already:
    'flymake-easy 'flymake-csslint 'feature-mode 'expand-region
    'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode 'emmet-mode
    'ecukes 'cucumber-goto-step 'cider 'firebelly-theme 'apache-mode
-   'avy 'ac-slime 'ac-js2 'ac-emmet 'edbi-minor-mode
-   'firecode-theme 'sauron 'tern-auto-complete)
+   'avy 'ac-sly 'ac-js2 'ac-emmet 'edbi-minor-mode 'firecode-theme
+   'sauron 'tern-auto-complete)
 #+END_SRC
 
 
@@ -410,15 +410,13 @@ CIDER:
 #+END_SRC
 
 ** Common Lisp
-The Common Lisp setup is largely just setting up Slime and Slime's
-=autocomplete= source according to [[https://github.com/slime/slime][their Github page]].
+The Common Lisp setup is largely just setting up Sly and Sly's
+=autocomplete= source.
 #+BEGIN_SRC emacs-lisp
   ;; Common Lisp
-  ;; Set your lisp system and, optionally, some contribs Common Lisp
-  (setq slime-contribs '(slime-fancy slime-asdf))
-  (add-hook 'slime-mode-hook 'set-up-slime-ac)
-  (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-  (add-to-list 'ac-modes 'slime-repl-mode)
+  (add-hook 'sly-mode-hook 'set-up-sly-ac)
+  (add-hook 'sly-mrepl-mode-hook 'set-up-sly-ac)
+  (add-to-list 'ac-modes 'sly-mrepl-mode)
 #+END_SRC
 
 Nothing really special here.
