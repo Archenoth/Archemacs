@@ -172,9 +172,24 @@ This essentially is just a minimal set of sane defaults for
 fullscreen, though if the variable =fullscreen-theme= is set, those
 faces will be used instead of the default.
 
-Of course, we need some way to apply it. The following is the
-definition for the function that will handle the logic for what
-happens when we switch from windowed to fullscreen:
+The defaults do work reasonably well I think, though the way I have my
+fullscreen setup in my [[file:~/.emacs][.emacs]] is:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (setq fullscreen-theme
+        '((default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal))))
+          (fringe ((t (:background "#111" :width expanded))))
+          (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
+          (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
+          (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t)))
+#+END_SRC
+
+This is not a part of the tangled code because it is not
+portable. (Though I like to have it here for reference)
+
+Of course, with all that said, we need some way to apply such a
+fullscreen theme. The following is the definition for the function
+that will handle the logic for what happens when we switch from
+windowed to fullscreen:
 #+BEGIN_SRC emacs-lisp
   (defun set-fullscreen-theme ()
     "Sets the default theme I use for maximixed Emacs"
@@ -208,6 +223,19 @@ That way we don't need to dig into this config file to change it.
             (vertical-border ((nil (:foreground "#191919"))))
             (font-lock-comment-delimiter-face
              ((t (:inherit font-lock-comment-face :foreground "steel blue")))))))
+#+END_SRC
+
+...and like with the [[Fullscreen style]], here are the additional changes
+I generally make in my [[file:~/.emacs][.emacs]]:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (setq windowed-theme
+        '((default ((t (:family "Inconsolata" :foundry "unknown" :slant normal :weight normal :height 98 :width normal))))
+          (scroll-bar ((t nil)))
+          (font-lock-function-name-face ((t (:foreground "#fff"))))
+          (font-lock-variable-name-face ((t (:foreground "#ddd"))))
+          (font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "steel blue"))))
+          (font-lock-comment-face ((t (:foreground "steel blue"))))
+          (vertical-border ((nil (:foreground "#191919"))))))
 #+END_SRC
 
 Since switching to windowed mode has some strange results with frame
