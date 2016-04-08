@@ -99,7 +99,7 @@ exist already:
    'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode 'emmet-mode
    'ecukes 'cucumber-goto-step 'cider 'firebelly-theme 'apache-mode
    'avy 'ac-sly 'ac-js2 'ac-emmet 'edbi-minor-mode 'firecode-theme
-   'sauron 'tern-auto-complete)
+   'sauron 'tern-auto-complete 'pp-c-l)
 #+END_SRC
 
 
@@ -828,6 +828,17 @@ isn't helpful or mildly amusing.
 
 #+BEGIN_SRC emacs-lisp
   (show-paren-mode)
+#+END_SRC
+
+** Pretty-print =^L= characters
+By default, Emacs uses the control character ^L pretty often and
+prints it as a control character in buffers.
+
+I find this to be ugly, so instead, I install =pretty-control-l-mode=
+so I can make it look nice.
+#+BEGIN_SRC emacs-lisp
+  (require 'pp-c-l)
+  (pretty-control-l-mode 1)
 #+END_SRC
 
 
