@@ -412,6 +412,7 @@ A neat little trick when editing shell scripts is to add the function
 =executable-make-buffer-file-executable-if-script-p= to the
 =after-save-hook=.
 #+BEGIN_SRC emacs-lisp
+  ;; Shell scripting
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 #+END_SRC
 
