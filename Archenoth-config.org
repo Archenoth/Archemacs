@@ -759,7 +759,7 @@ Sauron buffer:
       (define-key map [follow-link]
         (lambda (pos)
           (makunbound 'sauron-alert)
-          (switch-to-buffer "*Sauron*")))
+          (switch-to-buffer "*Sauron*" nil t)))
       (propertize " 0"
                   'keymap map
                   'face 'compilation-error
