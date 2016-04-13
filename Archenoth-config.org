@@ -406,7 +406,7 @@ I generally like having a compile command as [F5]:
 No, compiling is not always relevant to all languages, but it doubles
 as a quick command-line, which is almost always useful.
 
-** Bash                                                               :Hooks:
+** Bash
 A neat little trick when editing shell scripts is to add the function
 =executable-make-buffer-file-executable-if-script-p= to the
 =after-save-hook=.
