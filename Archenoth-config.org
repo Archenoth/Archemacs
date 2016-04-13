@@ -90,16 +90,15 @@ Now, lets use this to install all the packages we need if they don't
 exist already:
 #+BEGIN_SRC emacs-lisp
   ;; Ensuring packages are installed
-  (check-packages 'multiple-cursors 'web-mode 'rsense 'robe
-   'projectile 'powerline 'plsql 'php-mode 'paredit 'nurumacs
-   'yasnippet 'markdown-mode+ 'magit 'lua-mode 'langtool
-   'js2-refactor 'jedi 'htmlize 'helm-projectile 'helm-emmet
-   'grizzl 'graphviz-dot-mode 'flymake-ruby 'flymake-jshint
-   'flymake-easy 'flymake-csslint 'feature-mode 'expand-region
-   'evil 'erefactor 'erc-nick-notify 'enh-ruby-mode 'emmet-mode
-   'ecukes 'cucumber-goto-step 'cider 'firebelly-theme 'apache-mode
-   'avy 'ac-sly 'ac-js2 'ac-emmet 'edbi-minor-mode 'firecode-theme
-   'sauron 'tern-auto-complete 'pp-c-l)
+  (check-packages 'pp-c-l 'multiple-cursors 'web-mode 'rsense 'robe
+   'projectile 'powerline 'plsql 'php-mode 'paredit 'yasnippet
+   'markdown-mode+ 'magit 'lua-mode 'langtool 'js2-refactor 'jedi
+   'htmlize 'helm-projectile 'helm-emmet 'grizzl 'graphviz-dot-mode
+   'flymake-ruby 'flymake-easy 'feature-mode 'expand-region 'evil
+   'erefactor 'enh-ruby-mode 'emmet-mode 'ecukes 'nginx-mode
+   'cucumber-goto-step 'firebelly-theme 'apache-mode 'avy 'ac-sly
+   'ac-js2 'ac-emmet 'ac-cider 'firecode-theme 'sauron
+   'tern-auto-complete 'org-plus-contrib)
 #+END_SRC
 
 
@@ -632,12 +631,6 @@ JavaScript IDE:
                 (tern-ac-setup)
                 (local-set-key (kbd "s-r") 'tern-rename-variable)
                 (local-set-key (kbd "s-<f3>") 'tern-find-definition))))
-#+END_SRC
-
-Also, lastly, I have [[http://jshint.com/][jshint]] loaded in case I feel like linting my
-JavaScript beyond the things that =js2= pulls up.
-#+BEGIN_SRC emacs-lisp
-  (require 'flymake-jshint)
 #+END_SRC
 
 ** Markdown mode
