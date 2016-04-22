@@ -443,10 +443,9 @@ But with it, we get definition jumping and some quite intelligent
 All I do for Clojure is turn on =eldoc-mode=. The rest is handled by
 CIDER:
 
-
 #+BEGIN_SRC emacs-lisp
   ;; CIDER, Clojure
-  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+  (add-hook 'cider-mode-hook (lambda () (eldoc-mode 1)))
 #+END_SRC
 
 ** Common Lisp
