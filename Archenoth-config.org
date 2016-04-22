@@ -440,8 +440,8 @@ But with it, we get definition jumping and some quite intelligent
 #+END_SRC
 
 ** Clojure
-All I do for Clojure is turn on =eldoc-mode=. The rest is handled by
-CIDER:
+All I do for Clojure is turn on =eldoc-mode= and setup Autocomplete
+with =ac-cider=. The rest is handled by CIDER itself:
 
 #+BEGIN_SRC emacs-lisp
   ;; CIDER, Clojure
