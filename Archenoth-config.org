@@ -445,7 +445,12 @@ CIDER:
 
 #+BEGIN_SRC emacs-lisp
   ;; CIDER, Clojure
-  (add-hook 'cider-mode-hook (lambda () (eldoc-mode 1)))
+  (add-hook 'cider-mode-hook
+            (lambda ()
+              ;; For handy modeline function descriptions
+              (eldoc-mode 1)
+              ;; So autocomplete can pull Clojure documentation
+              (ac-cider-setup)))
 #+END_SRC
 
 ** Common Lisp
