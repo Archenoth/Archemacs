@@ -440,8 +440,8 @@ But with it, we get definition jumping and some quite intelligent
 #+END_SRC
 
 ** Clojure
-All I do for Clojure is turn on =eldoc-mode= and setup Autocomplete
-with =ac-cider=. The rest is handled by CIDER itself:
+All I do for Clojure files is turn on =eldoc-mode= and setup
+Autocomplete with =ac-cider=. The rest is handled by CIDER itself:
 
 #+BEGIN_SRC emacs-lisp
   ;; CIDER, Clojure
@@ -451,6 +451,13 @@ with =ac-cider=. The rest is handled by CIDER itself:
               (eldoc-mode 1)
               ;; So autocomplete can pull Clojure documentation
               (ac-cider-setup)))
+#+END_SRC
+
+For the REPL, I don't really need autocomplete because of the tab
+completion, so I only enable =eldoc-mode=.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'cider-repl-mode-hook (lambda () (eldoc-mode 1)))
 #+END_SRC
 
 ** Common Lisp
