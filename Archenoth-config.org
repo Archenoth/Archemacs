@@ -563,16 +563,21 @@ everything, and ridiculous debugger capabilities... But when I
 do... I only have two real tweaks to make:
 
 #+BEGIN_SRC emacs-lisp
-    ;; Java
-    (add-hook 'java-mode-hook
-              (lambda ()
-                ;; Because Semantic jumping in Java is gnarly
-                (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
-                ;; Because these tend to be a lot longer than 80 width
-                ;; and wrapping is ugly.
-                (toggle-truncate-lines t)
-                ;; I also prefer 2 spaces for indentation, not 4.
-                (setq c-basic-offset 2)))
+  ;; Java
+  (add-hook 'java-mode-hook
+            (lambda ()
+              ;; Because Semantic jumping in Java is gnarly
+              (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
+              ;; Because these tend to be a lot longer than 80 width
+              ;; and wrapping is ugly.
+              (toggle-truncate-lines t)
+              ;; Because we like information about local variables.
+              (semantic-idle-summary-mode 1)
+              ;; Semantic does a good job of parsing Java now, so we
+              ;; don't need to rely on words found in the buffers for
+              ;; completion anymore.
+              (setq ac-sources '(ac-source-semantic-raw
+                                 ac-source-yasnippet))))
 #+END_SRC
 
 ** JavaScript                                                      :Bindings:
