@@ -721,6 +721,58 @@ files so it acts like a proper escape:
 The following are things that are nice to have set up during normal
 Emacs usage, but aren't for any type of task in particular.
 
+** XWidget browser                                 :Bindings:Hooks:Functions:
+Emacs now has a WebKit-based browser embedded in it with XWidget. This
+is cool and all, but its defaults are pretty much unusable, so here is
+my configuration to make it act like a slightly-reasonable browser:
+
+First I define two functions, since =[Home]= and =[End]= functionality
+is sorely lacking. It just scrolls the browser itself out of view and
+doesn't scroll. The alternative is to scroll a few pixels at a time
+until you are at the bottom. *Annoying*.
+
+So:
+#+BEGIN_SRC emacs-lisp
+  (defun xwidget-webkit-scroll-top ()
+    "Scroll webkit to the top of the page."
+    (interactive)
+    (xwidget-set-adjustment (xwidget-webkit-last-session) 'vertical nil 0))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun xwidget-webkit-scroll-bottom ()
+    "Scroll webkit to the bottom of the page."
+    (interactive)
+    (xwidget-webkit-execute-script
+     (xwidget-webkit-current-session)
+     "window.scrollTo(0, document.body.scrollHeight);"))
+#+END_SRC
+
+This part is to define a bunch of keys to make the browser
+actually-usable. The following was largely stolen from [[https://www.reddit.com/r/emacs/comments/4srze9/watching_youtube_inside_emacs_25/][this Reddit
+post]], with a few modifications to add my own functions above:
+#+BEGIN_SRC emacs-lisp
+  ;; Add usable keybindings whenever we try to use the XWidget browser
+  (add-hook
+   'xwidget-webkit-mode-hook
+   (lambda ()
+     (define-key xwidget-webkit-mode-map [mouse-4] 'xwidget-webkit-scroll-down)
+     (define-key xwidget-webkit-mode-map [mouse-5] 'xwidget-webkit-scroll-up)
+     (define-key xwidget-webkit-mode-map (kbd "<up>") 'xwidget-webkit-scroll-down)
+     (define-key xwidget-webkit-mode-map (kbd "<down>") 'xwidget-webkit-scroll-up)
+     (define-key xwidget-webkit-mode-map (kbd "M-w") 'xwidget-webkit-copy-selection-as-kill)
+     (define-key xwidget-webkit-mode-map (kbd "C-c") 'xwidget-webkit-copy-selection-as-kill)
+     (define-key xwidget-webkit-mode-map (kbd "<home>") 'xwidget-webkit-scroll-top)
+     (define-key xwidget-webkit-mode-map (kbd "<end>") 'xwidget-webkit-scroll-bottom)))
+
+  ;; Whenever the window changes size and we are in the XWidget browser,
+  ;; we will want to resize it.
+  (add-hook
+   'window-configuration-change-hook
+   (lambda ()
+     (when (equal major-mode 'xwidget-webkit-mode)
+       (xwidget-webkit-adjust-size-dispatch))))
+#+END_SRC
 ** Evil
 I find that one of the first things I do when I start Emacs recently
 is start Evil... I may as well just put it in my config.
@@ -1014,4 +1066,4 @@ Emacs server.
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
 #  LocalWords:  config http TLS tls alist Matz JSPs langtool Avy JSP
 #  LocalWords:  Spifftastic Autocomplete NOX js executables args USR
-#  LocalWords:  Org's
+#  LocalWords:  Org's XWidget WebKit
