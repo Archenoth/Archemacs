@@ -460,6 +460,20 @@ completion, so I only enable =eldoc-mode=.
   (add-hook 'cider-repl-mode-hook (lambda () (eldoc-mode 1)))
 #+END_SRC
 
+And finally, stolen from [[http://emacs.stackexchange.com/a/20818/2039][here]], we have a workaround for Evil entering
+Normal mode whenever entering the debugger, even if the minor mode is
+added to =evil-emacs-state-modes=:
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-cider-debug-toggle-insert-state ()
+    (if cider--debug-mode    ;; Checks if you're entering the debugger
+        (evil-insert-state)  ;; If so, turn on evil-insert-state
+      (evil-normal-state)))  ;; Otherwise, turn on normal-state
+
+
+  (add-hook 'cider--debug-mode-hook 'my-cider-debug-toggle-insert-state)
+#+END_SRC
+
 ** Common Lisp
 The Common Lisp setup is largely just setting up Sly and Sly's
 =autocomplete= source.
