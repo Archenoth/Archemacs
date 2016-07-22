@@ -722,6 +722,9 @@ The following are things that are nice to have set up during normal
 Emacs usage, but aren't for any type of task in particular.
 
 ** XWidget browser                                 :Bindings:Hooks:Functions:
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle (if (fboundp 'xwidget-webkit-mode) "yes" "no")
+:END:
 Emacs now has a WebKit-based browser embedded in it with XWidget. This
 is cool and all, but its defaults are pretty much unusable, so here is
 my configuration to make it act like a slightly-reasonable browser:
