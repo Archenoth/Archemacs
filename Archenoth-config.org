@@ -506,6 +506,7 @@ Then I define a hook that turns on =erefactor='s scope highlighting,
   (defun el-hook ()
     (define-key emacs-lisp-mode-map "\C-c\C-v" erefactor-map)
     (erefactor-lazy-highlight-turn-on)
+    (define-key emacs-lisp-mode-map (kbd "s-<f3>") 'find-function-at-point)
     (eldoc-mode t))
 #+END_SRC
 
