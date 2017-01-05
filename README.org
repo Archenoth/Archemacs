@@ -1,16 +1,18 @@
 #+TITLE:Archenoth's Emacs configuration
+#+AUTHOR:Archenoth
+#+EMAIL:Archenoth@gmail.com
+:SETTINGS:
+#+STARTUP: hidestars inlineimages
+#+TOC: headlines 1
+:END:
 
-Org-mode Emacs configuration is what all the cool kids are doing these
-days... So here is the Git repo for [[file:./Archenoth-config.org][my Emacs configuration...]]
+[[file:./Archenoth-config.org][Org-mode Emacs configuration]] is great! Surprisingly fast, easy to
+organize, and it breaks down the way I've solved problems into little
+bite-sized chunks that others can use.
 
-* Screenshots
-Windowed:
-
-[[file:./windowed.png]]
-
-And Fullscreen: (Toggled with [F11])
-
-[[file:./fullscreen.png]]
+#+ATTR_LATEX: :width 1000
+#+CAPTION:Fullscreen mode with M+ installed, toggled with <F11>
+[[./fullscreen.png]]
 
 * About
 The way it is constructed, the file is supposed to be a standalone
@@ -67,3 +69,8 @@ As for keybindings for global modes:
 
 I tend to like using the Super key because not many things in Emacs
 are bound to it.
+
+# Local Variables:
+# org-image-actual-width: nil
+# eval: (org-display-inline-images t nil)
+# End:

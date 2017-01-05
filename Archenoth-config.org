@@ -14,22 +14,29 @@
 #+LATEX: \pagebreak
 :END:
 
-It's pretty sweet you can use [[info:org#Working with source code][literate programming as configuration]]
-for something that often has a lot of configuration.
+This is a [[info:org#Working with source code][literate configuration]] for Emacs. So even though this looks
+like a document explaining why I configured things a certain way,
+believe it or not, it actually is my config.
 
-Below is my Emacs configuration along with descriptions of what each
-piece does:
+Feel free to take whatever you like! There are some neat little tricks
+and workarounds in here that might be useful to you
+person-who-is-reading this..!
+
+This file changes over time, and new tricks are added
+occasionally. And if this file is able to help more than just myself,
+that's kinda awesome.
 
 * Header
 In the header of the config... We want the file to include lexical
-binding... This is because I am quite accustomed to a Common-Lisp
-style of developing with =let= closures and have-at-you:
+binding:
 #+BEGIN_SRC emacs-lisp :eval no :padline no
   ;; -*- lexical-binding: t -*-
 #+END_SRC
 
-Also, I include this library to make up for some of the other missing
-features from Common Lisp:
+This is used later for =let= closures.
+
+Also, I include this library to give me some of the functions I like
+from Common Lisp:
 #+BEGIN_SRC emacs-lisp
   ;; For other Common Lisp-ish stuff in here
   (require 'cl-lib)
@@ -135,107 +142,49 @@ generally like to remove the toolbar at the top of the screen:
   (tool-bar-mode 0)
 #+END_SRC
 
-And remove fringes when in a windowed mode... And since that is the
-default when we start up Emacs:
-
+Also, I like the [[https://github.com/emacsfodder/emacs-firecode-theme][Firecode]] theme. It's really nice!
 #+BEGIN_SRC emacs-lisp
-  ;; ...and fringes until we want to explicitly enable them
-  (when (fboundp 'fringe-mode)
-    (fringe-mode 0))
+  (load-theme 'firecode t)
 #+END_SRC
 
-As for in-depth styling, I generally like to switch between two
-different appearances depending on whether or not Emacs is fullscreen
-or not.
-
-** Fullscreen style
-The defaults for fullscreen are:
+As for in-depth styling, I have my own set of basic defaults:
 #+BEGIN_SRC emacs-lisp
-  (setq fullscreen-faces
-        (if (boundp 'fullscreen-theme)
-            fullscreen-theme
+  (setq archenoth-faces
+        (if (boundp 'archenoth-theme)
+            archenoth-theme
           '((fringe ((t (:background "#111" :width expanded))))
-            (linum ((t (:inherit (shadow default)
-                                 :background "#111"
-                                 :foreground "#e0e0e0"))) t)
-            (pe/directory-face ((t (:inherit dired-directory
-                                             :weight normal
-                                             :height 0.9))) t)
-            (pe/file-face ((t (:inherit default
-                                        :background "#111"
-                                        :weight normal
-                                        :height 0.9))) t))))
+            (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
+            (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
+            (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t))))
 #+END_SRC
 
-This essentially is just a minimal set of sane defaults for
-fullscreen, though if the variable =fullscreen-theme= is set, those
-faces will be used instead of the default.
+This essentially is just a minimal set of sane defaults, though if the
+variable =archenoth-theme= is set, those faces will be used instead
+of the default.
 
-The defaults do work reasonably well I think, though the way I have my
-fullscreen setup in my [[file:~/.emacs][.emacs]] is:
+The defaults do work reasonably well I think, though the way I have
+this final font setup in my [[file:~/.emacs][.emacs]]
 #+BEGIN_SRC emacs-lisp :tangle no
-  (setq fullscreen-theme
-        '((default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal))))
-          (fringe ((t (:background "#111" :width expanded))))
-          (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
-          (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
-          (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t)))
+  (set-frame-font "M+ 1m")
 #+END_SRC
 
-This is not a part of the tangled code because it is not
-portable. (Though I like to have it here for reference)
+This is not a part of the tangled code because it requires
+[[https://osdn.jp/projects/mplus-fonts/releases/62344/][this awesome font]]. (Though I like to have it here for reference)
 
-Of course, with all that said, we need some way to apply such a
-fullscreen theme. The following is the definition for the function
-that will handle the logic for what happens when we switch from
-windowed to fullscreen:
+The following is the definition for the function that will handle the
+logic for switching from windowed to fullscreen (Mostly just small
+interface tweaks):
 #+BEGIN_SRC emacs-lisp
-  (defun set-fullscreen-theme ()
-    "Sets the default theme I use for maximixed Emacs"
-    (interactive)
-    (enable-theme 'firecode)
-    (disable-theme 'firebelly)
-    (apply #'custom-set-faces fullscreen-faces)
-    (fringe-mode '(20 . 0))
-    (scroll-bar-mode -1)
-    (menu-bar-mode -1))
+    (defun set-fullscreen-settings ()
+      "Sets the default theme I use for maximixed Emacs"
+      (interactive)
+      (set-face-attribute 'default (selected-frame) :height 113)
+      (fringe-mode '(20 . 0))
+      (scroll-bar-mode -1)
+      (menu-bar-mode -1))
 #+END_SRC
 
 Now for windowed!
-
-** Windowed style
-These are the default faces for windowed Emacs windows.
-
-As you can see, if there is a =windowed-theme= variable set before
-this file is initialized, this will use that as opposed to the
-defaults below.
-
-That way we don't need to dig into this config file to change it.
-#+BEGIN_SRC emacs-lisp
-  (setq windowed-faces
-        (if (boundp 'windowed-theme)
-            windowed-theme
-          '((scroll-bar ((t nil)))
-            (font-lock-function-name-face ((t (:foreground "#fff"))))
-            (font-lock-variable-name-face ((t (:foreground "#ddd"))))
-            (font-lock-comment-face ((t (:foreground "steel blue"))))
-            (vertical-border ((nil (:foreground "#191919"))))
-            (font-lock-comment-delimiter-face
-             ((t (:inherit font-lock-comment-face :foreground "steel blue")))))))
-#+END_SRC
-
-...and like with the [[Fullscreen style]], here are the additional changes
-I generally make in my [[file:~/.emacs][.emacs]]:
-#+BEGIN_SRC emacs-lisp :tangle no
-  (setq windowed-theme
-        '((default ((t (:family "Inconsolata" :foundry "unknown" :slant normal :weight normal :height 98 :width normal))))
-          (scroll-bar ((t nil)))
-          (font-lock-function-name-face ((t (:foreground "#fff"))))
-          (font-lock-variable-name-face ((t (:foreground "#ddd"))))
-          (font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "steel blue"))))
-          (font-lock-comment-face ((t (:foreground "steel blue"))))
-          (vertical-border ((nil (:foreground "#191919"))))))
-#+END_SRC
 
 Since switching to windowed mode has some strange results with frame
 sizing, here is a function that can restore the size back to the
@@ -249,17 +198,14 @@ normal windowed state:
      '((width . 80) (height . 34))))
 #+END_SRC
 
-And now, just like in [[Fullscreen style]], here is the function that gets
-called to handle switching from fullscreen to windowed:
-
+And now, here is the function that gets called to handle switching
+from fullscreen to windowed:
 #+BEGIN_SRC emacs-lisp
-  (defun set-window-theme ()
+  (defun set-window-settings ()
     "Sets the default theme I use for Windowed Emacs"
     (interactive)
-    (enable-theme 'firebelly)
-    (disable-theme 'firecode)
-    (apply #'custom-set-faces windowed-faces)
-    (fringe-mode 0)
+    (set-face-attribute 'default (selected-frame) :height 98)
+    (fringe-mode '(8 . 0))
     (scroll-bar-mode 1)
     (menu-bar-mode 1)
     (set-default-window-size))
@@ -305,22 +251,25 @@ will interactively toggle between two modes, fullscreen and not:
         (progn
           (set-frame-parameter nil 'fullscreen nil)
           (setq is-fullscreen nil)
-          (set-window-theme))
+          (set-window-settings))
       (progn
         (set-frame-parameter nil 'fullscreen 'fullboth)
         (setq is-fullscreen t)
-        (set-fullscreen-theme))))
+        (set-fullscreen-settings))))
 #+END_SRC
 
 When switching to a mode, the frame parameters are changed, the
 lexical =is-fullscreen= variable is set to the correct value, and the
-correct theme defined above is chosen.
+correct settings defined above are chosen.
 
 After that, in "=<<display-buffer-advice>>=", I have created a
-function that can act as "=:filter-args=" advice. It will, when the
-=is-fullscreen= variable is set, make sure the =action= parameter is
-not set to "=t=" when calling =display-buffer=, because that will pop
-up a new window:
+function that can act as "=:filter-args=" advice. The idea for the
+advice is to stop Emacs from creating new windows all the time in
+fullscreen mode, because that is really annoying.
+
+It will, when the =is-fullscreen= variable is set, make sure the
+=action= parameter is not set to "=t=" when calling =display-buffer=,
+because that will pop up a new window:
 #+NAME:display-buffer-advice
 #+BEGIN_SRC emacs-lisp :tangle no :eval no
   (defun my-display-buffer (args)
@@ -332,16 +281,15 @@ up a new window:
 #+END_SRC
 
 I also check for =other-window= explicitly, because some commands like
-=compile-goto-error= opens new windows regardless of other settings by
-passing this value into =display-buffer=. This is really annoying
-when, for example, you are trying to =grep= a project, you click on a
-result, and it pops up as new window in your otherwise-fullscreen
-environment.
+=compile-goto-error= open new windows regardless of other settings by
+passing this value directly into =display-buffer=. This is really
+annoying when, for example, you are trying to =grep= a project, you
+click on a result, and it pops up as new window in your
+otherwise-fullscreen environment.
 
 This, of course, doesn't stop explicit actions from creating new
 windows, but it deters a lot of the defaults that drive me up the
-wall. (Like popping up a new window for Code blocks and for Org
-menus.)
+wall.
 
 Now, of course, here is the initialization code I have at
 "=<<toggle-style-initialization>>=":
@@ -349,18 +297,15 @@ Now, of course, here is the initialization code I have at
 #+BEGIN_SRC emacs-lisp :tangle no :eval no
   (advice-add 'display-buffer :filter-args #'my-display-buffer)
 
-  ;; Load both themes for later
-  (load-theme 'firecode t t)
-  (load-theme 'firebelly t t)
-
   (powerline-center-theme)
-  (set-window-theme)
+  (apply #'custom-set-faces archenoth-faces)
+  (set-window-settings)
   (global-set-key (kbd "<f11>") 'toggle-fullscreen)
 #+END_SRC
 
 This just adds the advice defined above, loads the themes for each
-screen mode, loads =powerline=, sets the [[Windowed style][windowed theme]], and binds
-=<f11>= to the toggle function.
+screen mode, loads =powerline=, sets the windowed-mode settings, and
+binds =<f11>= to the toggle fullscreen function.
 
 That's about the extent of my style logic. Nothing too scary.
 
