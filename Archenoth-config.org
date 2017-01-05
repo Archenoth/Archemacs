@@ -439,9 +439,9 @@ But with it, we get definition jumping and some quite intelligent
   (add-hook 'c++-mode-hook 'c-modes-hook)
 #+END_SRC
 
-** Clojure
-All I do for Clojure files is turn on =eldoc-mode= and setup
-Autocomplete with =ac-cider=. The rest is handled by CIDER itself:
+** Clojure                                                         :Bindings:
+For Clojure, I turn on =eldoc-mode= and setup Autocomplete with
+=ac-cider=:
 
 #+BEGIN_SRC emacs-lisp
   ;; CIDER, Clojure
@@ -460,6 +460,15 @@ completion, so I only enable =eldoc-mode=.
   (add-hook 'cider-repl-mode-hook (lambda () (eldoc-mode 1)))
 #+END_SRC
 
+For the =s-<f3>= find-definition binding:
+#+BEGIN_SRC emacs-lisp
+  (defun cider-bindings ()
+    (local-set-key (kbd "s-<f3>") 'cider-find-var))
+
+  (add-hook 'cider-repl-mode-hook 'cider-bindings)
+  (add-hook 'cider-mode-hook 'cider-bindings)
+#+END_SRC
+
 And finally, stolen from [[http://emacs.stackexchange.com/a/20818/2039][here]], we have a workaround for Evil entering
 Normal mode whenever entering the debugger, even if the minor mode is
 added to =evil-emacs-state-modes=:
@@ -469,7 +478,6 @@ added to =evil-emacs-state-modes=:
     (if cider--debug-mode    ;; Checks if you're entering the debugger
         (evil-insert-state)  ;; If so, turn on evil-insert-state
       (evil-normal-state)))  ;; Otherwise, turn on normal-state
-
 
   (add-hook 'cider--debug-mode-hook 'my-cider-debug-toggle-insert-state)
 #+END_SRC
