@@ -105,7 +105,7 @@ exist already:
    'erefactor 'enh-ruby-mode 'emmet-mode 'ecukes 'nginx-mode
    'cucumber-goto-step 'firebelly-theme 'apache-mode 'avy 'ac-sly
    'ac-js2 'ac-emmet 'ac-cider 'firecode-theme 'sauron
-   'tern-auto-complete 'org-plus-contrib)
+   'tern-auto-complete 'org-plus-contrib 'racer 'flycheck-rust)
 #+END_SRC
 
 
@@ -671,6 +671,23 @@ for code assist:
               (add-to-list 'ac-sources 'ac-source-robe)
               (add-to-list 'ac-sources 'ac-source-rsense-method)
               (add-to-list 'ac-sources 'ac-source-rsense-constant)))
+#+END_SRC
+
+** Rust
+#+BEGIN_SRC emacs-lisp :eval no
+  ;; Rust support
+#+END_SRC
+
+Rust is a pretty neat language. Racer is a pretty neat mode.
+Lets combine these a bit and get some autocomplete support while we're
+at it
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'rust-mode-hook #'flycheck-mode)
+  (add-hook 'rust-mode-hook #'racer-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook #'ac-racer-setup)
+  (add-hook 'racer-mode-hook #'flycheck-rust-setup)
 #+END_SRC
 
 ** SQL
