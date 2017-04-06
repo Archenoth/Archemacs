@@ -939,10 +939,7 @@ me that I have to re-run =org-redisplay-inline-images= whenever I eval
 a code block that spits out an image, so [[http://emacs.stackexchange.com/a/9813/2039][I stole this snippet]] to fix
 it:
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'org-babel-after-execute-hook
-            (lambda ()
-              (when org-inline-image-overlays
-                (org-redisplay-inline-images))))
+  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
