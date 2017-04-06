@@ -165,7 +165,8 @@ of the default.
 The defaults do work reasonably well I think, though the way I have
 this final font setup in my [[file:~/.emacs][.emacs]]
 #+BEGIN_SRC emacs-lisp :tangle no
-  (set-frame-font "M+ 1m")
+  (add-to-list 'default-frame-alist
+               '(font . "-unknown-M+ 1m-light-normal-normal-*-*-98-*-*-d-0-iso10646-1"))
 #+END_SRC
 
 This is not a part of the tangled code because it requires
