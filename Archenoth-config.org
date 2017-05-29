@@ -99,13 +99,13 @@ with =use-package=:
 #+BEGIN_SRC emacs-lisp
   ;; Ensuring packages are installed
   (check-packages 'pp-c-l 'multiple-cursors 'web-mode 'rsense 'robe
-   'projectile 'powerline 'plsql 'php-mode 'paredit 'yasnippet
+   'projectile 'plsql 'php-mode 'paredit 'yasnippet
    'markdown-mode+ 'magit 'lua-mode 'langtool 'js2-refactor 'jedi
    'htmlize 'helm-projectile 'helm-emmet 'grizzl 'graphviz-dot-mode
    'flymake-ruby 'flymake-easy 'feature-mode 'expand-region 'evil
    'erefactor 'enh-ruby-mode 'emmet-mode 'ecukes 'nginx-mode
    'cucumber-goto-step 'firebelly-theme 'apache-mode 'avy 'ac-sly
-   'ac-js2 'ac-emmet 'ac-cider 'firecode-theme 'sauron
+   'ac-js2 'ac-emmet 'ac-cider 'sauron
    'tern-auto-complete 'org-plus-contrib 'racer 'flycheck-rust)
 #+END_SRC
 
@@ -143,12 +143,7 @@ generally like to remove the toolbar at the top of the screen:
   (tool-bar-mode 0)
 #+END_SRC
 
-Also, I like the [[https://github.com/emacsfodder/emacs-firecode-theme][Firecode]] theme. It's really nice!
-#+BEGIN_SRC emacs-lisp
-  (load-theme 'firecode t)
-#+END_SRC
-
-As for in-depth styling, I have my own set of basic defaults:
+As for in-depth styling, I have my own set of basic default faces:
 #+BEGIN_SRC emacs-lisp
   (setq archenoth-faces
         (if (boundp 'archenoth-theme)
@@ -177,13 +172,13 @@ The following is the definition for the function that will handle the
 logic for switching from windowed to fullscreen (Mostly just small
 interface tweaks):
 #+BEGIN_SRC emacs-lisp
-    (defun set-fullscreen-settings ()
-      "Sets the default theme I use for maximixed Emacs"
-      (interactive)
-      (set-face-attribute 'default (selected-frame) :height 113)
-      (fringe-mode '(20 . 0))
-      (scroll-bar-mode -1)
-      (menu-bar-mode -1))
+  (defun set-fullscreen-settings ()
+    "Sets the default theme I use for maximixed Emacs"
+    (interactive)
+    (set-face-attribute 'default (selected-frame) :height 113)
+    (fringe-mode '(20 . 0))
+    (scroll-bar-mode -1)
+    (menu-bar-mode -1))
 #+END_SRC
 
 Now for windowed!
@@ -216,34 +211,11 @@ from fullscreen to windowed:
 Spifftastic! Now time to put it all together...
 
 ** The actual style logic                         :Bindings:Functions:Advice:
-As for whether to apply these themes, it is all dependant on whether
-or not we are running in NOX:
-
-The general idea behind this style logic is that it will only exist
-when we have a graphical version of Emacs running... It will also keep
-track of whether or not we are in fullscreen in a little =let=
-closure:
-#+BEGIN_SRC emacs-lisp :noweb yes
-  ;; Firebelly and firecode themes, fullscreen, and powerline... Bad in
-  ;; NOX though.
-  (when (display-graphic-p)
-    (let ((is-fullscreen nil))
-      <<toggle-fullscreen>>
-
-      <<display-buffer-advice>>)
-
-    <<toggle-style-initialization>>)
-#+END_SRC
-
 What we want here is something that allows me to toggle between two
 style configurations, one for fullscreen mode, the other for windowed
 with the [F11] key.
 
-I also want a piece of advice for =display-buffer= to prefer to not
-create new windows when in fullscreen mode.
-
-For the "=<<toggle-fullscreen>>=" above, we create a function that
-will interactively toggle between two modes, fullscreen and not:
+For the toggling logic, we create this function:
 #+NAME:toggle-fullscreen
 #+BEGIN_SRC emacs-lisp :eval no :tangle no
   (defun toggle-fullscreen ()
@@ -260,14 +232,8 @@ will interactively toggle between two modes, fullscreen and not:
         (set-fullscreen-settings))))
 #+END_SRC
 
-When switching to a mode, the frame parameters are changed, the
-lexical =is-fullscreen= variable is set to the correct value, and the
-correct settings defined above are chosen.
-
-After that, in "=<<display-buffer-advice>>=", I have created a
-function that can act as "=:filter-args=" advice. The idea for the
-advice is to stop Emacs from creating new windows all the time in
-fullscreen mode, because that is really annoying.
+I also want a piece of advice for =display-buffer= to prefer to not
+create new windows when in fullscreen mode.
 
 It will, when the =is-fullscreen= variable is set, make sure the
 =action= parameter is not set to "=t=" when calling =display-buffer=,
@@ -280,6 +246,8 @@ because that will pop up a new window:
                                  (or (eq action t) (eq action 'other-window)))
                       action)))
         (list buffer-or-name action frame))))
+
+  (advice-add 'display-buffer :filter-args #'my-display-buffer)
 #+END_SRC
 
 I also check for =other-window= explicitly, because some commands like
@@ -293,24 +261,33 @@ This, of course, doesn't stop explicit actions from creating new
 windows, but it deters a lot of the defaults that drive me up the
 wall.
 
-Now, of course, here is the initialization code I have at
-"=<<toggle-style-initialization>>=":
-#+NAME:toggle-style-initialization
-#+BEGIN_SRC emacs-lisp :tangle no :eval no
-  (advice-add 'display-buffer :filter-args #'my-display-buffer)
+Now, of course, here is the =use-package= declarations for the
+[[https://github.com/emacsfodder/emacs-firecode-theme][Firecode]] theme which glues all of this together if there is a window
+system to work with.
+#+BEGIN_SRC emacs-lisp :noweb yes
+  (use-package firecode-theme
+               :if window-system
+               :ensure t
 
-  (powerline-center-theme)
-  (apply #'custom-set-faces archenoth-faces)
-  (set-window-settings)
-  (global-set-key (kbd "<f11>") 'toggle-fullscreen)
+               :init
+               (load-theme 'firecode t)
+               (apply #'custom-set-faces archenoth-faces)
+               (set-window-settings)
+
+               (let ((is-fullscreen nil))
+                 <<toggle-fullscreen>>
+                 <<display-buffer-advice>>)
+
+               :bind ("<f11>" . toggle-fullscreen))
 #+END_SRC
 
-This just adds the advice defined above, loads the themes for each
-screen mode, loads =powerline=, sets the windowed-mode settings, and
-binds =<f11>= to the toggle fullscreen function.
-
-That's about the extent of my style logic. Nothing too scary.
-
+And of course, Powerline is nice!
+#+BEGIN_SRC emacs-lisp
+  (use-package powerline
+               :if window-system
+               :ensure t
+               :config (powerline-center-theme))
+#+END_SRC
 
 * Languages                                                           :Hooks:
 The following are package-loaded language support configurations:
