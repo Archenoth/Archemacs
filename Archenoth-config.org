@@ -50,10 +50,11 @@ a couple more repos. (I am sure almost everyone has this in their
 configuration somewhere)
 #+BEGIN_SRC emacs-lisp
   ;; Package Manager URLs
-  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-               ("marmalade" . "http://marmalade-repo.org/packages/")
-               ("melpa" . "http://melpa.milkbox.net/packages/")
-               ("org" . "http://orgmode.org/elpa/")))
+  (setq package-archives
+        '(("gnu" . "http://elpa.gnu.org/packages/")
+          ("marmalade" . "http://marmalade-repo.org/packages/")
+          ("melpa" . "http://melpa.milkbox.net/packages/")
+          ("org" . "http://orgmode.org/elpa/")))
 #+END_SRC
 
 Then, we want to require TLS... This is for =erc-tls=, yes, but I
@@ -65,19 +66,19 @@ config file.)
   (require 'tls)
 #+END_SRC
 
-And then we initialize the package manager, anything past this line
-has the entirety of the installed packages available:
+And then we initialize the package manager and =use-package=:
 #+BEGIN_SRC emacs-lisp
-  ;; Just in case
   (package-initialize)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
 #+END_SRC
 
 ** Package checker and installer                                  :Functions:
-What about if there are no packages? Or some are missing?
-
-I wrote a little package checker and installer so that I would not
-have to worry about manually installing packages I like to have by
-default:
+I wrote a little package installer before I decided to convert
+everything to =use-package=. I still need this for the time being, but
+hopefully that will change soon:
 #+BEGIN_SRC emacs-lisp
   ;; My little package checker and installer
   (defun check-packages (&rest packages)
@@ -93,8 +94,8 @@ default:
              and do (package-install package)))
 #+END_SRC
 
-Now, lets use this to install all the packages we need if they don't
-exist already:
+And here is the list of packages I configure that I don't yet handler
+with =use-package=:
 #+BEGIN_SRC emacs-lisp
   ;; Ensuring packages are installed
   (check-packages 'pp-c-l 'multiple-cursors 'web-mode 'rsense 'robe
