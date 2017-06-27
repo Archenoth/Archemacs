@@ -656,6 +656,15 @@ at it
   (add-hook 'racer-mode-hook #'flycheck-rust-setup)
 #+END_SRC
 
+And to make auto-complete a little less annoying:
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'racer-mode-hook
+            (lambda ()
+              (setq ac-sources '(ac-source-racer))
+              (setq ac-auto-start nil)
+              (setq ac-trigger-key "TAB")))
+#+END_SRC
+
 ** SQL
 Emacs seems to fail at escaping backslashes in SQL files... So I have
 slightly modified the syntax entry for the backslash character in SQL
