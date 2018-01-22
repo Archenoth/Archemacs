@@ -44,6 +44,12 @@ from Common Lisp:
 
 
 * Setting up the package manager
+First, we want to require TLS...
+#+BEGIN_SRC emacs-lisp
+  ;; SSL Support
+  (require 'tls)
+#+END_SRC
+
 The package manager in Emacs is pretty sweet, but the default repos
 are quite limited in their selection of packages... So instead, I add
 a couple more repos. (I am sure almost everyone has this in their
@@ -51,19 +57,11 @@ configuration somewhere)
 #+BEGIN_SRC emacs-lisp
   ;; Package Manager URLs
   (setq package-archives
-        '(("gnu" . "http://elpa.gnu.org/packages/")
-          ("marmalade" . "http://marmalade-repo.org/packages/")
-          ("melpa" . "http://melpa.milkbox.net/packages/")
-          ("org" . "http://orgmode.org/elpa/")))
-#+END_SRC
-
-Then, we want to require TLS... This is for =erc-tls=, yes, but I
-believe it will also be used for all other pieces of Emacs that use
-SSL. (Like the package manager eventually, hence its location in the
-config file.)
-#+BEGIN_SRC emacs-lisp
-  ;; SSL Support (For ERC primarily)
-  (require 'tls)
+    (cl-flet ((get-scheme (path) (concat (if (gnutls-available-p) "https://" "http://") path)))
+      `(("gnu" . ,(get-scheme "elpa.gnu.org/packages/"))
+        ("marmalade" . ,(get-scheme "marmalade-repo.org/packages/"))
+        ("melpa" . ,(get-scheme "melpa.milkbox.net/packages/"))
+        ("org" . ,(get-scheme "orgmode.org/elpa/")))))
 #+END_SRC
 
 And then we initialize the package manager and =use-package=:
