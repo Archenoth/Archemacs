@@ -884,8 +884,8 @@ Org mode deserves a section for itself because it is just that
 important.
 
 My Org mode setup includes support for spell checking, grammar
-checking, tangling source files from Org mode, =auto-fill=, and syntax
-coloring:
+checking, tangling source files from Org mode, =visual-line-mode=, and
+syntax coloring:
 
 #+BEGIN_SRC emacs-lisp
   ;; Org mode
@@ -896,7 +896,7 @@ coloring:
    (lambda ()
      (progn
        (flyspell-mode t)
-       (auto-fill-mode t)
+       (visual-line-mode t)
        (setq-default indent-tabs-mode nil)
        (setq org-src-fontify-natively t)
        (setq org-export-latex-listings 'minted)
