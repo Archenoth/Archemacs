@@ -97,14 +97,14 @@ with =use-package=:
 #+BEGIN_SRC emacs-lisp
   ;; Ensuring packages are installed
   (check-packages 'pp-c-l 'multiple-cursors 'web-mode 'rsense 'robe
-   'projectile 'plsql 'php-mode 'paredit 'yasnippet
-   'markdown-mode+ 'magit 'lua-mode 'langtool 'js2-refactor 'jedi
-   'htmlize 'helm-projectile 'helm-emmet 'grizzl 'graphviz-dot-mode
+   'projectile 'plsql 'php-mode 'paredit 'yasnippet 'markdown-mode+
+   'magit 'lua-mode 'langtool 'js2-refactor 'jedi 'htmlize
+   'helm-projectile 'helm-emmet 'grizzl 'graphviz-dot-mode
    'flymake-ruby 'flymake-easy 'feature-mode 'expand-region 'evil
    'erefactor 'enh-ruby-mode 'emmet-mode 'ecukes 'nginx-mode
    'cucumber-goto-step 'firebelly-theme 'apache-mode 'avy 'ac-sly
-   'ac-js2 'ac-emmet 'ac-cider 'sauron
-   'tern-auto-complete 'org-plus-contrib 'racer 'flycheck-rust)
+   'ac-js2 'ac-emmet 'ac-cider 'tern-auto-complete
+   'org-plus-contrib)
 #+END_SRC
 
 
