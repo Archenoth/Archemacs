@@ -14,29 +14,21 @@
 #+LATEX: \pagebreak
 :END:
 
-This is a [[info:org#Working with source code][literate configuration]] for Emacs. So even though this looks
-like a document explaining why I configured things a certain way,
-believe it or not, it actually is my config.
+This is a [[info:org#Working with source code][literate configuration]] for Emacs. So even though this looks like a document explaining why I configured things a certain way, believe it or not, it actually is my config.
 
-Feel free to take whatever you like! There are some neat little tricks
-and workarounds in here that might be useful to you
-person-who-is-reading this..!
+Feel free to take whatever you like! There are some neat little tricks and workarounds in here that might be useful to you person-who-is-reading this..!
 
-This file changes over time, and new tricks are added
-occasionally. And if this file is able to help more than just myself,
-that's kinda awesome.
+This file changes over time, and new tricks are added occasionally. And if this file is able to help more than just myself, that's kinda awesome.
 
 * Header
-In the header of the config... We want the file to include lexical
-binding:
+In the header of the config... We want the file to include lexical binding:
 #+BEGIN_SRC emacs-lisp :eval no :padline no
   ;; -*- lexical-binding: t -*-
 #+END_SRC
 
 This is used later for =let= closures.
 
-Also, I include this library to give me some of the functions I like
-from Common Lisp:
+Also, I include this library to give me some of the functions I like from Common Lisp:
 #+BEGIN_SRC emacs-lisp
   ;; For other Common Lisp-ish stuff in here
   (require 'cl-lib)
@@ -50,10 +42,7 @@ First, we want to require TLS...
   (require 'tls)
 #+END_SRC
 
-The package manager in Emacs is pretty sweet, but the default repos
-are quite limited in their selection of packages... So instead, I add
-a couple more repos. (I am sure almost everyone has this in their
-configuration somewhere)
+The package manager in Emacs is pretty sweet, but the default repos are quite limited in their selection of packages... So instead, I add a couple more repos. (I am sure almost everyone has this in their configuration somewhere)
 #+BEGIN_SRC emacs-lisp
   ;; Package Manager URLs
   (setq package-archives
@@ -73,17 +62,12 @@ And then we initialize the package manager and =use-package=:
     (package-install 'use-package))
 #+END_SRC
 
+
 * Convenience functions
-Sometimes, its nice to have a few functions to make my configuration
-easier and more modular... That is the purpose of this section.
+Sometimes, its nice to have a few functions to make my configuration easier and more modular... That is the purpose of this section.
 
 ** Path file checker                                              :Functions:
-This is a function I wrote to check to see if there is any file in the
-current path that matches the passed in filename... The purpose behind
-this was to be able to check if there are binaries that Emacs can use
-for particular functionality... (Like [[JavaScript][Tern]] for example; I would only
-want to enable its functionality if a "=tern=" binary existed
-somewhere on the system):
+This is a function I wrote to check to see if there is any file in the current path that matches the passed in filename... The purpose behind this was to be able to check if there are binaries that Emacs can use for particular functionality... (Like [[JavaScript][Tern]] for example; I would only want to enable its functionality if a "=tern=" binary existed somewhere on the system):
 #+BEGIN_SRC emacs-lisp
   (defun exec-exists-p (filename)
     "Checks to see if Emacs can see a file in the execution path.
@@ -98,8 +82,7 @@ somewhere on the system):
 
 
 * Style options
-I don't care too much for the default appearance of Emacs... I
-generally like to remove the toolbar at the top of the screen:
+I don't care too much for the default appearance of Emacs... I generally like to remove the toolbar at the top of the screen:
 
 #+BEGIN_SRC emacs-lisp
   ;; Remove unsightly toolbar...
@@ -117,23 +100,17 @@ As for in-depth styling, I have my own set of basic default faces:
             (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t))))
 #+END_SRC
 
-This essentially is just a minimal set of sane defaults, though if the
-variable =archenoth-theme= is set, those faces will be used instead
-of the default.
+This essentially is just a minimal set of sane defaults, though if the variable =archenoth-theme= is set, those faces will be used instead of the default.
 
-The defaults do work reasonably well I think, though the way I have
-this final font setup in my [[file:~/.emacs][.emacs]]
+The defaults do work reasonably well I think, though the way I have this final font setup in my [[file:~/.emacs][.emacs]]
 #+BEGIN_SRC emacs-lisp :tangle no
   (add-to-list 'default-frame-alist
                '(font . "-unknown-M+ 1m-light-normal-normal-*-*-98-*-*-d-0-iso10646-1"))
 #+END_SRC
 
-This is not a part of the tangled code because it requires
-[[https://osdn.jp/projects/mplus-fonts/releases/62344/][this awesome font]]. (Though I like to have it here for reference)
+This is not a part of the tangled code because it requires [[https://osdn.jp/projects/mplus-fonts/releases/62344/][this awesome font]]. (Though I like to have it here for reference)
 
-The following is the definition for the function that will handle the
-logic for switching from windowed to fullscreen (Mostly just small
-interface tweaks):
+The following is the definition for the function that will handle the logic for switching from windowed to fullscreen (Mostly just small interface tweaks):
 #+BEGIN_SRC emacs-lisp
   (defun set-fullscreen-settings ()
     "Sets the default theme I use for maximixed Emacs"
@@ -146,9 +123,7 @@ interface tweaks):
 
 Now for windowed!
 
-Since switching to windowed mode has some strange results with frame
-sizing, here is a function that can restore the size back to the
-normal windowed state:
+Since switching to windowed mode has some strange results with frame sizing, here is a function that can restore the size back to the normal windowed state:
 #+BEGIN_SRC emacs-lisp
   (defun set-default-window-size ()
     "Sets the default window size..."
@@ -158,8 +133,7 @@ normal windowed state:
      '((width . 80) (height . 34))))
 #+END_SRC
 
-And now, here is the function that gets called to handle switching
-from fullscreen to windowed:
+And now, here is the function that gets called to handle switching from fullscreen to windowed:
 #+BEGIN_SRC emacs-lisp
   (defun set-window-settings ()
     "Sets the default theme I use for Windowed Emacs"
@@ -174,9 +148,7 @@ from fullscreen to windowed:
 Spifftastic! Now time to put it all together...
 
 ** The actual style logic                         :Bindings:Functions:Advice:
-What we want here is something that allows me to toggle between two
-style configurations, one for fullscreen mode, the other for windowed
-with the [F11] key.
+What we want here is something that allows me to toggle between two style configurations, one for fullscreen mode, the other for windowed with the [F11] key.
 
 For the toggling logic, we create this function:
 #+NAME:toggle-fullscreen
@@ -195,12 +167,9 @@ For the toggling logic, we create this function:
         (set-fullscreen-settings))))
 #+END_SRC
 
-I also want a piece of advice for =display-buffer= to prefer to not
-create new windows when in fullscreen mode.
+I also want a piece of advice for =display-buffer= to prefer to not create new windows when in fullscreen mode.
 
-It will, when the =is-fullscreen= variable is set, make sure the
-=action= parameter is not set to "=t=" when calling =display-buffer=,
-because that will pop up a new window:
+It will, when the =is-fullscreen= variable is set, make sure the =action= parameter is not set to "=t=" when calling =display-buffer=, because that will pop up a new window:
 #+NAME:display-buffer-advice
 #+BEGIN_SRC emacs-lisp :tangle no :eval no
   (defun my-display-buffer (args)
@@ -213,20 +182,11 @@ because that will pop up a new window:
   (advice-add 'display-buffer :filter-args #'my-display-buffer)
 #+END_SRC
 
-I also check for =other-window= explicitly, because some commands like
-=compile-goto-error= open new windows regardless of other settings by
-passing this value directly into =display-buffer=. This is really
-annoying when, for example, you are trying to =grep= a project, you
-click on a result, and it pops up as new window in your
-otherwise-fullscreen environment.
+I also check for =other-window= explicitly, because some commands like =compile-goto-error= open new windows regardless of other settings by passing this value directly into =display-buffer=. This is really annoying when, for example, you are trying to =grep= a project, you click on a result, and it pops up as new window in your otherwise-fullscreen environment.
 
-This, of course, doesn't stop explicit actions from creating new
-windows, but it deters a lot of the defaults that drive me up the
-wall.
+This, of course, doesn't stop explicit actions from creating new windows, but it deters a lot of the defaults that drive me up the wall.
 
-Now, of course, here is the =use-package= declarations for the
-[[https://github.com/emacsfodder/emacs-firecode-theme][Firecode]] theme which glues all of this together if there is a window
-system to work with.
+Now, of course, here is the =use-package= declarations for the [[https://github.com/emacsfodder/emacs-firecode-theme][Firecode]] theme which glues all of this together if there is a window system to work with.
 #+BEGIN_SRC emacs-lisp :noweb yes
   (use-package firecode-theme
                :if window-system
@@ -256,13 +216,11 @@ And of course, Powerline is nice!
 * Languages                                                           :Hooks:
 The following are package-loaded language support configurations:
 
-** Language agonistic
-This section is all about the setup that is about programming, but not
-for a particular language.
+** Language agnostic
+This section is all about the setup that is about programming, but not for a particular language.
 
 *** Flymake
-Of course, there are a few modes that I like to have Flymake.
-enabled on by default...
+Of course, there are a few modes that I like to have Flymake. enabled on by default...
 #+BEGIN_SRC emacs-lisp :eval no
   ;; Flymake
 #+END_SRC
@@ -280,8 +238,7 @@ And =php-mode=:
 #+END_SRC
 
 *** Autocomplete
-Autocomplete is magnificent. I will have it enabled for almost every
-programming mode in existence.
+Autocomplete is magnificent. I will have it enabled for almost every programming mode in existence.
 
 #+BEGIN_SRC emacs-lisp
   (ac-config-default)
@@ -293,8 +250,7 @@ I generally like having a compile command as [F5]:
   (define-key global-map (kbd "<f5>") 'compile)
 #+END_SRC
 
-No, compiling is not always relevant to all languages, but it doubles
-as a quick command-line, which is almost always useful.
+No, compiling is not always relevant to all languages, but it doubles as a quick command-line, which is almost always useful.
 
 *** Yasnippet
 Snippets are great! Lots of things use them!
@@ -302,6 +258,7 @@ Snippets are great! Lots of things use them!
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet :ensure t)
 #+END_SRC
+
 ** Apache configuration
 Since I work with Apache2 servers a bunch, it's worth it to have an Emacs mode that can handle them:
 #+BEGIN_SRC emacs-lisp
@@ -309,24 +266,17 @@ Since I work with Apache2 servers a bunch, it's worth it to have an Emacs mode t
 #+END_SRC
 
 ** Bash
-A neat little trick when editing shell scripts is to add the function
-=executable-make-buffer-file-executable-if-script-p= to the
-=after-save-hook=.
+A neat little trick when editing shell scripts is to add the function =executable-make-buffer-file-executable-if-script-p= to the =after-save-hook=.
 #+BEGIN_SRC emacs-lisp
   ;; Shell scripting
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 #+END_SRC
 
-What this does it is means when creating or editing scripts, you don't
-need to =chmod +x= it. Emacs will detect it as a script automagically,
-and do that for you.
+What this does it is means when creating or editing scripts, you don't need to =chmod +x= it. Emacs will detect it as a script automagically, and do that for you.
 ** C and C++                                                       :Bindings:
-Emacs' [[info:Semantic][Semantic]] mode is really good at C... I have not tested it
-extensively with C++ though.
+Emacs' [[info:Semantic][Semantic]] mode is really good at C... I have not tested it extensively with C++ though.
 
-But with it, we get definition jumping and some quite intelligent
-=autocomplete=... So I simply define the jumping keybinding, the
-=autocomplete= sources, and add it to both C and C++ modes as hooks:
+But with it, we get definition jumping and some quite intelligent =autocomplete=... So I simply define the jumping keybinding, the =autocomplete= sources, and add it to both C and C++ modes as hooks:
 
 #+BEGIN_SRC emacs-lisp
   ;; C and C++
@@ -341,8 +291,7 @@ But with it, we get definition jumping and some quite intelligent
 #+END_SRC
 
 ** Clojure                                                         :Bindings:
-For Clojure, I turn on =eldoc-mode= and setup Autocomplete with
-=ac-cider=:
+For Clojure, I turn on =eldoc-mode= and setup Autocomplete with =ac-cider=:
 
 #+BEGIN_SRC emacs-lisp
   ;; CIDER, Clojure
@@ -353,7 +302,6 @@ For Clojure, I turn on =eldoc-mode= and setup Autocomplete with
            (cider-mode . ac-cider-setup)
            (cider-repl-mode-hook . eldoc-mode)))
 #+END_SRC
-
 
 ** Common Lisp
 The Common Lisp setup is largely just setting up Sly and Sly's =autocomplete= source.
@@ -382,8 +330,7 @@ Sometimes I like to look at Graphviz dot files, and maybe write them?
 #+BEGIN_SRC emacs-lisp :eval no
   ;; ELISP
 #+END_SRC
-My ELISP configuration is largely just setting up =erefactor= and then
-adding it to the three ELISP modes.
+My ELISP configuration is largely just setting up =erefactor= and then adding it to the three ELISP modes.
 
 So first I require the package:
 #+BEGIN_SRC emacs-lisp
@@ -394,8 +341,7 @@ So first I require the package:
     :bind-keymap ("C-c C-v" . erefactor-map))
 #+END_SRC
 
-Then I define a hook that turns on =erefactor='s scope highlighting,
-=eldoc-mode=, and defines a key for to start refactoring:
+Then I define a hook that turns on =erefactor='s scope highlighting, =eldoc-mode=, and defines a key for to start refactoring:
 
 #+BEGIN_SRC emacs-lisp
   ;; Hook for all ELISP modes
@@ -406,8 +352,7 @@ Then I define a hook that turns on =erefactor='s scope highlighting,
     (eldoc-mode t))
 #+END_SRC
 
-Then I simply assign the function as a hook for all of the ELISP
-modes:
+Then I simply assign the function as a hook for all of the ELISP modes:
 #+BEGIN_SRC emacs-lisp
   ;; And assigning to said modes
   (add-hook 'emacs-lisp-mode-hook 'el-hook)
@@ -484,11 +429,7 @@ And with Emmet enabled, I can also add some more niceties, like autocomplete for
 #+END_SRC
 
 ** Java
-I don't do much Java in Emacs, that generally is the job of Eclipse
-because of its super-intelligent support, integration with
-everything, and ridiculous debugger capabilities... But when I
-do... I only have two real tweaks to make:
-
+I don't do much Java in Emacs, that generally is the job of Eclipse because of its super-intelligent support, integration with everything, and ridiculous debugger capabilities... But when I do... I only have two real tweaks to make:
 #+BEGIN_SRC emacs-lisp
   ;; Java
   (add-hook 'java-mode-hook
@@ -586,8 +527,7 @@ I sometimes write in Lua. Nothing overly special here:
   ;; Markdown
 #+END_SRC
 
-As of the time of writing, I don't think markdown mode has it set
-automagically start for files with the =.md= file extension, so:
+As of the time of writing, I don't think markdown mode has it set automagically start for files with the =.md= file extension, so:
 #+BEGIN_SRC emacs-lisp :padline no
   (use-package markdown-mode
     :ensure markdown-mode+
@@ -634,9 +574,7 @@ And, if we want to get completions from a Ruby REPL, we can get some extra suppo
   ;; Rust support
 #+END_SRC
 
-Rust is a pretty neat language. Racer is a pretty neat mode.
-Lets combine these a bit and get some autocomplete support while we're
-at it
+Rust is a pretty neat language. Racer is a pretty neat mode. Lets combine these a bit and get some autocomplete support while we're at it
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'rust-mode-hook #'flycheck-mode)
@@ -656,9 +594,7 @@ And to make auto-complete a little less annoying:
 #+END_SRC
 
 ** SQL
-Emacs seems to fail at escaping backslashes in SQL files... So I have
-slightly modified the syntax entry for the backslash character in SQL
-files so it acts like a proper escape:
+Emacs seems to fail at escaping backslashes in SQL files... So I have slightly modified the syntax entry for the backslash character in SQL files so it acts like a proper escape:
 #+BEGIN_SRC emacs-lisp
   ;; SQL, fix buffer escaping
   (add-hook 'sql-mode-hook
@@ -668,21 +604,15 @@ files so it acts like a proper escape:
 
 
 * Utility
-The following are things that are nice to have set up during normal
-Emacs usage, but aren't for any type of task in particular.
+The following are things that are nice to have set up during normal Emacs usage, but aren't for any type of task in particular.
 
 ** XWidget browser                                 :Bindings:Hooks:Functions:
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle (if (fboundp 'xwidget-webkit-mode) "yes" "no")
 :END:
-Emacs now has a WebKit-based browser embedded in it with XWidget. This
-is cool and all, but its defaults are pretty much unusable, so here is
-my configuration to make it act like a slightly-reasonable browser:
+Emacs now has a WebKit-based browser embedded in it with XWidget. This is cool and all, but its defaults are pretty much unusable, so here is my configuration to make it act like a slightly-reasonable browser:
 
-First I define two functions, since =[Home]= and =[End]= functionality
-is sorely lacking. It just scrolls the browser itself out of view and
-doesn't scroll. The alternative is to scroll a few pixels at a time
-until you are at the bottom. *Annoying*.
+First I define two functions, since =[Home]= and =[End]= functionality is sorely lacking. It just scrolls the browser itself out of view and doesn't scroll. The alternative is to scroll a few pixels at a time until you are at the bottom. *Annoying*.
 
 So:
 #+BEGIN_SRC emacs-lisp
@@ -701,9 +631,7 @@ So:
      "window.scrollTo(0, document.body.scrollHeight);"))
 #+END_SRC
 
-This part is to define a bunch of keys to make the browser
-actually-usable. The following was largely stolen from [[https://www.reddit.com/r/emacs/comments/4srze9/watching_youtube_inside_emacs_25/][this Reddit
-post]], with a few modifications to add my own functions above:
+This part is to define a bunch of keys to make the browser actually-usable. The following was largely stolen from [[https://www.reddit.com/r/emacs/comments/4srze9/watching_youtube_inside_emacs_25/][this Reddit post]], with a few modifications to add my own functions above:
 #+BEGIN_SRC emacs-lisp
   ;; Add usable keybindings whenever we try to use the XWidget browser
   (add-hook
@@ -727,8 +655,7 @@ post]], with a few modifications to add my own functions above:
        (xwidget-webkit-adjust-size-dispatch))))
 #+END_SRC
 ** Evil
-I find that one of the first things I do when I start Emacs recently
-is start Evil... I may as well just put it in my config.
+I find that one of the first things I do when I start Emacs recently is start Evil... I may as well just put it in my config.
 
 #+BEGIN_SRC emacs-lisp
   (use-package evil
@@ -741,9 +668,7 @@ is start Evil... I may as well just put it in my config.
   ;; Supremely useful monitor -- Sauron
 #+END_SRC
 
-The all-seeing eye, Sauron is quite useful, though I want to add some
-functionality to the modeline with it, so I make higher-priority
-messages set a variable: =sauron-alert=:
+The all-seeing eye, Sauron is quite useful, though I want to add some functionality to the modeline with it, so I make higher-priority messages set a variable: =sauron-alert=:
 
 #+BEGIN_SRC emacs-lisp :padline no
   (add-hook 'sauron-event-added-functions
@@ -763,10 +688,7 @@ And of course, to set it back to nothingness:
   (makunbound 'sauron-alert)
 #+END_SRC
 
-I actually use this in the modeline and have the modeline use the
-following function to generate a spooky eye that notifies me if Sauron
-has seen something of interest with clickable text to bring me to the
-Sauron buffer:
+I actually use this in the modeline and have the modeline use the following function to generate a spooky eye that notifies me if Sauron has seen something of interest with clickable text to bring me to the Sauron buffer:
 #+BEGIN_SRC emacs-lisp :tangle no
   (defun make-sauron-text ()
     "Creates a clickable Sauron text that switches to the Sauron
@@ -783,15 +705,13 @@ Sauron buffer:
                   'pointer 'hand)))
 #+END_SRC
 
-And because I get notified of high-priority events normally with the
-above, I have no need for Sauron to be its own frame:
+And because I get notified of high-priority events normally with the above, I have no need for Sauron to be its own frame:
 #+BEGIN_SRC emacs-lisp
   (setq sauron-separate-frame nil)
 #+END_SRC
 
 ** Expand Region                                                   :Bindings:
-Expand Region is a very handy package for selecting arbitrary blocks
-of text, be it code or whatever.
+Expand Region is a very handy package for selecting arbitrary blocks of text, be it code or whatever.
 
 #+BEGIN_SRC emacs-lisp
   ;; Expand region
@@ -802,9 +722,7 @@ of text, be it code or whatever.
 #+END_SRC
 
 ** Multiple Cursors                                                :Bindings:
-From the famous [[https://www.youtube.com/watch?v=jNa3axo40qM][Emacs Rocks video]] where it was introduced to the
-masses, my configuration for this super-handy mode is as follows (Just
-keybindings):
+From the famous [[https://www.youtube.com/watch?v=jNa3axo40qM][Emacs Rocks video]] where it was introduced to the masses, my configuration for this super-handy mode is as follows (Just keybindings):
 
 #+BEGIN_SRC emacs-lisp
   ;; Multiple-cursors
@@ -844,8 +762,7 @@ So, with all of this in play, here is my projectile config:
 #+END_SRC
 
 ** Avy                                                             :Bindings:
-=Avy= is a [[http://emacsredux.com/blog/2015/07/19/ace-jump-mode-is-dead-long-live-avy/][re-imagining of ace-jump-mode]], which allows for very fast
-jumping around a buffer.
+=Avy= is a [[http://emacsredux.com/blog/2015/07/19/ace-jump-mode-is-dead-long-live-avy/][re-imagining of ace-jump-mode]], which allows for very fast jumping around a buffer.
 
 It is very handy for navigation regardless of mode, so:
 #+BEGIN_SRC emacs-lisp
@@ -861,19 +778,16 @@ It is very handy for navigation regardless of mode, so:
 #+END_SRC
 
 ** Show parenthesis mode
-To my knowledge, there is not a single mode where this minor mode
-isn't helpful or mildly amusing.
+To my knowledge, there is not a single mode where this minor mode isn't helpful or mildly amusing.
 
 #+BEGIN_SRC emacs-lisp
   (show-paren-mode)
 #+END_SRC
 
 ** Pretty-print =^L= characters
-By default, Emacs uses the control character ^L pretty often and
-prints it as a control character in buffers.
+By default, Emacs uses the control character ^L pretty often and prints it as a control character in buffers.
 
-I find this to be ugly, so instead, I install =pretty-control-l-mode=
-so I can make it look nice.
+I find this to be ugly, so instead, I install =pretty-control-l-mode= so I can make it look nice.
 #+BEGIN_SRC emacs-lisp
   (use-package pp-c-l
     :ensure t
@@ -888,12 +802,9 @@ I don't need to make any modifications to Magit, despite the fact that I use it 
 
 
 * Org Mode                                                   :Bindings:Hooks:
-Org mode deserves a section for itself because it is just that
-important.
+Org mode deserves a section for itself because it is just that important.
 
-My Org mode setup includes support for spell checking, grammar
-checking, tangling source files from Org mode, =visual-line-mode=, and
-syntax coloring:
+My Org mode setup includes support for spell checking, grammar checking, tangling source files from Org mode, =visual-line-mode=, and syntax coloring:
 #+BEGIN_SRC emacs-lisp
   ;; Org mode
   (use-package org-mode
@@ -917,13 +828,9 @@ The grammar checking is done with langtool, and isn't even really required, so n
   (use-package langtool)
 #+END_SRC
 
-Nothing too crazy, because most of Org's default configuration is
-pretty sweet.
+Nothing too crazy, because most of Org's default configuration is pretty sweet.
 
-As for evaluation, especially evaluation with images, It kinda annoys
-me that I have to re-run =org-redisplay-inline-images= whenever I eval
-a code block that spits out an image, so [[http://emacs.stackexchange.com/a/9813/2039][I stole this snippet]] to fix
-it:
+As for evaluation, especially evaluation with images, It kinda annoys me that I have to re-run =org-redisplay-inline-images= whenever I eval a code block that spits out an image, so [[http://emacs.stackexchange.com/a/9813/2039][I stole this snippet]] to fix it:
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 #+END_SRC
@@ -935,28 +842,23 @@ it:
   (global-set-key (kbd "C-c n") 'org-capture)
 #+END_SRC
 
-I /did/, however, bind a few global Org-mode commands, things that can
-be useful anywhere...
+I /did/, however, bind a few global Org-mode commands, things that can be useful anywhere...
 
 
 * Variables
 #+BEGIN_SRC emacs-lisp :eval no
   ;;;; Variables
 #+END_SRC
-There are some variables that I want to =setq= because I don't want
-to have to customize them from their defaults.
+There are some variables that I want to =setq= because I don't want to have to customize them from their defaults.
 
 ** Lock Files
-I really don't like Emacs lockfiles... They are annoying and mess up
-an otherwise clean folder:
+I really don't like Emacs lockfiles... They are annoying and mess up an otherwise clean folder:
 #+BEGIN_SRC emacs-lisp :padline no
   (setq create-lockfiles nil) ;; Nasty at times
 #+END_SRC
 
 ** Tabs vs Spaces: The endless war
-I am on the spaces side, because tab width screws up formatting
-hardcore on things like Github if you want to do granular spacing and
-their tabs are different from yours:
+I am on the spaces side, because tab width screws up formatting hardcore on things like Github if you want to do granular spacing and their tabs are different from yours:
 #+BEGIN_SRC emacs-lisp
   (setq-default indent-tabs-mode nil) ;; Screws up in other editors and Github
 #+END_SRC
@@ -964,8 +866,7 @@ their tabs are different from yours:
 Come at me bro.
 
 ** Auto-backup config
-Stolen from [[http://emacswiki.org/emacs/BackupDirectory][here]]... Very useful to have backup files not mess up the
-current folder, and yet still exist:
+Stolen from [[http://emacswiki.org/emacs/BackupDirectory][here]]... Very useful to have backup files not mess up the current folder, and yet still exist:
 #+BEGIN_SRC emacs-lisp
   ;; Auto-backups
   (setq backup-by-copying t      ; don't clobber symlinks
@@ -981,13 +882,10 @@ current folder, and yet still exist:
 
 
 * Aliases
-Aliases to replace one piece of functionality with another is
-super-handy.
+Aliases to replace one piece of functionality with another is super-handy.
 
 ** Yes and No questions
-Having to type "yes" is annoying when I just want to do something
-simple... So, I alias =yes-or-no-p= to the single-keystroke
-equivalent:
+Having to type "yes" is annoying when I just want to do something simple... So, I alias =yes-or-no-p= to the single-keystroke equivalent:
 
 #+BEGIN_SRC emacs-lisp
   ;; Make boolean questions less annoying
@@ -1003,10 +901,7 @@ Hooks! A few small tweaks to suit my work style.
 #+END_SRC
 
 ** Whitespace begone!
-First of all, I dislike having messy whitespace in the files I am
-working with, so I am sure to delete trailing whitespace whenever I
-save a file... (This might become a problem sometime down the line,
-but so far everything is good.)
+First of all, I dislike having messy whitespace in the files I am working with, so I am sure to delete trailing whitespace whenever I save a file... (This might become a problem sometime down the line, but so far everything is good.)
 
 #+BEGIN_SRC emacs-lisp :padline no
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -1017,17 +912,12 @@ but so far everything is good.)
 #+BEGIN_SRC emacs-lisp :eval no
   ;;;; Non-specific bindings
 #+END_SRC
-This is a section for key and event bindings that don't fit anywhere
-else.
+This is a section for key and event bindings that don't fit anywhere else.
 
 ** USR1 signal
-When I am running Emacs, I don't always think about starting a server
-of it, because I simply don't need it... But what happens if something
-terrible happens to my desktop manager and Emacs is still intact? I
-can't do a lot with it...
+When I am running Emacs, I don't always think about starting a server of it, because I simply don't need it... But what happens if something terrible happens to my desktop manager and Emacs is still intact? I can't do a lot with it...
 
-That is why I am going to make =kill -USR1 $(pidof emacs)= start an
-Emacs server.
+That is why I am going to make =kill -USR1 $(pidof emacs)= start an Emacs server.
 
 #+BEGIN_SRC emacs-lisp :padline no
   (define-key special-event-map (kbd "<sigusr1>") 'server-start)
