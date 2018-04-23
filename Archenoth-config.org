@@ -73,38 +73,34 @@ And then we initialize the package manager and =use-package=:
     (package-install 'use-package))
 #+END_SRC
 
-** Package checker and installer                                  :Functions:
-I wrote a little package installer before I decided to convert
-everything to =use-package=. I still need this for the time being, but
-hopefully that will change soon:
+And for a bunch of simple use-package declarations with no configuration:
 #+BEGIN_SRC emacs-lisp
-  ;; My little package checker and installer
-  (defun check-packages (&rest packages)
-    "Checks if the passed in packages are installed, and installs
-  the ones that are not."
-    (cl-loop for package in packages
-             with refreshed = nil
-             unless (package-installed-p package)
-               unless refreshed
-                 do (package-refresh-contents)
-                 and do (setq refreshed t)
-               end
-             and do (package-install package)))
-#+END_SRC
-
-And here is the list of packages I configure that I don't yet handler
-with =use-package=:
-#+BEGIN_SRC emacs-lisp
-  ;; Ensuring packages are installed
-  (check-packages 'pp-c-l 'multiple-cursors 'web-mode 'rsense 'robe
-   'projectile 'plsql 'php-mode 'paredit 'yasnippet 'markdown-mode+
-   'magit 'lua-mode 'langtool 'js2-refactor 'jedi 'htmlize
-   'helm-projectile 'helm-emmet 'grizzl 'graphviz-dot-mode
-   'flymake-ruby 'flymake-easy 'feature-mode 'expand-region 'evil
-   'erefactor 'enh-ruby-mode 'emmet-mode 'ecukes 'nginx-mode
-   'cucumber-goto-step 'firebelly-theme 'apache-mode 'avy 'ac-sly
-   'ac-js2 'ac-emmet 'ac-cider 'tern-auto-complete
-   'org-plus-contrib)
+  (use-package magit :ensure t)
+  (use-package lua-mode :ensure t)
+  (use-package langtool :ensure t)
+  (use-package js2-refactor :ensure t)
+  (use-package jedi :ensure t)
+  (use-package htmlize :ensure t)
+  (use-package helm-projectile :ensure t)
+  (use-package helm-emmet :ensure t)
+  (use-package grizzl :ensure t)
+  (use-package graphviz-dot-mode :ensure t)
+  (use-package flymake-easy :ensure t)
+  (use-package feature-mode :ensure t)
+  (use-package expand-region :ensure t)
+  (use-package evil :ensure t)
+  (use-package erefactor :ensure t)
+  (use-package ecukes :ensure t)
+  (use-package nginx-mode :ensure t)
+  (use-package cucumber-goto-step :ensure t)
+  (use-package apache-mode :ensure t)
+  (use-package avy :ensure t)
+  (use-package sly :ensure ac-sly)
+  (use-package ac-js2 :ensure t)
+  (use-package ac-cider :ensure t)
+  (use-package tern-auto-complete :ensure t)
+  ;; (use-package firebelly-theme :ensure t)
+  ;; (use-package org-plus-contrib :ensure t)
 #+END_SRC
 
 
@@ -308,7 +304,9 @@ Of those, we have =perl-mode=:
 
 And =php-mode=:
 #+BEGIN_SRC emacs-lisp :padline no
-  (add-hook 'php-mode-hook (lambda () (flymake-mode t)))
+  (use-package php-mode
+    :ensure t
+    :hook ((php-mode . flymake-mode)))
 #+END_SRC
 
 *** Autocomplete
@@ -328,6 +326,12 @@ I generally like having a compile command as [F5]:
 No, compiling is not always relevant to all languages, but it doubles
 as a quick command-line, which is almost always useful.
 
+*** Yasnippet
+Snippets are great! Lots of things use them!
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet :ensure t)
+#+END_SRC
 ** Bash
 A neat little trick when editing shell scripts is to add the function
 =executable-make-buffer-file-executable-if-script-p= to the
@@ -456,36 +460,46 @@ emulate those here:
 
 ** HTML, JSP, PHP, and so on...
 For most markup-centric web development, I start up =web-mode=:
-
 #+BEGIN_SRC emacs-lisp
-  ;; Web Mode for HTML, JSPs, etc...
-  (add-to-list 'auto-mode-alist '("\\.[sj]?html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.phtml$" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.php[34]?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.ejs$" . web-mode))
-  (setq web-mode-engines-alist  '(("jsp" . "\\.tag\\'")))
-#+END_SRC
+    ;; Web Mode for HTML, JSPs, etc...
+  (use-package web-mode
+    :ensure t
+    :after yasnippet
 
-I also start up [[http://emmet.io/][Emmet]] for =web-mode=, any =sgml-mode= derivative, and
-for =css-mode=...
+    :mode
+    (("\\.[sj]?html?\\'" . web-mode)
+     ("\\.jsp\\'" . web-mode)
+     ("\\.phtml$" . web-mode)
+     ("\\.php[34]?\\'" . web-mode)
+     ("\\.erb$" . web-mode)
+     ("\\.ejs$" . web-mode))
 
-I also have a few other =web-mode= tweaks in the =web-mode-hook= I
-define.
-#+BEGIN_SRC emacs-lisp
-  (defun web-mode-hook ()
-    "Hooks for Web mode."
+    :init
+    (setq web-mode-engines-alist '(("jsp" . "\\.tag\\'")))
     (setq web-mode-html-offset 2)
     (setq web-mode-css-offset 2)
-    (setq web-mode-script-offset 2)
-    (emmet-mode 1)
-    (setq emmet-indentation 2)
-    (toggle-truncate-lines t)
-    (yas-minor-mode 1))
-  (add-hook 'web-mode-hook 'web-mode-hook)
-  (add-hook 'sgml-mode-hook 'ac-emmet-html-setup)
-  (add-hook 'css-mode-hook 'ac-emmet-css-setup)
+    (setq web-mode-script-offset 2))
+#+END_SRC
+
+For some niceties that let me do things like write blocks of HTML with only CSS selectors, here's [[https://emmet.io/][Emmet]]!
+#+BEGIN_SRC emacs-lisp
+  (use-package emmet-mode
+    :ensure t
+    :after web-mode
+    :init (setq emmet-indentation 2)
+    :hook
+    ((web-mode . emmet-mode)))
+#+END_SRC
+
+And with Emmet enabled, I can also add some more niceties, like autocomplete for its snippets:
+#+BEGIN_SRC emacs-lisp
+  (use-package ac-emmet
+    :ensure t
+    :after emmet-mode
+    :hook
+    ((web-mode . ac-emmet-html-setup)
+     (sgml-mode . ac-emmet-html-setup)
+     (css-mode . ac-emmet-css-setup)))
 #+END_SRC
 
 ** Java
@@ -589,7 +603,9 @@ JavaScript IDE:
 As of the time of writing, I don't think markdown mode has it set
 automagically start for files with the =.md= file extension, so:
 #+BEGIN_SRC emacs-lisp :padline no
-  (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+  (use-package markdown-mode
+    :ensure markdown-mode+
+    :mode "\\.md$")
 #+END_SRC
 
 ** Python
@@ -607,34 +623,18 @@ I don't really write Python, but for the times I do, Jedi is neat:
   ;; Ruby support
 #+END_SRC
 
-The default Ruby mode in Emacs is pretty good, partially because it
-was [[http://www.slideshare.net/yukihiro_matz/how-emacs-changed-my-life][written by Matz himself.]] But there is still room for improvement:
-
-First off, when =ruby-mode= is loaded, we also want to load
-=robe-mode=, which allows for using an interactive Ruby instance for
-completion...
-
-#+BEGIN_SRC emacs-lisp :padline no
-  (add-hook 'ruby-mode-hook 'robe-mode)
+The default Ruby mode in Emacs is pretty good, partially because it was [[http://www.slideshare.net/yukihiro_matz/how-emacs-changed-my-life][written by Matz himself.]] But there is still room for improvement. Notably, adding some kind of on-the-fly syntax checking can make things just lovely:
+#+BEGIN_SRC emacs-lisp :eval no
+  (use-package flymake-ruby
+    :ensure t
+    :hook ((ruby-mode . flymake-ruby-load)))
 #+END_SRC
 
-And for error checking, we use =flymake-ruby=:
+And, if we want to get completions from a Ruby REPL, we can get some extra support with Robe:
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'ruby-mode-hook 'flymake-ruby-load)
-#+END_SRC
-
-There is an Enhanced Ruby Mode =enh-ruby=, though it is a bit finicky
-currently, so I don't load it by default... But for the times I do
-use it, I have defined this hook to configure it to use =robe-mode=
-like normal Ruby mode and set up a bunch of =autocomplete= sources
-for code assist:
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'enh-ruby-mode-hook
-            (lambda ()
-              (robe-mode)
-              (add-to-list 'ac-sources 'ac-source-robe)
-              (add-to-list 'ac-sources 'ac-source-rsense-method)
-              (add-to-list 'ac-sources 'ac-source-rsense-constant)))
+(use-package robe
+  :ensure t
+  :hook ((ruby-mode . robe-mode)))
 #+END_SRC
 
 ** Rust
@@ -813,32 +813,29 @@ keybindings):
 
 #+BEGIN_SRC emacs-lisp
   ;; Multiple-cursors
-  (require 'multiple-cursors)
-  (global-set-key (kbd "s-s") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-s-s") 'mc/mark-all-like-this)
-  (global-set-key (kbd "M-s-s") 'mc/mark-next-symbol-like-this)
-  (global-set-key (kbd "s-S") 'mc/mark-sgml-tag-pair)
+  (use-package multiple-cursors
+    :ensure t
+    :bind (("s-s" . mc/mark-next-like-this)
+           ("C-s-s" . mc/mark-all-like-this)
+           ("M-s-s" . mc/mark-next-symbol-like-this)
+           ("s-S" . mc/mark-sgml-tag-pair)))
 #+END_SRC
 
 ** Projectile                                                      :Bindings:
 Another really handy usability mode: Projectile!
 
-I use Projectile with Helm to browse to files in the current (Or any)
-project really fast:
+I use Projectile with Helm to browse to files in the current project really fast:
 #+BEGIN_SRC emacs-lisp
-  ;; Projectile
-  (require 'grizzl)
-  (setq projectile-enable-caching t)
-  (setq projectile-completion-system 'grizzl)
-  (global-set-key (kbd "s-f") 'helm-projectile)
-  (global-set-key (kbd "C-s-f") 'helm-projectile-all)
-#+END_SRC
+  (use-package projectile
+    :ensure t
+    :after grizzl
 
-And since I want to enable Projectile everywhere, because jumping
-between files fast is very handy:
-#+BEGIN_SRC emacs-lisp
-  ;; Enable projectile
-  (projectile-global-mode)
+    :init
+    (setq projectile-enable-caching t)
+    (setq projectile-completion-system 'grizzl)
+    (projectile-global-mode)
+
+    :bind (("C-M-f" . helm-projectile)))
 #+END_SRC
 
 ** Avy                                                             :Bindings:
@@ -872,8 +869,9 @@ prints it as a control character in buffers.
 I find this to be ugly, so instead, I install =pretty-control-l-mode=
 so I can make it look nice.
 #+BEGIN_SRC emacs-lisp
-  (require 'pp-c-l)
-  (pretty-control-l-mode 1)
+  (use-package pp-c-l
+    :ensure t
+    :config (pretty-control-l-mode 1))
 #+END_SRC
 
 
