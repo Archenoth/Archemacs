@@ -73,25 +73,6 @@ And then we initialize the package manager and =use-package=:
     (package-install 'use-package))
 #+END_SRC
 
-And for a bunch of simple use-package declarations with no configuration:
-#+BEGIN_SRC emacs-lisp
-  (use-package magit :ensure t)
-  (use-package lua-mode :ensure t)
-  (use-package langtool :ensure t)
-  (use-package jedi :ensure t)
-  (use-package htmlize :ensure t)
-  (use-package graphviz-dot-mode :ensure t)
-  (use-package flymake-easy :ensure t)
-  (use-package expand-region :ensure t)
-  (use-package nginx-mode :ensure t)
-  (use-package apache-mode :ensure t)
-  (use-package sly :ensure ac-sly)
-  (use-package ac-cider :ensure t)
-  ;; (use-package firebelly-theme :ensure t)
-  ;; (use-package org-plus-contrib :ensure t)
-#+END_SRC
-
-
 * Convenience functions
 Sometimes, its nice to have a few functions to make my configuration
 easier and more modular... That is the purpose of this section.
@@ -271,6 +252,7 @@ And of course, Powerline is nice!
                :config (powerline-center-theme))
 #+END_SRC
 
+
 * Languages                                                           :Hooks:
 The following are package-loaded language support configurations:
 
@@ -320,6 +302,12 @@ Snippets are great! Lots of things use them!
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet :ensure t)
 #+END_SRC
+** Apache configuration
+Since I work with Apache2 servers a bunch, it's worth it to have an Emacs mode that can handle them:
+#+BEGIN_SRC emacs-lisp
+  (use-package apache-mode :ensure t)
+#+END_SRC
+
 ** Bash
 A neat little trick when editing shell scripts is to add the function
 =executable-make-buffer-file-executable-if-script-p= to the
@@ -332,7 +320,6 @@ A neat little trick when editing shell scripts is to add the function
 What this does it is means when creating or editing scripts, you don't
 need to =chmod +x= it. Emacs will detect it as a script automagically,
 and do that for you.
-
 ** C and C++                                                       :Bindings:
 Emacs' [[info:Semantic][Semantic]] mode is really good at C... I have not tested it
 extensively with C++ though.
@@ -359,41 +346,37 @@ For Clojure, I turn on =eldoc-mode= and setup Autocomplete with
 
 #+BEGIN_SRC emacs-lisp
   ;; CIDER, Clojure
-  (add-hook 'cider-mode-hook
-            (lambda ()
-              ;; For handy modeline function descriptions
-              (eldoc-mode 1)
-              ;; So autocomplete can pull Clojure documentation
-              (ac-cider-setup)))
+  (use-package ac-cider
+    :ensure t
+    :bind (("s-<f3>" . cider-find-var))
+    :hook ((cider-mode . eldoc-mode)
+           (cider-mode . ac-cider-setup)
+           (cider-repl-mode-hook . eldoc-mode)))
 #+END_SRC
 
-For the REPL, I don't really need autocomplete because of the tab
-completion, so I only enable =eldoc-mode=.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'cider-repl-mode-hook (lambda () (eldoc-mode 1)))
-#+END_SRC
-
-For the =s-<f3>= find-definition binding:
-#+BEGIN_SRC emacs-lisp
-  (defun cider-bindings ()
-    (local-set-key (kbd "s-<f3>") 'cider-find-var))
-
-  (add-hook 'cider-repl-mode-hook 'cider-bindings)
-  (add-hook 'cider-mode-hook 'cider-bindings)
-#+END_SRC
 
 ** Common Lisp
-The Common Lisp setup is largely just setting up Sly and Sly's
-=autocomplete= source.
+The Common Lisp setup is largely just setting up Sly and Sly's =autocomplete= source.
 #+BEGIN_SRC emacs-lisp
   ;; Common Lisp
-  (add-hook 'sly-mode-hook 'set-up-sly-ac)
-  (add-hook 'sly-mrepl-mode-hook 'set-up-sly-ac)
-  (add-to-list 'ac-modes 'sly-mrepl-mode)
+  (use-package sly
+    :ensure ac-sly
+    :config
+    (defun sly-ac-hook ()
+      (add-to-list 'ac-modes 'sly-mrepl-mode))
+
+    :hook ((sly-mode . set-up-sly-ac)
+           (sly-mrepl . set-up-sly-ac)
+           (sly-mode . sly-ac-hook)))
 #+END_SRC
 
 Nothing really special here.
+
+** Dot
+Sometimes I like to look at Graphviz dot files, and maybe write them?
+#+BEGIN_SRC emacs-lisp
+  (use-package graphviz-dot-mode :ensure t)
+#+END_SRC
 
 ** ELISP                                                           :Bindings:
 #+BEGIN_SRC emacs-lisp :eval no
@@ -592,6 +575,12 @@ Now, if Tern does not exist, we js2's parser for things like =js2-refactor=, whi
     :hook ((js2-mode . js2-refactor-mode)))
 #+END_SRC
 
+** Lua
+I sometimes write in Lua. Nothing overly special here:
+#+BEGIN_SRC emacs-lisp
+  (use-package lua-mode :ensure t)
+#+END_SRC
+
 ** Markdown mode
 #+BEGIN_SRC emacs-lisp :eval no
   ;; Markdown
@@ -603,6 +592,12 @@ automagically start for files with the =.md= file extension, so:
   (use-package markdown-mode
     :ensure markdown-mode+
     :mode "\\.md$")
+#+END_SRC
+
+** nginx Configuration
+I work with nginx configurations every now and then so:
+#+BEGIN_SRC emacs-lisp
+  (use-package nginx-mode :ensure t)
 #+END_SRC
 
 ** Python
@@ -800,9 +795,10 @@ of text, be it code or whatever.
 
 #+BEGIN_SRC emacs-lisp
   ;; Expand region
-  (require 'expand-region)
-  (global-set-key (kbd "s-SPC") 'er/expand-region)
-  (global-set-key (kbd "s-S-SPC") 'er/contract-region)
+  (use-package expand-region
+    :ensure t
+    :bind (("s-SPC" . er/expand-region)
+           ("s-S-SPC" . er/contract-region)))
 #+END_SRC
 
 ** Multiple Cursors                                                :Bindings:
@@ -884,6 +880,12 @@ so I can make it look nice.
     :config (pretty-control-l-mode 1))
 #+END_SRC
 
+** Magit
+I don't need to make any modifications to Magit, despite the fact that I use it quite regularly:
+#+BEGIN_SRC emacs-lisp
+  (use-package magit :ensure t)
+#+END_SRC
+
 
 * Org Mode                                                   :Bindings:Hooks:
 Org mode deserves a section for itself because it is just that
@@ -892,23 +894,27 @@ important.
 My Org mode setup includes support for spell checking, grammar
 checking, tangling source files from Org mode, =visual-line-mode=, and
 syntax coloring:
-
 #+BEGIN_SRC emacs-lisp
   ;; Org mode
-  (require 'org-install)
-  (require 'ob-tangle)
-  (add-hook
-   'org-mode-hook
-   (lambda ()
-     (progn
-       (flyspell-mode t)
-       (visual-line-mode t)
-       (setq-default indent-tabs-mode nil)
-       (setq org-src-fontify-natively t)
-       (setq org-export-latex-listings 'minted)
+  (use-package org-mode
+    :ensure org-plus-contrib
 
-       ;; LanguageTool setup
-       (require 'langtool))))
+    :init
+    (setq-default indent-tabs-mode nil)
+    (setq org-src-fontify-natively t)
+    (setq org-export-latex-listings 'minted)
+
+    :config
+    (require 'org-install)
+    (require 'ob-tangle)
+
+    :hook ((org-mode . flyspell-mode)
+           (org-mode . visual-line-mode)))
+#+END_SRC
+
+The grammar checking is done with langtool, and isn't even really required, so no =:ensure= here:
+#+BEGIN_SRC emacs-lisp
+  (use-package langtool)
 #+END_SRC
 
 Nothing too crazy, because most of Org's default configuration is
