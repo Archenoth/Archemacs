@@ -189,27 +189,27 @@ This, of course, doesn't stop explicit actions from creating new windows, but it
 Now, of course, here is the =use-package= declarations for the [[https://github.com/emacsfodder/emacs-firecode-theme][Firecode]] theme which glues all of this together if there is a window system to work with.
 #+BEGIN_SRC emacs-lisp :noweb yes
   (use-package firecode-theme
-               :if window-system
-               :ensure t
+    :if window-system
+    :ensure t
 
-               :init
-               (load-theme 'firecode t)
-               (apply #'custom-set-faces archenoth-faces)
-               (set-window-settings)
+    :init
+    (load-theme 'firecode t)
+    (apply #'custom-set-faces archenoth-faces)
+    (set-window-settings)
 
-               (let ((is-fullscreen nil))
-                 <<toggle-fullscreen>>
-                 <<display-buffer-advice>>)
+    (let ((is-fullscreen nil))
+      <<toggle-fullscreen>>
+      <<display-buffer-advice>>)
 
-               :bind ("<f11>" . toggle-fullscreen))
+    :bind ("<f11>" . toggle-fullscreen))
 #+END_SRC
 
 And of course, Powerline is nice!
 #+BEGIN_SRC emacs-lisp
   (use-package powerline
-               :if window-system
-               :ensure t
-               :config (powerline-center-theme))
+    :if window-system
+    :ensure t
+    :config (powerline-center-theme))
 #+END_SRC
 
 
