@@ -79,24 +79,15 @@ And for a bunch of simple use-package declarations with no configuration:
   (use-package lua-mode :ensure t)
   (use-package langtool :ensure t)
   (use-package js2-refactor :ensure t)
+  (use-package ac-js2 :ensure t)
   (use-package jedi :ensure t)
   (use-package htmlize :ensure t)
-  (use-package helm-projectile :ensure t)
-  (use-package helm-emmet :ensure t)
-  (use-package grizzl :ensure t)
   (use-package graphviz-dot-mode :ensure t)
   (use-package flymake-easy :ensure t)
-  (use-package feature-mode :ensure t)
   (use-package expand-region :ensure t)
-  (use-package evil :ensure t)
-  (use-package erefactor :ensure t)
-  (use-package ecukes :ensure t)
   (use-package nginx-mode :ensure t)
-  (use-package cucumber-goto-step :ensure t)
   (use-package apache-mode :ensure t)
-  (use-package avy :ensure t)
   (use-package sly :ensure ac-sly)
-  (use-package ac-js2 :ensure t)
   (use-package ac-cider :ensure t)
   (use-package tern-auto-complete :ensure t)
   ;; (use-package firebelly-theme :ensure t)
@@ -416,7 +407,11 @@ adding it to the three ELISP modes.
 
 So first I require the package:
 #+BEGIN_SRC emacs-lisp
-  (require 'erefactor)
+  (use-package erefactor
+    :ensure t
+    :hook ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . erefactor-lazy-highlight-turn-on)
+    :bind (:map emacs-lisp-mode-map ("s-<f3>" . find-function-at-point))
+    :bind-keymap ("C-c C-v" . erefactor-map))
 #+END_SRC
 
 Then I define a hook that turns on =erefactor='s scope highlighting,
@@ -445,17 +440,23 @@ modes:
   ;; Feature mode
 #+END_SRC
 
-Since I work with [[https://cucumber.io/][Cucumber]] feature files reasonably often, I find it
-useful to be able to jump right to the definition of some Cucumber
-step I am looking at. I also like Slime's evaluation bindings, so I
-emulate those here:
+Since I work with [[https://cucumber.io/][Cucumber]] feature files reasonably often, of course I'd need a mode to edit and run tests from:
+#+BEGIN_SRC emacs-lisp
+  (use-package feature-mode
+    :ensure t
+    :mode "\\.feature$"
+    :bind (:map feature-mode-map
+                ("C-c C-c" . feature-verify-scenario-at-pos)
+                ("C-c C-k" . feature-verify-all-scenarios-in-buffer)
+                ("<f5>" . feature-verify-all-scenarios-in-project)))
+#+END_SRC
+
+I also find it useful to be able to jump right to the definition of some Cucumber step I am looking at. I also like Slime's evaluation bindings, so I emulate those here:
 #+BEGIN_SRC emacs-lisp :padline no
-  (add-hook 'feature-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-c C-c") 'feature-verify-scenario-at-pos)
-              (local-set-key (kbd "C-c C-k") 'feature-verify-all-scenarios-in-buffer)
-              (local-set-key (kbd "<f5>") 'feature-verify-all-scenarios-in-project)
-              (local-set-key (kbd "s-<f3>") 'jump-to-cucumber-step)))
+  (use-package cucumber-goto-step
+    :ensure t
+    :bind (:map feature-mode-map
+                ("s-<f3>" . jump-to-cucumber-step)))
 #+END_SRC
 
 ** HTML, JSP, PHP, and so on...
@@ -739,7 +740,9 @@ I find that one of the first things I do when I start Emacs recently
 is start Evil... I may as well just put it in my config.
 
 #+BEGIN_SRC emacs-lisp
-  (evil-mode 1)
+  (use-package evil
+    :ensure t
+    :config (evil-mode 1))
 #+END_SRC
 
 ** Sauron                                                             :Hooks:
@@ -826,9 +829,19 @@ Another really handy usability mode: Projectile!
 
 I use Projectile with Helm to browse to files in the current project really fast:
 #+BEGIN_SRC emacs-lisp
+  (use-package helm-projectile :ensure t)
+#+END_SRC
+
+I use it exclusively with grizzl though, so:
+#+BEGIN_SRC emacs-lisp
+  (use-package grizzl :ensure t)
+#+END_SRC
+
+So, with all of this in play, here is my projectile config:
+#+BEGIN_SRC emacs-lisp
   (use-package projectile
     :ensure t
-    :after grizzl
+    :after (grizzl helm-projectile)
 
     :init
     (setq projectile-enable-caching t)
@@ -844,14 +857,15 @@ jumping around a buffer.
 
 It is very handy for navigation regardless of mode, so:
 #+BEGIN_SRC emacs-lisp
-  (define-key global-map (kbd "s-/") 'avy-goto-subword-1)
-  (define-key global-map (kbd "s-?") 'avy-goto-char)
-#+END_SRC
+  (use-package avy
+    :ensure t
+    :after evil
 
-And since effective motions are essential to Evil:
-#+BEGIN_SRC emacs-lisp
-  (define-key evil-motion-state-map (kbd "p") #'avy-goto-subword-1)
-  (define-key evil-motion-state-map (kbd "P") #'avy-goto-char)
+    :bind (("s-/" . avy-goto-subword-1)
+           ("s-?" . avy-goto-char)
+           :map evil-motion-state-map
+           ("p" . avy-goto-subword-1)
+           ("P" . avy-goto-char)))
 #+END_SRC
 
 ** Show parenthesis mode
