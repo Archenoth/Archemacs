@@ -544,10 +544,10 @@ I work with nginx configurations every now and then so:
 I don't really write Python, but for the times I do, Jedi is neat:
 #+BEGIN_SRC emacs-lisp
   ;; Jedi, for Python sweetness
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (jedi:ac-setup)
-              (setq jedi:complete-on-dot t)))
+  (use-package jedi
+    :ensure t
+    :init (setq jedi:complete-on-dot t)
+    :hook ((python-mode . jedi:ac-setup)))
 #+END_SRC
 
 ** Ruby
