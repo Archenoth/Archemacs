@@ -78,8 +78,6 @@ And for a bunch of simple use-package declarations with no configuration:
   (use-package magit :ensure t)
   (use-package lua-mode :ensure t)
   (use-package langtool :ensure t)
-  (use-package js2-refactor :ensure t)
-  (use-package ac-js2 :ensure t)
   (use-package jedi :ensure t)
   (use-package htmlize :ensure t)
   (use-package graphviz-dot-mode :ensure t)
@@ -89,7 +87,6 @@ And for a bunch of simple use-package declarations with no configuration:
   (use-package apache-mode :ensure t)
   (use-package sly :ensure ac-sly)
   (use-package ac-cider :ensure t)
-  (use-package tern-auto-complete :ensure t)
   ;; (use-package firebelly-theme :ensure t)
   ;; (use-package org-plus-contrib :ensure t)
 #+END_SRC
@@ -531,69 +528,68 @@ do... I only have two real tweaks to make:
 #+BEGIN_SRC emacs-lisp :eval no
   ;; JavaScript
 #+END_SRC
-The support for JavaScript in Emacs is ridiculous. We have an entire
-parser in the =js2-mode= package, which is very well-written.
+The support for JavaScript in Emacs is ridiculous. We have an entire parser in the =js2-mode= package, which is very well-written.
 
 #+BEGIN_SRC emacs-lisp :padline no
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+  (use-package js2-mode
+    :ensure js2-mode
+    :mode "\\.js\\'")
 #+END_SRC
 
-We also possibly have [[http://ternjs.net][Tern]], which gives us even *more* advanced
-JavaScript IDE functionality like cross-file references, type
-inference, and lots of other neat things... But it requires an
-external executable. That means we need to check to see if it is set
-up on this system. Either way, we will want to act accordingly:
-#+BEGIN_SRC emacs-lisp
-  (defvar *tern-exists* (exec-exists-p "tern")
+We also possibly have [[http://ternjs.net][Tern]], which gives us even *more* advanced JavaScript IDE functionality like cross-file references, type inference, and lots of other neat things... But it requires an external executable. That means we need to check to see if it is set up on this system. Either way, we will want to act accordingly:
+#+BEGIN_SRC emacs-lisp :var tern-enabled='t
+  (defvar *tern-exists* (and tern-enabled (exec-exists-p "tern"))
     "Whether or not we can use Tern on this system. Set to \"t\"
     when we can, or \"nil\" when we can't.")
 #+END_SRC
 
-We will use the above for a number of checks to determine our strategy
-for setting up our JavaScript functionality.
+There is also great =autocomplete= support with =ac-js2=... And that allows for scope-intelligent jumping to definitions... I still want =js2='s =autocomplete= for local variables because IMO it is superior to Tern, but having two jumping bindings is redundant, so I disable this one if we have Tern (By overriding it below):
+#+BEGIN_SRC emacs-lisp
+  (use-package ac-js2
+    :ensure t
+    :after js2-mode
+    :bind (:map js-mode-map ("s-<f3>" . ac-js2-jump-to-definition))
+    :hook ((js2-mode . ac-js2-mode)))
+#+END_SRC
 
-Of course, if Tern does not exist, we can install it with the
-following (Assuming we have [[https://www.npmjs.com/][npm]]):
+Now, using =*tern-exists*= from above, we will pick between using the =tern= or =js2-refactor= packages:
+#+BEGIN_SRC emacs-lisp :noweb yes
+  (if *tern-exists*
+      <<package-tern>>
+      <<package-js2-refactor>>)
+#+END_SRC
+
+Of course, if Tern does not exist, we can install it with the following (Assuming we have [[https://www.npmjs.com/][npm]]):
 #+BEGIN_SRC sh :dir /sudo::
   npm install -g tern
 #+END_SRC
 
-Now, if Tern does not exist, we can also use js2's parser, for things
-like =js2-refactor=, which allows for advanced automatic refactoring
-such as renaming variables and extracting code blocks with intelligent
-attention to scope (But it's only local to the current file as of the
-time of writing):
-#+BEGIN_SRC emacs-lisp
-  (unless *tern-exists*
-    (require 'js2-refactor)
-    (local-set-key (kbd "s-r") 'js2r-rename-var))
+If Tern is enabled, our config looks like this:
+#+NAME:package-tern
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package tern
+    :ensure tern-auto-complete
+    :after js2-mode
+    :config
+    (defun tern-hook ()
+      (setq-local ac-sources nil))
+
+    :hook ((js2-mode . tern-hook)
+           (js2-mode . tern-mode)
+           (js2-mode . tern-ac-setup))
+
+    :bind (:map js-mode-map
+                ("s-r" . tern-rename-variable)
+                ("s-<f3>" . tern-find-definition)))
 #+END_SRC
 
-There is also great =autocomplete= support with =ac-js2=... And that
-allows for scope-intelligent jumping to definitions... I still want
-=js2='s =autocomplete= for local variables because IMO it is superior
-to Tern, but having two jumping bindings is redundant, so I disable
-this one if we have Tern:
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'js2-mode-hook
-        (lambda ()
-          (ac-js2-mode)
-          (unless *tern-exists*
-            (local-set-key (kbd "s-<f3>") #'ac-js2-jump-to-definition))))
-#+END_SRC
-
-Now, finally, the Tern configuration if we have it on this
-system... It uses an Node.js process to give us essentially a
-JavaScript IDE:
-#+BEGIN_SRC emacs-lisp
-  (when *tern-exists*
-    (add-hook 'js2-mode-hook
-              (lambda ()
-                (setq-local ac-sources nil)
-                (tern-mode)
-                (tern-ac-setup)
-                (local-set-key (kbd "s-r") 'tern-rename-variable)
-                (local-set-key (kbd "s-<f3>") 'tern-find-definition))))
+Now, if Tern does not exist, we js2's parser for things like =js2-refactor=, which allows for advanced automatic refactoring such as renaming variables and extracting code blocks with intelligent attention to scope (But it's only local to the current file as of the time of writing):
+#+BEGIN_SRC emacs-lisp :noweb yes :tangle no
+  (use-package js2-refactor
+    :ensure t
+    :after js2-mode
+    :bind (:map js-mode-map ("s-r" . js2r-rename-var))
+    :hook ((js2-mode . js2-refactor-mode)))
 #+END_SRC
 
 ** Markdown mode
