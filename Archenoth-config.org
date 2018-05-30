@@ -61,6 +61,15 @@ And then we initialize the package manager and =use-package=:
     (package-install 'use-package))
 #+END_SRC
 
+I also use quelpa to install packages that aren't in the repos by default using git:
+#+BEGIN_SRC emacs-lisp
+  (use-package quelpa-use-package
+    :ensure t
+    :custom (quelpa-checkout-melpa-p nil))
+#+END_SRC
+
+I don't even really care about the melpa updating stuff, so I disable that in here... (It seems it doesn't respect setting that in customize-variable before it is loaded for some reason)
+
 
 * Convenience functions
 Sometimes, its nice to have a few functions to make my configuration easier and more modular... That is the purpose of this section.
@@ -241,6 +250,12 @@ Autocomplete is magnificent. I will have it enabled for almost every programming
 
 #+BEGIN_SRC emacs-lisp
   (ac-config-default)
+#+END_SRC
+
+*** Company
+A few packages use Company, but it's not really my main autocomplete mode:
+#+BEGIN_SRC emacs-lisp
+  (use-package company :ensure t)
 #+END_SRC
 
 *** Compile                                                        :Bindings:
@@ -549,6 +564,15 @@ I don't really write Python, but for the times I do, Jedi is neat:
     :hook ((python-mode . jedi:ac-setup)))
 #+END_SRC
 
+** Pico-8
+Pico-8 is a neat little fantasy console, and someone wrote a pretty nice mode for it!
+#+BEGIN_SRC emacs-lisp
+  (use-package pico8-mode
+    :after (company quelpa-use-package)
+    :bind ("<f3>" . xref-find-definitions)
+    :hook ((pico8-mode . company-mode))
+    :quelpa ((pico8-mode :fetcher github :repo "Kaali/pico8-mode")))
+#+END_SRC
 ** Ruby
 #+BEGIN_SRC emacs-lisp :eval no
   ;; Ruby support
