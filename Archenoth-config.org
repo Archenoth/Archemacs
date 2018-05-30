@@ -48,8 +48,7 @@ The package manager in Emacs is pretty sweet, but the default repos are quite li
   (setq package-archives
     (cl-flet ((get-scheme (path) (concat (if (gnutls-available-p) "https://" "http://") path)))
       `(("gnu" . ,(get-scheme "elpa.gnu.org/packages/"))
-        ("marmalade" . ,(get-scheme "marmalade-repo.org/packages/"))
-        ("melpa" . ,(get-scheme "melpa.milkbox.net/packages/"))
+        ("melpa" . ,(get-scheme "melpa.org/packages/"))
         ("org" . ,(get-scheme "orgmode.org/elpa/")))))
 #+END_SRC
 
