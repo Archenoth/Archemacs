@@ -49,26 +49,23 @@ all applicable modes:
 
 | Key     | Action                          |
 |---------+---------------------------------|
-| s-<f3>  | Jump to definition              |
+| <f3>    | Jump to definition              |
 | <f5>    | Compile project / Run all files |
 | C-c C-c | Run current block               |
 | C-c C-k | Run file                        |
+| M-R     | Rename variable                 |
 
 As for keybindings for global modes:
 
 | Key   | Action                         |
 |-------+--------------------------------|
-| s-f   | Helm find file in project      |
-| s-S-f | Helm find file in all projects |
+| C-M-f | Helm find file in project      |
 | <f11> | Toggle Fullscreen              |
 | s-S   | Multiple cursors next line     |
 | M-s-S | Multiple cursors selection     |
 | C-s-S | Multiple cursors mark all      |
 | s-/   | Avy jump word beginnings     |
 | s-?   | Avy jump all characters      |
-
-I tend to like using the Super key because not many things in Emacs
-are bound to it.
 
 # Local Variables:
 # org-image-actual-width: nil

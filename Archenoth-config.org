@@ -296,7 +296,7 @@ But with it, we get definition jumping and some quite intelligent =autocomplete=
   ;; C and C++
   (defun c-modes-hook ()
     (semantic-mode)
-    (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
+    (local-set-key (kbd "<f3>") #'semantic-ia-fast-jump)
     (semantic-idle-summary-mode 1)
     (setq ac-sources '(ac-source-semantic-raw
                ac-source-yasnippet)))
@@ -311,7 +311,7 @@ For Clojure, I turn on =eldoc-mode= and setup Autocomplete with =ac-cider=:
   ;; CIDER, Clojure
   (use-package ac-cider
     :ensure t
-    :bind (("s-<f3>" . cider-find-var))
+    :bind (("<f3>" . cider-find-var))
     :hook ((cider-mode . eldoc-mode)
            (cider-mode . ac-cider-setup)
            (cider-repl-mode-hook . eldoc-mode)))
@@ -351,7 +351,7 @@ So first I require the package:
   (use-package erefactor
     :ensure t
     :hook ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . erefactor-lazy-highlight-turn-on)
-    :bind (:map emacs-lisp-mode-map ("s-<f3>" . find-function-at-point))
+    :bind (:map emacs-lisp-mode-map ("<f3>" . find-function-at-point))
     :bind-keymap ("C-c C-v" . erefactor-map))
 #+END_SRC
 
@@ -362,7 +362,7 @@ Then I define a hook that turns on =erefactor='s scope highlighting, =eldoc-mode
   (defun el-hook ()
     (define-key emacs-lisp-mode-map "\C-c\C-v" erefactor-map)
     (erefactor-lazy-highlight-turn-on)
-    (define-key emacs-lisp-mode-map (kbd "s-<f3>") 'find-function-at-point)
+    (define-key emacs-lisp-mode-map (kbd "<f3>") 'find-function-at-point)
     (eldoc-mode t))
 #+END_SRC
 
@@ -395,7 +395,7 @@ I also find it useful to be able to jump right to the definition of some Cucumbe
   (use-package cucumber-goto-step
     :ensure t
     :bind (:map feature-mode-map
-                ("s-<f3>" . jump-to-cucumber-step)))
+                ("<f3>" . jump-to-cucumber-step)))
 #+END_SRC
 
 ** HTML, JSP, PHP, and so on...
@@ -449,7 +449,7 @@ I don't do much Java in Emacs, that generally is the job of Eclipse because of i
   (add-hook 'java-mode-hook
             (lambda ()
               ;; Because Semantic jumping in Java is gnarly
-              (local-set-key (kbd "s-<f3>") #'semantic-ia-fast-jump)
+              (local-set-key (kbd "<f3>") #'semantic-ia-fast-jump)
               ;; Because these tend to be a lot longer than 80 width
               ;; and wrapping is ugly.
               (toggle-truncate-lines t)
@@ -486,7 +486,7 @@ There is also great =autocomplete= support with =ac-js2=... And that allows for 
   (use-package ac-js2
     :ensure t
     :after js2-mode
-    :bind (:map js-mode-map ("s-<f3>" . ac-js2-jump-to-definition))
+    :bind (:map js-mode-map ("<f3>" . ac-js2-jump-to-definition))
     :hook ((js2-mode . ac-js2-mode)))
 #+END_SRC
 
@@ -517,8 +517,8 @@ If Tern is enabled, our config looks like this:
            (js2-mode . tern-ac-setup))
 
     :bind (:map js-mode-map
-                ("s-r" . tern-rename-variable)
-                ("s-<f3>" . tern-find-definition)))
+                ("M-R" . tern-rename-variable)
+                ("<f3>" . tern-find-definition)))
 #+END_SRC
 
 Now, if Tern does not exist, we js2's parser for things like =js2-refactor=, which allows for advanced automatic refactoring such as renaming variables and extracting code blocks with intelligent attention to scope (But it's only local to the current file as of the time of writing):
@@ -526,7 +526,7 @@ Now, if Tern does not exist, we js2's parser for things like =js2-refactor=, whi
   (use-package js2-refactor
     :ensure t
     :after js2-mode
-    :bind (:map js-mode-map ("s-r" . js2r-rename-var))
+    :bind (:map js-mode-map ("M-R" . js2r-rename-var))
     :hook ((js2-mode . js2-refactor-mode)))
 #+END_SRC
 
