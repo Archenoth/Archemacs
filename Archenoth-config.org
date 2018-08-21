@@ -471,6 +471,7 @@ The support for JavaScript in Emacs is ridiculous. We have an entire parser in t
 #+BEGIN_SRC emacs-lisp :padline no
   (use-package js2-mode
     :ensure js2-mode
+    :bind (:map js-mode-map ("<f3>" . js2-jump-to-definition))
     :mode "\\.js\\'")
 #+END_SRC
 
@@ -486,7 +487,6 @@ There is also great =autocomplete= support with =ac-js2=... And that allows for 
   (use-package ac-js2
     :ensure t
     :after js2-mode
-    :bind (:map js-mode-map ("<f3>" . ac-js2-jump-to-definition))
     :hook ((js2-mode . ac-js2-mode)))
 #+END_SRC
 
