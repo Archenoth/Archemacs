@@ -1,0 +1,40 @@
+#+TITLE:Font configuration
+#+AUTHOR:Archenoth
+#+EMAIL:Archenoth@gmail.com
+:SETTINGS:
+#+STARTUP: hidestars
+:END:
+
+The font used in [[./Archenoth-config.org][my org configuration]] is M+ 1m, which can be downloaded and installed from [[https://osdn.net/projects/mplus-fonts/releases/62344][here]]!
+
+* =.emacs= snippet
+After installing the above font, the following can be placed in your [[file:~/.emacs][.emacs]] to make it the default font:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (add-to-list 'default-frame-alist
+               '(font . "-unknown-M+ 1m-light-normal-normal-*-*-98-*-*-d-0-iso10646-1"))
+#+END_SRC
+
+* .emacs-less version (Linux only)
+If you don't want to make any changes to your [[~/.emacs][.emacs]], you can just tangle this file, though *be warned that this will overwrite your =.Xresources= file* if you have made any modifications to it.
+
+If you are okay with this, the key combo to install it is =C-c C-v t=.
+
+(It also includes a tweak to turn off the menubar and toolbar faster than [[./Archenoth-config.org::*Style options][the tangled version]])
+
+#+BEGIN_SRC conf :tangle (when (eq system-type 'gnu/linux) "~/.Xresources") :padline no
+Xft.antialias:  1
+Xft.dpi:    96
+Xft.hinting:    1
+Xft.hintstyle:  hintsfull
+Xft.lcdfilter:  lcddefault
+Xft.rgba:   rgb
+Emacs.menuBar: 0
+Emacs.toolBar: 0
+Emacs.FontBackend: xft,x
+Emacs.font: M+ 1m-13
+#+END_SRC
+
+After you have this set up, in order to apply it, you either need to restart your X server, or run the following code block and restart Emacs:
+#+BEGIN_SRC sh :results silent
+  xrdb -merge ~/.Xresources
+#+END_SRC

@@ -15,37 +15,30 @@ bite-sized chunks that others can use.
 [[./fullscreen.png]]
 
 * About
-The way it is constructed, the file is supposed to be a standalone
-configuration separate from =.emacs=, and simply loaded in.
+The way it is constructed, the file is supposed to be a standalone configuration separate from =.emacs=, and simply loaded in.
 
-That way, any private configuration or system-specific configuration
-can take place without making any changes to the core configuration
-in this repo.
+That way, any private configuration or system-specific configuration can take place without making any changes to the core configuration in this repo.
 
-So, if you cloned this repo directly into =.emacs.d= (Which is highly
-recommended), you can simply include it with:
+So, if you cloned this repo directly into =.emacs.d= (Which is highly recommended), you can simply include it with:
 
 #+BEGIN_SRC elisp :tangle ~/.emacs :padline no
   (require 'ob-tangle)
   (org-babel-load-file "~/.emacs.d/dotemacs/Archenoth-config.org")
 #+END_SRC
 
-(You can use =C-c C-v t= while visiting this file in =org-mode= to
-export that code into =~/.emacs= if that's all you really need, though
-be warned that this will overwrite your existing =.emacs=)
+(You can use =C-c C-v t= while visiting this file in =org-mode= to export that code into =~/.emacs= if that's all you really need, though be warned that this will overwrite your existing =.emacs=)
 
 * Installation in a nutshell
 1. =cd= to =~/.emacs.d=
 2. Run =git clone https://github.com/Archenoth/dotemacs.git=
 3. Open this file in =org-mode=. (=emacs dotemacs/README.org=)
-4. Tangle with =C-c C-v t= (Or if you have stuff in your =.emacs=,
-   copy the above lines into it instead.).
+4. Tangle with =C-c C-v t= (Or if you have stuff in your =.emacs=, copy the above lines into it instead.).
 5. Restart Emacs.
 
+If you want the font customization, please follow the instructions in [[./fonts.org][fonts.org]].
+
 * Conventions and Keybindings
-I try to keep some conventions between modes in my configuration; The
-following are keybindings that will generally do something similar in
-all applicable modes:
+I try to keep some conventions between modes in my configuration; The following are keybindings that will generally do something similar in all applicable modes:
 
 | Key     | Action                          |
 |---------+---------------------------------|

@@ -110,20 +110,14 @@ As for in-depth styling, I have my own set of basic default faces:
 
 This essentially is just a minimal set of sane defaults, though if the variable =archenoth-theme= is set, those faces will be used instead of the default.
 
-The defaults do work reasonably well I think, though the way I have this final font setup in my [[file:~/.emacs][.emacs]]
-#+BEGIN_SRC emacs-lisp :tangle no
-  (add-to-list 'default-frame-alist
-               '(font . "-unknown-M+ 1m-light-normal-normal-*-*-98-*-*-d-0-iso10646-1"))
-#+END_SRC
-
-This is not a part of the tangled code because it requires [[https://osdn.jp/projects/mplus-fonts/releases/62344/][this awesome font]]. (Though I like to have it here for reference)
+The defaults do work reasonably well I think, though I do a little bit of extra setup in my [[./fonts.org][font setup]] file to get everything looking nice!
 
 The following is the definition for the function that will handle the logic for switching from windowed to fullscreen (Mostly just small interface tweaks):
 #+BEGIN_SRC emacs-lisp
   (defun set-fullscreen-settings ()
     "Sets the default theme I use for maximixed Emacs"
     (interactive)
-    (set-face-attribute 'default (selected-frame) :height 113)
+    (set-face-attribute 'default (selected-frame) :height 125)
     (fringe-mode '(20 . 0))
     (scroll-bar-mode -1)
     (menu-bar-mode -1))
