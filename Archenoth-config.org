@@ -583,6 +583,7 @@ And, if we want to get completions from a Ruby REPL, we can get some extra suppo
 #+BEGIN_SRC emacs-lisp
 (use-package robe
   :ensure t
+  :bind ("<f3>" . robe-jump)
   :hook ((ruby-mode . robe-mode)))
 #+END_SRC
 
