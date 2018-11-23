@@ -240,7 +240,7 @@ And =php-mode=:
 #+END_SRC
 
 *** Autocomplete
-Autocomplete is magnificent. I will have it enabled for almost every programming mode in existence.
+Emacs' autocomplete is magnificent. I will have it enabled for almost every programming mode in existence.
 
 #+BEGIN_SRC emacs-lisp
   (ac-config-default)
@@ -900,7 +900,7 @@ Stolen from [[http://emacswiki.org/emacs/BackupDirectory][here]]... Very useful 
 
 
 * Aliases
-Aliases to replace one piece of functionality with another is super-handy.
+The ability to replace one piece of functionality with another is super-handy.
 
 ** Yes and No questions
 Having to type "yes" is annoying when I just want to do something simple... So, I alias =yes-or-no-p= to the single-keystroke equivalent:
@@ -944,6 +944,8 @@ That is why I am going to make =kill -USR1 $(pidof emacs)= start an Emacs server
 
 * Metadata                                                         :noexport:
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
-#  LocalWords:  config http TLS tls alist Matz JSPs langtool Avy JSP
+#  LocalWords:  config http TLS alist tls Matz JSPs langtool Avy JSP
 #  LocalWords:  Spifftastic Autocomplete NOX js executables args USR
-#  LocalWords:  Org's XWidget WebKit
+#  LocalWords:  Org's XWidget WebKit quelpa melpa Powerline Yasnippet
+#  LocalWords:  autocomplete Hexl PHP Sly's Emmet Lua nginx Pico hexl
+#  LocalWords:  grizzl Magit
