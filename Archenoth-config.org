@@ -267,6 +267,42 @@ Snippets are great! Lots of things use them!
   (use-package yasnippet :ensure t)
 #+END_SRC
 
+*** Hexl                                                     :Bindings:Hooks:
+Hex editing is neat, but Hexl lacks some functionality, such as the ability to go to address offsets:
+#+BEGIN_SRC emacs-lisp
+  (defun hexl-hex-forward-char (hex-offset)
+    "Move to right HEX-OFFSET bytes (left if negative) in Hexl mode."
+    (interactive "sHex Offset: ")
+    (hexl-goto-address
+     (+ (hexl-current-address)
+        (hexl-hex-string-to-integer hex-offset))))
+#+END_SRC
+
+(Stolen from [[https://emacs.stackexchange.com/a/45805/2039][here]].)
+
+Another bit of functionality that I wish hexl had by default is the ability to measure the length of the region, so I wrote the following:
+#+BEGIN_SRC emacs-lisp
+  (defun hexl-measure-region ()
+    "Measure how large the active region is."
+    (interactive)
+    (if (region-active-p)
+        (save-excursion
+          (let ((point (hexl-current-address)))
+            (exchange-point-and-mark)
+            (let ((diff (abs (- point (hexl-current-address)))))
+              (exchange-point-and-mark)
+              (message "Range is %d bytes (0x%08x)" diff diff))))
+      (message "Current address: 0x%08x" (hexl-current-address))))
+#+END_SRC
+
+As for the bindings to use this:
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'hexl-mode-hook
+            (lambda ()
+              (local-set-key (kbd "M-f") #'hexl-hex-forward-char)
+              (local-set-key (kbd "M-s") #'hexl-measure-region)))
+#+END_SRC
+
 ** Apache configuration
 Since I work with Apache2 servers a bunch, it's worth it to have an Emacs mode that can handle them:
 #+BEGIN_SRC emacs-lisp
