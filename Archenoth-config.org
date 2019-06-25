@@ -104,28 +104,34 @@ I've also decided that I don't really care for the scrollbars when they interfer
 
 As for in-depth styling, I basically just use =doom-dracula= with some mild modifications:
 #+BEGIN_SRC emacs-lisp :noweb yes
-    (use-package doom-themes
-      :if window-system
-      :ensure t
-
-      :init
-      (setq doom-themes-enable-bold t
-            doom-themes-enable-italic t)
-
-      (load-theme 'doom-dracula t)
-      (doom-themes-org-config)
-
-      (custom-set-faces
-       '(helm-buffer-directory ((t (:foreground "#ff79c6"))))
-       '(helm-candidate-number ((t (:foreground "#f1fa8c"))))))
-#+END_SRC
-
-And of course, Powerline is nice!
-#+BEGIN_SRC emacs-lisp
-  (use-package powerline
+  (use-package doom-themes
     :if window-system
     :ensure t
-    :config (powerline-center-theme))
+
+    :init
+    (setq doom-themes-enable-bold t
+          doom-themes-enable-italic t)
+
+    (load-theme 'doom-dracula t)
+    (doom-themes-org-config)
+
+    (custom-set-faces
+     '(helm-buffer-directory ((t (:foreground "#ff79c6"))))
+     '(helm-candidate-number ((t (:foreground "#f1fa8c"))))))
+#+END_SRC
+
+And of course, spaceline is nice!
+#+BEGIN_SRC emacs-lisp
+  (use-package spaceline-config
+    :if window-system
+    :ensure spaceline
+    :config (spaceline-emacs-theme)
+    :custom (powerline-default-separator 'wave)
+
+    :custom-face
+    (spaceline-evil-normal ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line)))))
+    (spaceline-highlight-face ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line)))))
+    (spaceline-unmodified ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line))))))
 #+END_SRC
 
 
@@ -907,4 +913,4 @@ That is why I am going to make =kill -USR1 $(pidof emacs)= start an Emacs server
 #  LocalWords:  Spifftastic Autocomplete NOX js executables args USR
 #  LocalWords:  Org's XWidget WebKit quelpa melpa Powerline Yasnippet
 #  LocalWords:  autocomplete Hexl PHP Sly's Emmet Lua nginx Pico hexl
-#  LocalWords:  grizzl Magit
+#  LocalWords:  grizzl Magit spaceline
