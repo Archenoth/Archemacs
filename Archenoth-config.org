@@ -513,10 +513,11 @@ Pico-8 is a neat little fantasy console, and someone wrote a pretty nice mode fo
 #+BEGIN_SRC emacs-lisp
   (use-package pico8-mode
     :after (company quelpa-use-package)
-    :bind ("<f3>" . xref-find-definitions)
+    :bind (:map pico8-mode-map ("<f3>" . xref-find-definitions))
     :hook ((pico8-mode . company-mode))
     :quelpa ((pico8-mode :fetcher github :repo "Kaali/pico8-mode")))
 #+END_SRC
+
 ** Ruby
 #+BEGIN_SRC emacs-lisp :eval no
   ;; Ruby support
