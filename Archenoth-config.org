@@ -91,10 +91,15 @@ This is a function I wrote to check to see if there is any file in the current p
 
 * Style options
 I don't care too much for the default appearance of Emacs... I generally like to remove the toolbar at the top of the screen:
-
 #+BEGIN_SRC emacs-lisp
   ;; Remove unsightly toolbar...
   (tool-bar-mode 0)
+#+END_SRC
+
+I've also decided that I don't really care for the scrollbars when they interfere with other theming, plus I already have a few visual indicators about where I am, and how I navigate:
+#+BEGIN_SRC emacs-lisp
+  ;; Remove scrollbars
+  (scroll-bar-mode -1)
 #+END_SRC
 
 As for in-depth styling, I basically just use =doom-dracula= with some mild modifications:
