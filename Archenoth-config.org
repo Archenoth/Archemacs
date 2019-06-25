@@ -134,6 +134,15 @@ And of course, spaceline is nice!
     (spaceline-unmodified ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line))))))
 #+END_SRC
 
+And for smooth scrolling and stuff:
+#+BEGIN_SRC emacs-lisp
+  (use-package sublimity
+    :if window-system
+    :config (require 'sublimity-scroll)
+    :init (sublimity-mode 1)
+    :quelpa ((sublimity :fetcher github :repo "zk-phi/sublimity")))
+#+END_SRC
+
 
 * Languages                                                           :Hooks:
 The following are package-loaded language support configurations:
