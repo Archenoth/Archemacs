@@ -97,113 +97,22 @@ I don't care too much for the default appearance of Emacs... I generally like to
   (tool-bar-mode 0)
 #+END_SRC
 
-As for in-depth styling, I have my own set of basic default faces:
-#+BEGIN_SRC emacs-lisp
-  (setq archenoth-faces
-        (if (boundp 'archenoth-theme)
-            archenoth-theme
-          '((fringe ((t (:background "#111" :width expanded))))
-            (linum ((t (:inherit (shadow default) :background "#111" :foreground "#e0e0e0"))) t)
-            (pe/directory-face ((t (:inherit dired-directory :weight normal :height 0.9))) t)
-            (pe/file-face ((t (:inherit default :background "#111" :weight normal :height 0.9))) t))))
-#+END_SRC
-
-This essentially is just a minimal set of sane defaults, though if the variable =archenoth-theme= is set, those faces will be used instead of the default.
-
-The defaults do work reasonably well I think, though I do a little bit of extra setup in my [[./fonts.org][font setup]] file to get everything looking nice!
-
-The following is the definition for the function that will handle the logic for switching from windowed to fullscreen (Mostly just small interface tweaks):
-#+BEGIN_SRC emacs-lisp
-  (defun set-fullscreen-settings ()
-    "Sets the default theme I use for maximixed Emacs"
-    (interactive)
-    (set-face-attribute 'default (selected-frame) :height 125)
-    (fringe-mode '(20 . 0))
-    (scroll-bar-mode -1)
-    (menu-bar-mode -1))
-#+END_SRC
-
-Now for windowed!
-
-Since switching to windowed mode has some strange results with frame sizing, here is a function that can restore the size back to the normal windowed state:
-#+BEGIN_SRC emacs-lisp
-  (defun set-default-window-size ()
-    "Sets the default window size..."
-    (interactive)
-    (modify-frame-parameters
-     (selected-frame)
-     '((width . 80) (height . 34))))
-#+END_SRC
-
-And now, here is the function that gets called to handle switching from fullscreen to windowed:
-#+BEGIN_SRC emacs-lisp
-  (defun set-window-settings ()
-    "Sets the default theme I use for Windowed Emacs"
-    (interactive)
-    (set-face-attribute 'default (selected-frame) :height 98)
-    (fringe-mode '(8 . 0))
-    (scroll-bar-mode 1)
-    (menu-bar-mode 1)
-    (set-default-window-size))
-#+END_SRC
-
-Spifftastic! Now time to put it all together...
-
-** The actual style logic                         :Bindings:Functions:Advice:
-What we want here is something that allows me to toggle between two style configurations, one for fullscreen mode, the other for windowed with the [F11] key.
-
-For the toggling logic, we create this function:
-#+NAME:toggle-fullscreen
-#+BEGIN_SRC emacs-lisp :eval no :tangle no
-  (defun toggle-fullscreen ()
-    "Toggles fullscreen emacs"
-    (interactive)
-    (if is-fullscreen
-        (progn
-          (set-frame-parameter nil 'fullscreen nil)
-          (setq is-fullscreen nil)
-          (set-window-settings))
-      (progn
-        (set-frame-parameter nil 'fullscreen 'fullboth)
-        (setq is-fullscreen t)
-        (set-fullscreen-settings))))
-#+END_SRC
-
-I also want a piece of advice for =display-buffer= to prefer to not create new windows when in fullscreen mode.
-
-It will, when the =is-fullscreen= variable is set, make sure the =action= parameter is not set to "=t=" when calling =display-buffer=, because that will pop up a new window:
-#+NAME:display-buffer-advice
-#+BEGIN_SRC emacs-lisp :tangle no :eval no
-  (defun my-display-buffer (args)
-    (cl-destructuring-bind (buffer-or-name &optional action frame) args
-      (let ((action (unless (and is-fullscreen (null frame)
-                                 (or (eq action t) (eq action 'other-window)))
-                      action)))
-        (list buffer-or-name action frame))))
-
-  (advice-add 'display-buffer :filter-args #'my-display-buffer)
-#+END_SRC
-
-I also check for =other-window= explicitly, because some commands like =compile-goto-error= open new windows regardless of other settings by passing this value directly into =display-buffer=. This is really annoying when, for example, you are trying to =grep= a project, you click on a result, and it pops up as new window in your otherwise-fullscreen environment.
-
-This, of course, doesn't stop explicit actions from creating new windows, but it deters a lot of the defaults that drive me up the wall.
-
-Now, of course, here is the =use-package= declarations for the [[https://github.com/emacsfodder/emacs-firecode-theme][Firecode]] theme which glues all of this together if there is a window system to work with.
+As for in-depth styling, I basically just use =doom-dracula= with some mild modifications:
 #+BEGIN_SRC emacs-lisp :noweb yes
-  (use-package firecode-theme
-    :if window-system
-    :ensure t
+    (use-package doom-themes
+      :if window-system
+      :ensure t
 
-    :init
-    (load-theme 'firecode t)
-    (apply #'custom-set-faces archenoth-faces)
-    (set-window-settings)
+      :init
+      (setq doom-themes-enable-bold t
+            doom-themes-enable-italic t)
 
-    (let ((is-fullscreen nil))
-      <<toggle-fullscreen>>
-      <<display-buffer-advice>>)
+      (load-theme 'doom-dracula t)
+      (doom-themes-org-config)
 
-    :bind ("<f11>" . toggle-fullscreen))
+      (custom-set-faces
+       '(helm-buffer-directory ((t (:foreground "#ff79c6"))))
+       '(helm-candidate-number ((t (:foreground "#f1fa8c"))))))
 #+END_SRC
 
 And of course, Powerline is nice!
