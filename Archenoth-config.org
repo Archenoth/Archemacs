@@ -36,12 +36,6 @@ Also, I include this library to give me some of the functions I like from Common
 
 
 * Setting up the package manager
-First, we want to require TLS...
-#+BEGIN_SRC emacs-lisp
-  ;; SSL Support
-  (require 'tls)
-#+END_SRC
-
 The package manager in Emacs is pretty sweet, but the default repos are quite limited in their selection of packages... So instead, I add a couple more repos. (I am sure almost everyone has this in their configuration somewhere)
 #+BEGIN_SRC emacs-lisp
   ;; Package Manager URLs
