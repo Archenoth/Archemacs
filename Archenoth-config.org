@@ -226,6 +226,26 @@ As for the bindings to use this:
               (local-set-key (kbd "M-s") #'hexl-measure-region)))
 #+END_SRC
 
+*** LSP
+For more IDE-like support when I decide this is what I'm looking for:
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode :ensure t)
+
+  (use-package lsp-ui
+    :ensure t
+    :commands lsp-ui-mode
+    :hook (lsp-mode . lsp-ui-mode)
+    :config
+    (setq lsp-ui-sideline-ignore-duplicate t))
+
+  (use-package company-lsp
+    :ensure t
+    :config
+    (push 'company-lsp company-backends)
+    (setq company-lsp-async t
+          company-lsp-cache-candidates 'auto
+          company-lsp-enable-recompletion t))
+#+END_SRC
 ** Apache configuration
 Since I work with Apache2 servers a bunch, it's worth it to have an Emacs mode that can handle them:
 #+BEGIN_SRC emacs-lisp
@@ -396,23 +416,22 @@ And with Emmet enabled, I can also add some more niceties, like autocomplete for
 #+END_SRC
 
 ** Java
-I don't do much Java in Emacs, that generally is the job of Eclipse because of its super-intelligent support, integration with everything, and ridiculous debugger capabilities... But when I do... I only have two real tweaks to make:
+If I need to modify Java in Emacs, it's nice to have some nice IDE functionality from lsp:
 #+BEGIN_SRC emacs-lisp
   ;; Java
-  (add-hook 'java-mode-hook
-            (lambda ()
-              ;; Because Semantic jumping in Java is gnarly
-              (local-set-key (kbd "<f3>") #'semantic-ia-fast-jump)
-              ;; Because these tend to be a lot longer than 80 width
-              ;; and wrapping is ugly.
-              (toggle-truncate-lines t)
-              ;; Because we like information about local variables.
-              (semantic-idle-summary-mode 1)
-              ;; Semantic does a good job of parsing Java now, so we
-              ;; don't need to rely on words found in the buffers for
-              ;; completion anymore.
-              (setq ac-sources '(ac-source-semantic-raw
-                                 ac-source-yasnippet))))
+  (use-package lsp-java
+    :ensure t
+
+    :bind
+    (:map java-mode-map ("<f3>" . lsp-goto-type-definition))
+
+    :init
+    (require 'lsp-java)
+    (company-mode t)
+    (auto-complete-mode -1)
+    (toggle-truncate-lines t)
+
+    :hook ((java-mode . lsp)))
 #+END_SRC
 
 ** JavaScript                                                      :Bindings:
