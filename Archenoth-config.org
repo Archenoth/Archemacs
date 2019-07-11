@@ -22,45 +22,45 @@ This file changes over time, and new tricks are added occasionally. And if this 
 
 * Header
 In the header of the config... We want the file to include lexical binding:
-#+BEGIN_SRC emacs-lisp :eval no :padline no
+#+begin_src emacs-lisp :eval no :padline no
   ;; -*- lexical-binding: t -*-
-#+END_SRC
+#+end_src
 
 This is used later for =let= closures.
 
 Also, I include this library to give me some of the functions I like from Common Lisp:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; For other Common Lisp-ish stuff in here
   (require 'cl-lib)
-#+END_SRC
+#+end_src
 
 
 * Setting up the package manager
 The package manager in Emacs is pretty sweet, but the default repos are quite limited in their selection of packages... So instead, I add a couple more repos. (I am sure almost everyone has this in their configuration somewhere)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Package Manager URLs
   (setq package-archives
     (cl-flet ((get-scheme (path) (concat (if (gnutls-available-p) "https://" "http://") path)))
       `(("gnu" . ,(get-scheme "elpa.gnu.org/packages/"))
         ("melpa" . ,(get-scheme "melpa.org/packages/"))
         ("org" . ,(get-scheme "orgmode.org/elpa/")))))
-#+END_SRC
+#+end_src
 
 And then we initialize the package manager and =use-package=:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (package-initialize)
 
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
-#+END_SRC
+#+end_src
 
 I also use quelpa to install packages that aren't in the repos by default using git:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package quelpa-use-package
     :ensure t
     :custom (quelpa-checkout-melpa-p nil))
-#+END_SRC
+#+end_src
 
 I don't even really care about the melpa updating stuff, so I disable that in here... (It seems it doesn't respect setting that in customize-variable before it is loaded for some reason)
 
@@ -70,7 +70,7 @@ Sometimes, its nice to have a few functions to make my configuration easier and 
 
 ** Path file checker                                              :Functions:
 This is a function I wrote to check to see if there is any file in the current path that matches the passed in filename... The purpose behind this was to be able to check if there are binaries that Emacs can use for particular functionality... (Like [[JavaScript][Tern]] for example; I would only want to enable its functionality if a "=tern=" binary existed somewhere on the system):
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun exec-exists-p (filename)
     "Checks to see if Emacs can see a file in the execution path.
 
@@ -80,24 +80,24 @@ This is a function I wrote to check to see if there is any file in the current p
     (cl-reduce (lambda (exists dir)
                  (or exists (file-exists-p (concat dir "/" filename))))
                exec-path :initial-value nil))
-#+END_SRC
+#+end_src
 
 
 * Style options
 I don't care too much for the default appearance of Emacs... I generally like to remove the toolbar at the top of the screen:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Remove unsightly toolbar...
   (tool-bar-mode 0)
-#+END_SRC
+#+end_src
 
 I've also decided that I don't really care for the scrollbars when they interfere with other theming, plus I already have a few visual indicators about where I am, and how I navigate:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Remove scrollbars
   (scroll-bar-mode -1)
-#+END_SRC
+#+end_src
 
 As for in-depth styling, I basically just use =doom-dracula= with some mild modifications:
-#+BEGIN_SRC emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb yes
   (use-package doom-themes
     :if window-system
     :ensure t
@@ -112,10 +112,10 @@ As for in-depth styling, I basically just use =doom-dracula= with some mild modi
     (custom-set-faces
      '(helm-buffer-directory ((t (:foreground "#ff79c6"))))
      '(helm-candidate-number ((t (:foreground "#f1fa8c"))))))
-#+END_SRC
+#+end_src
 
 And of course, spaceline is nice!
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package spaceline-config
     :if window-system
     :ensure spaceline
@@ -126,16 +126,16 @@ And of course, spaceline is nice!
     (spaceline-evil-normal ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line)))))
     (spaceline-highlight-face ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line)))))
     (spaceline-unmodified ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line))))))
-#+END_SRC
+#+end_src
 
 And for smooth scrolling and stuff:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package sublimity
     :if window-system
     :config (require 'sublimity-scroll)
     :init (sublimity-mode 1)
     :quelpa ((sublimity :fetcher github :repo "zk-phi/sublimity")))
-#+END_SRC
+#+end_src
 
 And for things that use icons? Let's install all the icons!
 #+begin_src emacs-lisp
@@ -181,65 +181,65 @@ This section is all about the setup that is about programming, but not for a par
 
 *** Flymake
 Of course, there are a few modes that I like to have Flymake. enabled on by default...
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;; Flymake
-#+END_SRC
+#+end_src
 
 Of those, we have =perl-mode=:
-#+BEGIN_SRC emacs-lisp :padline no
+#+begin_src emacs-lisp :padline no
   (add-hook 'perl-mode-hook (lambda () (flymake-mode t)))
-#+END_SRC
+#+end_src
 
 And =php-mode=:
-#+BEGIN_SRC emacs-lisp :padline no
+#+begin_src emacs-lisp :padline no
   (use-package php-mode
     :ensure t
     :hook ((php-mode . flymake-mode)))
-#+END_SRC
+#+end_src
 
 *** Autocomplete
 Emacs' autocomplete is magnificent. I will have it enabled for almost every programming mode in existence.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (ac-config-default)
-#+END_SRC
+#+end_src
 
 *** Company
 A few packages use Company, but it's not really my main autocomplete mode:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package company :ensure t)
-#+END_SRC
+#+end_src
 
 *** Compile                                                        :Bindings:
 I generally like having a compile command as [F5]:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (define-key global-map (kbd "<f5>") 'compile)
-#+END_SRC
+#+end_src
 
 No, compiling is not always relevant to all languages, but it doubles as a quick command-line, which is almost always useful.
 
 *** Yasnippet
 Snippets are great! Lots of things use them!
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package yasnippet :ensure t)
-#+END_SRC
+#+end_src
 
 *** Hexl                                                     :Bindings:Hooks:
 Hex editing is neat, but Hexl lacks some functionality, such as the ability to go to address offsets:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun hexl-hex-forward-char (hex-offset)
     "Move to right HEX-OFFSET bytes (left if negative) in Hexl mode."
     (interactive "sHex Offset: ")
     (hexl-goto-address
      (+ (hexl-current-address)
         (hexl-hex-string-to-integer hex-offset))))
-#+END_SRC
+#+end_src
 
 (Stolen from [[https://emacs.stackexchange.com/a/45805/2039][here]].)
 
 Another bit of functionality that I wish hexl had by default is the ability to measure the length of the region, so I wrote the following:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun hexl-measure-region ()
     "Measure how large the active region is."
     (interactive)
@@ -251,19 +251,19 @@ Another bit of functionality that I wish hexl had by default is the ability to m
               (exchange-point-and-mark)
               (message "Range is %d bytes (0x%08x)" diff diff))))
       (message "Current address: 0x%08x" (hexl-current-address))))
-#+END_SRC
+#+end_src
 
 As for the bindings to use this:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-hook 'hexl-mode-hook
             (lambda ()
               (local-set-key (kbd "M-f") #'hexl-hex-forward-char)
               (local-set-key (kbd "M-s") #'hexl-measure-region)))
-#+END_SRC
+#+end_src
 
 *** LSP
 For more IDE-like support when I decide this is what I'm looking for:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package lsp-mode :ensure t)
 
   (use-package lsp-ui
@@ -280,19 +280,19 @@ For more IDE-like support when I decide this is what I'm looking for:
     (setq company-lsp-async t
           company-lsp-cache-candidates 'auto
           company-lsp-enable-recompletion t))
-#+END_SRC
+#+end_src
 ** Apache configuration
 Since I work with Apache2 servers a bunch, it's worth it to have an Emacs mode that can handle them:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package apache-mode :ensure t)
-#+END_SRC
+#+end_src
 
 ** Bash
 A neat little trick when editing shell scripts is to add the function =executable-make-buffer-file-executable-if-script-p= to the =after-save-hook=.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Shell scripting
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-#+END_SRC
+#+end_src
 
 What this does it is means when creating or editing scripts, you don't need to =chmod +x= it. Emacs will detect it as a script automagically, and do that for you.
 ** C and C++                                                       :Bindings:
@@ -300,7 +300,7 @@ Emacs' [[info:Semantic][Semantic]] mode is really good at C... I have not tested
 
 But with it, we get definition jumping and some quite intelligent =autocomplete=... So I simply define the jumping keybinding, the =autocomplete= sources, and add it to both C and C++ modes as hooks:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; C and C++
   (defun c-modes-hook ()
     (semantic-mode)
@@ -310,12 +310,12 @@ But with it, we get definition jumping and some quite intelligent =autocomplete=
                ac-source-yasnippet)))
   (add-hook 'c-mode-hook 'c-modes-hook)
   (add-hook 'c++-mode-hook 'c-modes-hook)
-#+END_SRC
+#+end_src
 
 ** Clojure                                                         :Bindings:
 For Clojure, I turn on =eldoc-mode= and setup Autocomplete with =ac-cider=:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; CIDER, Clojure
   (use-package ac-cider
     :ensure t
@@ -323,11 +323,11 @@ For Clojure, I turn on =eldoc-mode= and setup Autocomplete with =ac-cider=:
     :hook ((cider-mode . eldoc-mode)
            (cider-mode . ac-cider-setup)
            (cider-repl-mode-hook . eldoc-mode)))
-#+END_SRC
+#+end_src
 
 ** Common Lisp
 The Common Lisp setup is largely just setting up Sly and Sly's =autocomplete= source.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Common Lisp
   (use-package sly
     :ensure ac-sly
@@ -338,57 +338,57 @@ The Common Lisp setup is largely just setting up Sly and Sly's =autocomplete= so
     :hook ((sly-mode . set-up-sly-ac)
            (sly-mrepl . set-up-sly-ac)
            (sly-mode . sly-ac-hook)))
-#+END_SRC
+#+end_src
 
 Nothing really special here.
 
 ** Dot
 Sometimes I like to look at Graphviz dot files, and maybe write them?
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package graphviz-dot-mode :ensure t)
-#+END_SRC
+#+end_src
 
 ** ELISP                                                           :Bindings:
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;; ELISP
-#+END_SRC
+#+end_src
 My ELISP configuration is largely just setting up =erefactor= and then adding it to the three ELISP modes.
 
 So first I require the package:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package erefactor
     :ensure t
     :hook ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . erefactor-lazy-highlight-turn-on)
     :bind (:map emacs-lisp-mode-map ("<f3>" . find-function-at-point))
     :bind-keymap ("C-c C-v" . erefactor-map))
-#+END_SRC
+#+end_src
 
 Then I define a hook that turns on =erefactor='s scope highlighting, =eldoc-mode=, and defines a key for to start refactoring:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Hook for all ELISP modes
   (defun el-hook ()
     (define-key emacs-lisp-mode-map "\C-c\C-v" erefactor-map)
     (erefactor-lazy-highlight-turn-on)
     (define-key emacs-lisp-mode-map (kbd "<f3>") 'find-function-at-point)
     (eldoc-mode t))
-#+END_SRC
+#+end_src
 
 Then I simply assign the function as a hook for all of the ELISP modes:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; And assigning to said modes
   (add-hook 'emacs-lisp-mode-hook 'el-hook)
   (add-hook 'lisp-interaction-mode-hook 'el-hook)
   (add-hook 'ielm-mode-hook 'el-hook)
-#+END_SRC
+#+end_src
 
 ** Feature                                                         :Bindings:
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;; Feature mode
-#+END_SRC
+#+end_src
 
 Since I work with [[https://cucumber.io/][Cucumber]] feature files reasonably often, of course I'd need a mode to edit and run tests from:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package feature-mode
     :ensure t
     :mode "\\.feature$"
@@ -396,19 +396,19 @@ Since I work with [[https://cucumber.io/][Cucumber]] feature files reasonably of
                 ("C-c C-c" . feature-verify-scenario-at-pos)
                 ("C-c C-k" . feature-verify-all-scenarios-in-buffer)
                 ("<f5>" . feature-verify-all-scenarios-in-project)))
-#+END_SRC
+#+end_src
 
 I also find it useful to be able to jump right to the definition of some Cucumber step I am looking at. I also like Slime's evaluation bindings, so I emulate those here:
-#+BEGIN_SRC emacs-lisp :padline no
+#+begin_src emacs-lisp :padline no
   (use-package cucumber-goto-step
     :ensure t
     :bind (:map feature-mode-map
                 ("<f3>" . jump-to-cucumber-step)))
-#+END_SRC
+#+end_src
 
 ** HTML, JSP, PHP, and so on...
 For most markup-centric web development, I start up =web-mode=:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
     ;; Web Mode for HTML, JSPs, etc...
   (use-package web-mode
     :ensure t
@@ -427,20 +427,20 @@ For most markup-centric web development, I start up =web-mode=:
     (setq web-mode-html-offset 2)
     (setq web-mode-css-offset 2)
     (setq web-mode-script-offset 2))
-#+END_SRC
+#+end_src
 
 For some niceties that let me do things like write blocks of HTML with only CSS selectors, here's [[https://emmet.io/][Emmet]]!
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package emmet-mode
     :ensure t
     :after web-mode
     :init (setq emmet-indentation 2)
     :hook
     ((web-mode . emmet-mode)))
-#+END_SRC
+#+end_src
 
 And with Emmet enabled, I can also add some more niceties, like autocomplete for its snippets:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package ac-emmet
     :ensure t
     :after emmet-mode
@@ -448,11 +448,11 @@ And with Emmet enabled, I can also add some more niceties, like autocomplete for
     ((web-mode . ac-emmet-html-setup)
      (sgml-mode . ac-emmet-html-setup)
      (css-mode . ac-emmet-css-setup)))
-#+END_SRC
+#+end_src
 
 ** Java
 If I need to modify Java in Emacs, it's nice to have some nice IDE functionality from lsp:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Java
   (use-package lsp-java
     :ensure t
@@ -467,51 +467,51 @@ If I need to modify Java in Emacs, it's nice to have some nice IDE functionality
     (toggle-truncate-lines t)
 
     :hook ((java-mode . lsp)))
-#+END_SRC
+#+end_src
 
 ** JavaScript                                                      :Bindings:
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;; JavaScript
-#+END_SRC
+#+end_src
 The support for JavaScript in Emacs is ridiculous. We have an entire parser in the =js2-mode= package, which is very well-written.
 
-#+BEGIN_SRC emacs-lisp :padline no
+#+begin_src emacs-lisp :padline no
   (use-package js2-mode
     :ensure js2-mode
     :bind (:map js-mode-map ("<f3>" . js2-jump-to-definition))
     :mode "\\.js\\'")
-#+END_SRC
+#+end_src
 
 We also possibly have [[http://ternjs.net][Tern]], which gives us even *more* advanced JavaScript IDE functionality like cross-file references, type inference, and lots of other neat things... But it requires an external executable. That means we need to check to see if it is set up on this system. Either way, we will want to act accordingly:
-#+BEGIN_SRC emacs-lisp :var tern-enabled='t
+#+begin_src emacs-lisp :var tern-enabled='t
   (defvar *tern-exists* (and tern-enabled (exec-exists-p "tern"))
     "Whether or not we can use Tern on this system. Set to \"t\"
     when we can, or \"nil\" when we can't.")
-#+END_SRC
+#+end_src
 
 There is also great =autocomplete= support with =ac-js2=... And that allows for scope-intelligent jumping to definitions... I still want =js2='s =autocomplete= for local variables because IMO it is superior to Tern, but having two jumping bindings is redundant, so I disable this one if we have Tern (By overriding it below):
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package ac-js2
     :ensure t
     :after js2-mode
     :hook ((js2-mode . ac-js2-mode)))
-#+END_SRC
+#+end_src
 
 Now, using =*tern-exists*= from above, we will pick between using the =tern= or =js2-refactor= packages:
-#+BEGIN_SRC emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb yes
   (if *tern-exists*
       <<package-tern>>
       <<package-js2-refactor>>)
-#+END_SRC
+#+end_src
 
 Of course, if Tern does not exist, we can install it with the following (Assuming we have [[https://www.npmjs.com/][npm]]):
-#+BEGIN_SRC sh :dir /sudo::
+#+begin_src sh :dir /sudo::
   npm install -g tern
-#+END_SRC
+#+end_src
 
 If Tern is enabled, our config looks like this:
 #+NAME:package-tern
-#+BEGIN_SRC emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle no
   (use-package tern
     :ensure tern-auto-complete
     :after js2-mode
@@ -526,113 +526,113 @@ If Tern is enabled, our config looks like this:
     :bind (:map js-mode-map
                 ("M-R" . tern-rename-variable)
                 ("<f3>" . tern-find-definition)))
-#+END_SRC
+#+end_src
 
 Now, if Tern does not exist, we js2's parser for things like =js2-refactor=, which allows for advanced automatic refactoring such as renaming variables and extracting code blocks with intelligent attention to scope (But it's only local to the current file as of the time of writing):
-#+BEGIN_SRC emacs-lisp :noweb yes :tangle no
+#+begin_src emacs-lisp :noweb yes :tangle no
   (use-package js2-refactor
     :ensure t
     :after js2-mode
     :bind (:map js-mode-map ("M-R" . js2r-rename-var))
     :hook ((js2-mode . js2-refactor-mode)))
-#+END_SRC
+#+end_src
 
 ** Lua
 I sometimes write in Lua. Nothing overly special here:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package lua-mode :ensure t)
-#+END_SRC
+#+end_src
 
 ** Markdown mode
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;; Markdown
-#+END_SRC
+#+end_src
 
 As of the time of writing, I don't think markdown mode has it set automagically start for files with the =.md= file extension, so:
-#+BEGIN_SRC emacs-lisp :padline no
+#+begin_src emacs-lisp :padline no
   (use-package markdown-mode
     :ensure markdown-mode+
     :mode "\\.md$")
-#+END_SRC
+#+end_src
 
 ** nginx Configuration
 I work with nginx configurations every now and then so:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package nginx-mode :ensure t)
-#+END_SRC
+#+end_src
 
 ** Python
 I don't really write Python, but for the times I do, Jedi is neat:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Jedi, for Python sweetness
   (use-package jedi
     :ensure t
     :init (setq jedi:complete-on-dot t)
     :hook ((python-mode . jedi:ac-setup)))
-#+END_SRC
+#+end_src
 
 ** Pico-8
 Pico-8 is a neat little fantasy console, and someone wrote a pretty nice mode for it!
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package pico8-mode
     :after (company quelpa-use-package)
     :bind (:map pico8-mode-map ("<f3>" . xref-find-definitions))
     :hook ((pico8-mode . company-mode))
     :quelpa ((pico8-mode :fetcher github :repo "Kaali/pico8-mode")))
-#+END_SRC
+#+end_src
 
 ** Ruby
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;; Ruby support
-#+END_SRC
+#+end_src
 
 The default Ruby mode in Emacs is pretty good, partially because it was [[http://www.slideshare.net/yukihiro_matz/how-emacs-changed-my-life][written by Matz himself.]] But there is still room for improvement. Notably, adding some kind of on-the-fly syntax checking can make things just lovely:
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   (use-package flymake-ruby
     :ensure t
     :hook ((ruby-mode . flymake-ruby-load)))
-#+END_SRC
+#+end_src
 
 And, if we want to get completions from a Ruby REPL, we can get some extra support with Robe:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package robe
   :ensure t
   :bind ("<f3>" . robe-jump)
   :hook ((ruby-mode . robe-mode)))
-#+END_SRC
+#+end_src
 
 ** Rust
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;; Rust support
-#+END_SRC
+#+end_src
 
 Rust is a pretty neat language. Racer is a pretty neat mode. Lets combine these a bit and get some autocomplete support while we're at it
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-hook 'rust-mode-hook #'flycheck-mode)
   (add-hook 'rust-mode-hook #'racer-mode)
   (add-hook 'racer-mode-hook #'eldoc-mode)
   (add-hook 'racer-mode-hook #'ac-racer-setup)
   (add-hook 'racer-mode-hook #'flycheck-rust-setup)
-#+END_SRC
+#+end_src
 
 And to make auto-complete a little less annoying:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-hook 'racer-mode-hook
             (lambda ()
               (setq ac-sources '(ac-source-racer))
               (setq ac-auto-start nil)
               (setq ac-trigger-key "TAB")))
-#+END_SRC
+#+end_src
 
 ** SQL
 Emacs seems to fail at escaping backslashes in SQL files... So I have slightly modified the syntax entry for the backslash character in SQL files so it acts like a proper escape:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; SQL, fix buffer escaping
   (add-hook 'sql-mode-hook
             (lambda ()
               (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
-#+END_SRC
+#+end_src
 
 
 * Utility
@@ -647,24 +647,24 @@ Emacs now has a WebKit-based browser embedded in it with XWidget. This is cool a
 First I define two functions, since =[Home]= and =[End]= functionality is sorely lacking. It just scrolls the browser itself out of view and doesn't scroll. The alternative is to scroll a few pixels at a time until you are at the bottom. *Annoying*.
 
 So:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun xwidget-webkit-scroll-top ()
     "Scroll webkit to the top of the page."
     (interactive)
     (xwidget-set-adjustment (xwidget-webkit-last-session) 'vertical nil 0))
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun xwidget-webkit-scroll-bottom ()
     "Scroll webkit to the bottom of the page."
     (interactive)
     (xwidget-webkit-execute-script
      (xwidget-webkit-current-session)
      "window.scrollTo(0, document.body.scrollHeight);"))
-#+END_SRC
+#+end_src
 
 This part is to define a bunch of keys to make the browser actually-usable. The following was largely stolen from [[https://www.reddit.com/r/emacs/comments/4srze9/watching_youtube_inside_emacs_25/][this Reddit post]], with a few modifications to add my own functions above:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Add usable keybindings whenever we try to use the XWidget browser
   (add-hook
    'xwidget-webkit-mode-hook
@@ -685,43 +685,43 @@ This part is to define a bunch of keys to make the browser actually-usable. The 
    (lambda ()
      (when (equal major-mode 'xwidget-webkit-mode)
        (xwidget-webkit-adjust-size-dispatch))))
-#+END_SRC
+#+end_src
 ** Evil
 I find that one of the first things I do when I start Emacs recently is start Evil... I may as well just put it in my config.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package evil
     :ensure t
     :config (evil-mode 1))
-#+END_SRC
+#+end_src
 
 ** Sauron                                                             :Hooks:
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;; Supremely useful monitor -- Sauron
-#+END_SRC
+#+end_src
 
 The all-seeing eye, Sauron is quite useful, though I want to add some functionality to the modeline with it, so I make higher-priority messages set a variable: =sauron-alert=:
 
-#+BEGIN_SRC emacs-lisp :padline no
+#+begin_src emacs-lisp :padline no
   (add-hook 'sauron-event-added-functions
             (lambda (what priority message &optional event)
               (when (<= 4 priority)
                 (setq sauron-alert t))))
-#+END_SRC
+#+end_src
 
 The above means you can do something like the following:
-#+BEGIN_SRC emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle no
   (when (boundp 'sauron-alert)
     "Code goes here for when Suaron sees something, yo.")
-#+END_SRC
+#+end_src
 
 And of course, to set it back to nothingness:
-#+BEGIN_SRC emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle no
   (makunbound 'sauron-alert)
-#+END_SRC
+#+end_src
 
 I actually use this in the modeline and have the modeline use the following function to generate a spooky eye that notifies me if Sauron has seen something of interest with clickable text to bring me to the Sauron buffer:
-#+BEGIN_SRC emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle no
   (defun make-sauron-text ()
     "Creates a clickable Sauron text that switches to the Sauron
   buffer."
@@ -735,28 +735,28 @@ I actually use this in the modeline and have the modeline use the following func
                   'face 'compilation-error
                   'help-echo "Sauron has seen something"
                   'pointer 'hand)))
-#+END_SRC
+#+end_src
 
 And because I get notified of high-priority events normally with the above, I have no need for Sauron to be its own frame:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq sauron-separate-frame nil)
-#+END_SRC
+#+end_src
 
 ** Expand Region                                                   :Bindings:
 Expand Region is a very handy package for selecting arbitrary blocks of text, be it code or whatever.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Expand region
   (use-package expand-region
     :ensure t
     :bind (("s-SPC" . er/expand-region)
            ("s-S-SPC" . er/contract-region)))
-#+END_SRC
+#+end_src
 
 ** Multiple Cursors                                                :Bindings:
 From the famous [[https://www.youtube.com/watch?v=jNa3axo40qM][Emacs Rocks video]] where it was introduced to the masses, my configuration for this super-handy mode is as follows (Just keybindings):
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Multiple-cursors
   (use-package multiple-cursors
     :ensure t
@@ -764,23 +764,23 @@ From the famous [[https://www.youtube.com/watch?v=jNa3axo40qM][Emacs Rocks video
            ("C-s-s" . mc/mark-all-like-this)
            ("M-s-s" . mc/mark-next-symbol-like-this)
            ("s-S" . mc/mark-sgml-tag-pair)))
-#+END_SRC
+#+end_src
 
 ** Projectile                                                      :Bindings:
 Another really handy usability mode: Projectile!
 
 I use Projectile with Helm to browse to files in the current project really fast:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package helm-projectile :ensure t)
-#+END_SRC
+#+end_src
 
 I use it exclusively with grizzl though, so:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package grizzl :ensure t)
-#+END_SRC
+#+end_src
 
 So, with all of this in play, here is my projectile config:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package projectile
     :ensure t
     :after (grizzl helm-projectile)
@@ -791,13 +791,13 @@ So, with all of this in play, here is my projectile config:
     (projectile-global-mode)
 
     :bind (("C-M-f" . helm-projectile)))
-#+END_SRC
+#+end_src
 
 ** Avy                                                             :Bindings:
 =Avy= is a [[http://emacsredux.com/blog/2015/07/19/ace-jump-mode-is-dead-long-live-avy/][re-imagining of ace-jump-mode]], which allows for very fast jumping around a buffer.
 
 It is very handy for navigation regardless of mode, so:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package avy
     :ensure t
     :after evil
@@ -807,45 +807,45 @@ It is very handy for navigation regardless of mode, so:
            :map evil-motion-state-map
            ("p" . avy-goto-subword-1)
            ("P" . avy-goto-char)))
-#+END_SRC
+#+end_src
 
 ** Show parenthesis mode
 To my knowledge, there is not a single mode where this minor mode isn't helpful or mildly amusing.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (show-paren-mode)
-#+END_SRC
+#+end_src
 
 ** Pretty-print =^L= characters
 By default, Emacs uses the control character ^L pretty often and prints it as a control character in buffers.
 
 I find this to be ugly, so instead, I install =pretty-control-l-mode= so I can make it look nice.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package pp-c-l
     :ensure t
     :config (pretty-control-l-mode 1))
-#+END_SRC
+#+end_src
 
 ** Magit
 I don't need to make any modifications to Magit, despite the fact that I use it quite regularly:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package magit :ensure t)
-#+END_SRC
+#+end_src
 
 ** Which key
 Which Key shows completions for key combos in order to make certain things easier to remember if my mind decides to be silly.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package which-key
     :ensure t
     :config (which-key-mode t))
-#+END_SRC
+#+end_src
 
 
 * Org Mode                                                   :Bindings:Hooks:
 Org mode deserves a section for itself because it is just that important.
 
 My Org mode setup includes support for spell checking, grammar checking, tangling source files from Org mode, =visual-line-mode=, and syntax coloring:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Org mode
   (use-package org-mode
     :ensure org-plus-contrib
@@ -861,53 +861,53 @@ My Org mode setup includes support for spell checking, grammar checking, tanglin
 
     :hook ((org-mode . flyspell-mode)
            (org-mode . visual-line-mode)))
-#+END_SRC
+#+end_src
 
 The grammar checking is done with langtool, and isn't even really required, so no =:ensure= here:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package langtool)
-#+END_SRC
+#+end_src
 
 Nothing too crazy, because most of Org's default configuration is pretty sweet.
 
 As for evaluation, especially evaluation with images, It kinda annoys me that I have to re-run =org-redisplay-inline-images= whenever I eval a code block that spits out an image, so [[http://emacs.stackexchange.com/a/9813/2039][I stole this snippet]] to fix it:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Global org-mode bindings
   (global-set-key (kbd "C-c a") 'org-agenda)
   (global-set-key (kbd "C-c l") 'org-store-link)
   (global-set-key (kbd "C-c n") 'org-capture)
-#+END_SRC
+#+end_src
 
 I /did/, however, bind a few global Org-mode commands, things that can be useful anywhere...
 
 
 * Variables
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;;;; Variables
-#+END_SRC
+#+end_src
 There are some variables that I want to =setq= because I don't want to have to customize them from their defaults.
 
 ** Lock Files
 I really don't like Emacs lockfiles... They are annoying and mess up an otherwise clean folder:
-#+BEGIN_SRC emacs-lisp :padline no
+#+begin_src emacs-lisp :padline no
   (setq create-lockfiles nil) ;; Nasty at times
-#+END_SRC
+#+end_src
 
 ** Tabs vs Spaces: The endless war
 I am on the spaces side, because tab width screws up formatting hardcore on things like Github if you want to do granular spacing and their tabs are different from yours:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq-default indent-tabs-mode nil) ;; Screws up in other editors and Github
-#+END_SRC
+#+end_src
 
 Come at me bro.
 
 ** Auto-backup config
 Stolen from [[http://emacswiki.org/emacs/BackupDirectory][here]]... Very useful to have backup files not mess up the current folder, and yet still exist:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Auto-backups
   (setq backup-by-copying t      ; don't clobber symlinks
         backup-directory-alist
@@ -918,7 +918,7 @@ Stolen from [[http://emacswiki.org/emacs/BackupDirectory][here]]... Very useful 
         version-control t)       ; use versioned backups
   (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
   (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
-#+END_SRC
+#+end_src
 
 
 * Aliases
@@ -927,31 +927,31 @@ The ability to replace one piece of functionality with another is super-handy.
 ** Yes and No questions
 Having to type "yes" is annoying when I just want to do something simple... So, I alias =yes-or-no-p= to the single-keystroke equivalent:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Make boolean questions less annoying
   (defalias 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
+#+end_src
 
 
 * Hooks                                                               :Hooks:
 Hooks! A few small tweaks to suit my work style.
 
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;;;; Hooks
-#+END_SRC
+#+end_src
 
 ** Whitespace begone!
 First of all, I dislike having messy whitespace in the files I am working with, so I am sure to delete trailing whitespace whenever I save a file... (This might become a problem sometime down the line, but so far everything is good.)
 
-#+BEGIN_SRC emacs-lisp :padline no
+#+begin_src emacs-lisp :padline no
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
-#+END_SRC
+#+end_src
 
 
 * Bindings                                                         :Bindings:
-#+BEGIN_SRC emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
   ;;;; Non-specific bindings
-#+END_SRC
+#+end_src
 This is a section for key and event bindings that don't fit anywhere else.
 
 ** USR1 signal
@@ -959,9 +959,9 @@ When I am running Emacs, I don't always think about starting a server of it, bec
 
 That is why I am going to make =kill -USR1 $(pidof emacs)= start an Emacs server.
 
-#+BEGIN_SRC emacs-lisp :padline no
+#+begin_src emacs-lisp :padline no
   (define-key special-event-map (kbd "<sigusr1>") 'server-start)
-#+END_SRC
+#+end_src
 
 
 * Metadata                                                         :noexport:
