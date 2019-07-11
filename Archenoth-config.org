@@ -823,7 +823,9 @@ I find this to be ugly, so instead, I install =pretty-control-l-mode= so I can m
 #+begin_src emacs-lisp
   (use-package pp-c-l
     :ensure t
-    :config (pretty-control-l-mode 1))
+    :config (pretty-control-l-mode 1)
+    :custom (pp^L-^L-string "--------- Section (Printable Page) ----------\n")
+    :custom-face (pp^L-highlight ((t (:foreground "#bd93f9" :height 1.2)))))
 #+end_src
 
 ** Magit
