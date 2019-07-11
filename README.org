@@ -10,10 +10,6 @@
 organize, and it breaks down the way I've solved problems into little
 bite-sized chunks that others can use.
 
-#+ATTR_LATEX: :width 1000
-#+CAPTION:Fullscreen mode with M+ installed, toggled with <F11>
-[[./fullscreen.png]]
-
 * About
 The way it is constructed, the file is supposed to be a standalone configuration separate from =.emacs=, and simply loaded in.
 
@@ -53,12 +49,6 @@ As for keybindings for global modes:
 | Key   | Action                         |
 |-------+--------------------------------|
 | C-M-f | Helm find file in project      |
-| <f11> | Toggle Fullscreen              |
-| s-S   | Multiple cursors next line     |
-| M-s-S | Multiple cursors selection     |
-| C-s-S | Multiple cursors mark all      |
-| s-/   | Avy jump word beginnings     |
-| s-?   | Avy jump all characters      |
 
 # Local Variables:
 # org-image-actual-width: nil
