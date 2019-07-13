@@ -128,15 +128,6 @@ And of course, spaceline is nice!
     (spaceline-unmodified ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line))))))
 #+end_src
 
-And for smooth scrolling and stuff:
-#+begin_src emacs-lisp
-  (use-package sublimity
-    :if window-system
-    :config (require 'sublimity-scroll)
-    :init (sublimity-mode 1)
-    :quelpa ((sublimity :fetcher github :repo "zk-phi/sublimity")))
-#+end_src
-
 And for things that use icons? Let's install all the icons!
 #+begin_src emacs-lisp
   (use-package all-the-icons
@@ -201,7 +192,8 @@ And =php-mode=:
 Emacs' autocomplete is magnificent. I will have it enabled for almost every programming mode in existence.
 
 #+begin_src emacs-lisp
-  (ac-config-default)
+  (use-package auto-complete
+    :init (ac-config-default))
 #+end_src
 
 *** Company
@@ -822,10 +814,10 @@ By default, Emacs uses the control character ^L pretty often and prints it as a 
 I find this to be ugly, so instead, I install =pretty-control-l-mode= so I can make it look nice.
 #+begin_src emacs-lisp
   (use-package pp-c-l
-    :ensure t
     :config (pretty-control-l-mode 1)
     :custom (pp^L-^L-string "--------- Section (Printable Page) ----------\n")
-    :custom-face (pp^L-highlight ((t (:foreground "#bd93f9" :height 1.2)))))
+    :custom-face (pp^L-highlight ((t (:foreground "#bd93f9" :height 1.2))))
+    :quelpa ((pp-c-l :fetcher wiki)))
 #+end_src
 
 ** Magit
@@ -867,7 +859,7 @@ My Org mode setup includes support for spell checking, grammar checking, tanglin
 
 The grammar checking is done with langtool, and isn't even really required, so no =:ensure= here:
 #+begin_src emacs-lisp
-  (use-package langtool)
+  (use-package langtool :ensure t)
 #+end_src
 
 Nothing too crazy, because most of Org's default configuration is pretty sweet.
