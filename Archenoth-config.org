@@ -626,6 +626,15 @@ Emacs seems to fail at escaping backslashes in SQL files... So I have slightly m
               (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
 #+end_src
 
+** VBS
+I don't use VBS often--but I guess often enough to want an editor to play around with it.
+#+begin_src emacs-lisp
+  (use-package vbscript-mode
+    :after (company quelpa-use-package)
+    :mode "\\.vbs$"
+    :quelpa ((vbscript-mode :fetcher github :repo "nverno/vbs-mode")))
+#+end_src
+
 
 * Utility
 The following are things that are nice to have set up during normal Emacs usage, but aren't for any type of task in particular.
