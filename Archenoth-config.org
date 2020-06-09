@@ -985,6 +985,13 @@ That is why I am going to make =kill -USR1 $(pidof emacs)= start an Emacs server
   (define-key special-event-map (kbd "<sigusr1>") 'server-start)
 #+end_src
 
+** Dired clicks
+When using dired, I sometimes like to browse around by clicking, but I'm not too big on these clicks always opening in other windows. What this does is it makes these all open in the window I'm looking at..!
+
+#+begin_src emacs-lisp :padline no
+  (define-key dired-mode-map [mouse-2] 'dired-mouse-find-file)
+#+end_src
+
 
 * Metadata                                                         :noexport:
 #  LocalWords:  elisp LocalWords Flymake padline modeline hidestars
@@ -992,4 +999,4 @@ That is why I am going to make =kill -USR1 $(pidof emacs)= start an Emacs server
 #  LocalWords:  Spifftastic Autocomplete NOX js executables args USR
 #  LocalWords:  Org's XWidget WebKit quelpa melpa Powerline Yasnippet
 #  LocalWords:  autocomplete Hexl PHP Sly's Emmet Lua nginx Pico hexl
-#  LocalWords:  grizzl Magit spaceline
+#  LocalWords:  grizzl Magit spaceline dired
