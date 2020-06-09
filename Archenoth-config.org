@@ -97,7 +97,8 @@ I've also decided that I don't really care for the scrollbars when they interfer
 #+end_src
 
 As for in-depth styling, I basically just use =doom-dracula= with some mild modifications:
-#+begin_src emacs-lisp :noweb yes
+#+NAME:doom-theme-config
+#+begin_src emacs-lisp :tangle no
   (use-package doom-themes
     :if window-system
     :ensure t
@@ -115,7 +116,8 @@ As for in-depth styling, I basically just use =doom-dracula= with some mild modi
 #+end_src
 
 And of course, spaceline is nice!
-#+begin_src emacs-lisp
+#+NAME:spaceline-config
+#+begin_src emacs-lisp :tangle no
   (use-package spaceline-config
     :if window-system
     :ensure spaceline
@@ -129,7 +131,8 @@ And of course, spaceline is nice!
 #+end_src
 
 And for things that use icons? Let's install all the icons!
-#+begin_src emacs-lisp
+#+NAME:all-the-icons-config
+#+begin_src emacs-lisp :tangle no
   (use-package all-the-icons
     :if window-system
     :ensure t
@@ -139,7 +142,8 @@ And for things that use icons? Let's install all the icons!
 #+end_src
 
 And now I can get Centaur Tabs to give myself a nifty little tab bar~
-#+begin_src emacs-lisp
+#+NAME:centaur-tabs-config
+#+begin_src emacs-lisp :tangle no
   (use-package centaur-tabs
     :if window-system
     :ensure t
@@ -161,6 +165,21 @@ And now I can get Centaur Tabs to give myself a nifty little tab bar~
     :bind
     ("C-<prior>" . centaur-tabs-backward)
     ("C-<next>" . centaur-tabs-forward))
+#+end_src
+
+And since the above all need to be loaded lazily if we are starting from a daemon:
+#+begin_src emacs-lisp :noweb yes
+  (cl-labels ((set-theme ()
+                <<doom-theme-config>>
+                <<spaceline-config>>
+                <<all-the-icons-config>>
+                <<centaur-tabs-config>>)
+              (set-theme-hook (frame)
+                (with-selected-frame frame (set-theme))
+                (remove-hook 'after-make-frame-functions #'set-theme-hook)))
+    (if (daemonp)
+        (add-hook 'after-make-frame-functions #'set-theme-hook)
+      (set-theme)))
 #+end_src
 
 
