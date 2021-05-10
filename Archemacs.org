@@ -252,6 +252,9 @@ Here are a bunch of things that I find handy universally. Which means most of th
   ;; This causes dired to open files in the same buffer as itself when you click
   ;; things
   (define-key dired-mode-map [mouse-2] 'dired-mouse-find-file)
+
+  ;; Save my minibuffer history between sessions plz
+  (savehist-mode 1)
 #+end_src
 
 
