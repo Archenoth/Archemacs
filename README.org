@@ -1,4 +1,4 @@
-#+TITLE:Archenoth's Emacs configuration
+#+TITLE:Archemacs
 #+AUTHOR:Archenoth
 #+EMAIL:Archenoth@gmail.com
 :SETTINGS:
@@ -6,9 +6,9 @@
 #+TOC: headlines 1
 :END:
 
-[[file:./Archenoth-config.org][Org-mode Emacs configuration]] is great! Surprisingly fast, easy to
-organize, and it breaks down the way I've solved problems into little
-bite-sized chunks that others can use.
+This is my personal configuration for Emacs! It's largely Doom-Emacs themed, and specifically tweaked to be good at the things I personally like doing.
+
+You can use it too if you like! But I can't really attest to the general-purpose nature of the things that are in here.
 
 * About
 The way it is constructed, the file is supposed to be a standalone configuration separate from =.emacs=, and simply loaded in.
@@ -18,39 +18,16 @@ That way, any private configuration or system-specific configuration can take pl
 So, if you cloned this repo directly into =.emacs.d= (Which is highly recommended), you can simply include it with:
 
 #+BEGIN_SRC elisp :tangle ~/.emacs :padline no
-  (require 'ob-tangle)
-  (org-babel-load-file "~/.emacs.d/dotemacs/Archenoth-config.org")
+  (org-babel-load-file "~/.emacs.d/Archemacs/Archemacs.org")
 #+END_SRC
 
-(You can use =C-c C-v t= while visiting this file in =org-mode= to export that code into =~/.emacs= if that's all you really need, though be warned that this will overwrite your existing =.emacs=)
+(You can use =C-c C-v t= while visiting this file in =org-mode= to export that code into =~/.emacs= if that's all you really need, though be warned that *this will overwrite your existing =.emacs=*)
 
 * Installation in a nutshell
-1. =cd= to =~/.emacs.d=
-2. Run =git clone https://github.com/Archenoth/dotemacs.git=
-3. Open this file in =org-mode=. (=emacs dotemacs/README.org=)
-4. Tangle with =C-c C-v t= (Or if you have stuff in your =.emacs=, copy the above lines into it instead.).
+1. Backup your =~/.emacs=!! *(These steps will overwrite it!)*
+2. Run =git -C ~/.emacs.d clone https://github.com/Archenoth/Archemacs.git=
+3. Open this file in =org-mode=. (=emacs ~/.emacs.d/Archemacs/README.org=)
+4. Tangle with =C-c C-v t=
 5. Restart Emacs.
 
 If you want the font customization, please follow the instructions in [[./fonts.org][fonts.org]].
-
-* Conventions and Keybindings
-I try to keep some conventions between modes in my configuration; The following are keybindings that will generally do something similar in all applicable modes:
-
-| Key     | Action                          |
-|---------+---------------------------------|
-| <f3>    | Jump to definition              |
-| <f5>    | Compile project / Run all files |
-| C-c C-c | Run current block               |
-| C-c C-k | Run file                        |
-| M-R     | Rename variable                 |
-
-As for keybindings for global modes:
-
-| Key   | Action                         |
-|-------+--------------------------------|
-| C-M-f | Helm find file in project      |
-
-# Local Variables:
-# org-image-actual-width: nil
-# eval: (org-display-inline-images t nil)
-# End:
