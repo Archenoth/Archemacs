@@ -57,7 +57,7 @@ And then we initialize the package manager, =straight=, and =use-package=:
 
 
 * Style options
-I love Doom Emacs' spaceline, and centaur-tabs! I also like to trim my interface to be a bit more on the minimal side, so, I cut out a few UI elements here.
+I love Doom Emacs' and spaceline! I also like to trim my interface to be a bit more on the minimal side, so, I cut out a few UI elements here.
 However, these things are only relevant in the event we are running Emacs in X.
 
 On top of that, since we might also be starting Emacs as a daemon (without a frame, but intended for X), we defer loading these modifications until we actually have a frame to work with.
@@ -106,35 +106,6 @@ And here is all of the actual theming (It gets pulled into the code block above 
     (spaceline-evil-normal ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line)))))
     (spaceline-highlight-face ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line)))))
     (spaceline-unmodified ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line))))))
-
-  ;; These icons are nice to have for centaur tabs, and acts like a font to keep
-  ;; resources reasonably low when rendering them
-  (use-package all-the-icons
-    :if window-system
-    :ensure t
-    :config
-    (unless (member "all-the-icons" (font-family-list))
-      (all-the-icons-install-fonts t)))
-
-  ;; Add a tab bar at the top! I like having a pretty line above tabs to indicate
-  ;; they are in use; it's subtle and looks nice imo
-  (use-package centaur-tabs
-    :if window-system
-    :ensure t
-    :config
-    (centaur-tabs-headline-match)
-    :init
-    (centaur-tabs-mode t)
-    :custom
-     (centaur-tabs-style "bar")
-     (centaur-tabs-height 32)
-     (centaur-tabs-set-icons t)
-     (centaur-tabs-set-bar 'over)
-     (centaur-tabs-set-modified-marker t)
-     (centaur-tabs-modified-marker "●")
-    :bind
-    ("C-<prior>" . centaur-tabs-backward)
-    ("C-<next>" . centaur-tabs-forward))
 
   ;; And here is my dashboard screen, along with a silly name that I'm finally
   ;; dubbing my config~
@@ -212,15 +183,10 @@ Here are a bunch of things that I find handy universally. Which means most of th
     :ensure t
     :config (which-key-mode t))
 
-  ;; An interesting little experiment. I don't ensure this one, because I'm not
-  ;; sure how I want to use it, but I wanna learn more about this mountain of
-  ;; arcane convenience-that-I-don't-quite-grasp-yet
-  (use-package hyperbole)
-
   ;; I prefer spaces to tabs, because I like to author my code with appearance in
   ;; mind too. (And spaces let me indent things to be on the same column of
   ;; expressions not at the beginning of lines)
-  (setq-default indent-tabs-mode nil)
+  (setq indent-tabs-mode nil)
 
   ;; Squelch the creation of .#<filename> files
   (setq create-lockfiles nil)
@@ -447,10 +413,10 @@ In here, I define a special =browse-url= function for gopher and gemini links, a
     :config
     (defun browse-url-elpher (url &rest _)
       (elpher-go url))
-    (when (functionp browse-url-browser-function)
-      (setq browse-url-browser-function `(("." . ,browse-url-browser-function))))
-    (add-to-list 'browse-url-browser-function '("^gopher:" . browse-url-elpher))
-    (add-to-list 'browse-url-browser-function '("^gemini:" . browse-url-elpher)))
+
+    (setq browse-url-handlers
+          '(("^gopher:" . browse-url-elpher)
+            ("^gemini:" . browse-url-elpher))))
 #+end_src
 
 ** Hexl
