@@ -25,7 +25,6 @@ Xft.hinting:    1
 Xft.hintstyle:  hintsfull
 Xft.lcdfilter:  lcddefault
 Xft.rgba:   rgb
-Emacs.FontBackend: xft,x
 Emacs.font: M+ 1m-13
 #+END_SRC
 
