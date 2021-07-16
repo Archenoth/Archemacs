@@ -183,6 +183,14 @@ Here are a bunch of things that I find handy universally. Which means most of th
     :ensure t
     :config (which-key-mode t))
 
+  ;; Smart xref jumping is nice without needing tags! This is especially nice with
+  ;; ag installed
+  (use-package dumb-jump
+    :ensure t
+    :init
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+    (setq xref-show-definitions-function #'xref-show-definitions-completing-read))
+
   ;; I prefer spaces to tabs, because I like to author my code with appearance in
   ;; mind too. (And spaces let me indent things to be on the same column of
   ;; expressions not at the beginning of lines)
@@ -235,7 +243,6 @@ Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely 
   ;; bunch of other nice things!
   (defun c-modes-hook ()
     (semantic-mode)
-    (local-set-key (kbd "M-.") #'semantic-ia-fast-jump)
     (semantic-idle-summary-mode 1)
     (setq-local ac-sources '(ac-source-semantic-raw)))
 
