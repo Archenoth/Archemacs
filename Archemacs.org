@@ -160,11 +160,12 @@ Here are a bunch of things that I find handy universally. Which means most of th
   ;; auto-complete is the easiest auto completion framework for my muscle memory,
   ;; and I like it very much~
   (use-package auto-complete
+    :ensure t
     :init (ac-config-default))
 
   ;; A buncha things use company and don't support auto-complete though, so for
   ;; those:
-  (use-package company)
+  (use-package company :ensure t)
 
   ;; Projectile using helm's selection framework! I find it makes fuzzy finding
   ;; files in projects really fast and easy
@@ -492,7 +493,8 @@ I also add nice looking Unicode bullet points.
 
   ;; Requires a languagetool-commandline.jar from
   ;; https://www.languagetool.org/download/snapshots/
-  (use-package langtool)
+  (use-package langtool
+    :ensure t)
 
   (use-package org-bullets
     :ensure t
