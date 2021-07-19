@@ -157,15 +157,13 @@ This is mostly used in Windows, and sometimes it's nice to be able to convert pa
 * Global stuff
 Here are a bunch of things that I find handy universally. Which means most of the things in here aren't going to be lazily loaded, and will contribute to how heavy my default Emacs is:
 #+begin_src emacs-lisp
-  ;; auto-complete is the easiest auto completion framework for my muscle memory,
-  ;; and I like it very much~
-  (use-package auto-complete
+  ;; Set up company, and auto-complete-like quickdocs!
+  (use-package company-quickhelp
     :ensure t
-    :init (ac-config-default))
-
-  ;; A buncha things use company and don't support auto-complete though, so for
-  ;; those:
-  (use-package company :ensure t)
+    :init
+    (global-company-mode 1)
+    (company-quickhelp-mode 1)
+    :bind (:map company-active-map ("<tab>" . company-complete-selection)))
 
   ;; Projectile using helm's selection framework! I find it makes fuzzy finding
   ;; files in projects really fast and easy
@@ -191,6 +189,9 @@ Here are a bunch of things that I find handy universally. Which means most of th
     :init
     (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
     (setq xref-show-definitions-function #'xref-show-definitions-completing-read))
+
+  ;; LSP support where we want it--hooks into xref and other things too!
+  (use-package eglot :ensure t)
 
   ;; I prefer spaces to tabs, because I like to author my code with appearance in
   ;; mind too. (And spaces let me indent things to be on the same column of
@@ -226,7 +227,8 @@ Here are a bunch of things that I find handy universally. Which means most of th
 
   ;; This causes dired to open files in the same buffer as itself when you click
   ;; things
-  (define-key dired-mode-map (kbd "<mouse-2>") 'dired-mouse-find-file)
+  (with-eval-after-load 'dired
+    (define-key dired-mode-map (kbd "<mouse-2>") 'dired-mouse-find-file))
 
   ;; Save my minibuffer history between sessions plz
   (savehist-mode 1)
@@ -237,15 +239,14 @@ Here are a bunch of things that I find handy universally. Which means most of th
 Language-specific support!
 
 ** C and C++
-Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely just setting that up; With it, we get definition jumping and some pretty intelligent =autocomplete=.
+Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely just setting that up; With it, we get definition jumping and some pretty intelligent completion.
 
 #+begin_src emacs-lisp
   ;; Setting up C and C++ with Semantic completion, jumping, summaries, and a
   ;; bunch of other nice things!
   (defun c-modes-hook ()
     (semantic-mode)
-    (semantic-idle-summary-mode 1)
-    (setq-local ac-sources '(ac-source-semantic-raw)))
+    (semantic-idle-summary-mode 1))
 
   (add-hook 'c-mode-hook 'c-modes-hook)
   (add-hook 'c++-mode-hook 'c-modes-hook)
@@ -254,9 +255,8 @@ Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely 
 ** Clojure
 #+begin_src emacs-lisp
   ;; CIDER completion! Pulls CIDER in as a dependency, conveniently~
-  (use-package ac-cider
-    :ensure t
-    :hook ((cider-mode . ac-cider-setup)))
+  (use-package cider
+    :ensure t)
 #+end_src
 
 ** Elisp
@@ -312,16 +312,6 @@ For most markup-centric web development, I start up =web-mode=. Having [[https:/
     :init (setq emmet-indentation 2)
     :hook
     ((web-mode . emmet-mode)))
-
-  ;; Completion for Emmet can remind me of the templates and other things it
-  ;; supports too!
-  (use-package ac-emmet
-    :ensure t
-    :after emmet-mode
-    :hook
-    ((web-mode . ac-emmet-html-setup)
-     (sgml-mode . ac-emmet-html-setup)
-     (css-mode . ac-emmet-css-setup)))
 #+end_src
 
 ** JavaScript
@@ -333,13 +323,6 @@ My JavaScript configuration is largely centered around js2 and it's tremendous J
   (use-package js2-mode
     :ensure js2-mode
     :mode "\\.js\\'")
-
-  ;; Uses the above package to give context-sensitive completion, and function
-  ;; docstring comprehension that is quite good.
-  (use-package ac-js2
-    :ensure t
-    :after js2-mode
-    :hook ((js2-mode . ac-js2-mode)))
 
   ;; Uses JS2 to let me rename variables and stuff~
   (use-package js2-refactor
@@ -373,15 +356,22 @@ This is also often run on a WSL system where the =pico8= binary is actually a Wi
   ;; like in-buffer
   (use-package pico8-mode
     :straight (pico8-mode :type git :host github :repo "Kaali/pico8-mode")
-    :after company
     :config
     (defun arch/pico8-run ()
       (interactive)
       (let ((path (arch/wsl-buffer-file-name)))
         (start-process "Pico-8" nil "pico8" "-run" path)))
     :bind (:map pico8-mode-map ("M-." . xref-find-definitions)
-                               ("<f5>" . arch/pico8-run))
-    :hook ((pico8-mode . company-mode)))
+                               ("<f5>" . arch/pico8-run)))
+#+end_src
+
+** Rust
+Eglot is all the support we need for Rust:
+#+begin_src emacs-lisp
+  (use-package rust-mode
+    :ensure t
+    :config
+    :hook ((rust-mode . eglot-ensure)))
 #+end_src
 
 ** SQL
@@ -398,7 +388,6 @@ I don't use VBS often--but I guess often enough to want an editor to play around
 #+begin_src emacs-lisp
   (use-package vbscript-mode
     :straight (vbscript-mode :type git :host github :repo "nverno/vbs-mode")
-    :after company
     :mode "\\.vbs$")
 #+end_src
 
