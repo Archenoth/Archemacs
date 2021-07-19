@@ -163,7 +163,9 @@ Here are a bunch of things that I find handy universally. Which means most of th
     :init
     (global-company-mode 1)
     (company-quickhelp-mode 1)
-    :bind (:map company-active-map ("<tab>" . company-complete-selection)))
+    :bind (:map company-active-map
+                ("<tab>" . company-complete-selection)
+                ("TAB" . company-complete-selection)))
 
   ;; Projectile using helm's selection framework! I find it makes fuzzy finding
   ;; files in projects really fast and easy
