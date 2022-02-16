@@ -30,4 +30,6 @@ So, if you cloned this repo directly into =.emacs.d= (Which is highly recommende
 4. Tangle with =C-c C-v t=
 5. Restart Emacs.
 
+You might also want to grab =ripgrep= if you don't already have it, because this config uses that for projectile, dumb-jump, and grep (Though nothing should break without it)
+
 If you want the font customization, please follow the instructions in [[./fonts.org][fonts.org]].

@@ -57,10 +57,9 @@ And then we initialize the package manager, =straight=, and =use-package=:
 
 
 * Style options
-I love Doom Emacs' and spaceline! I also like to trim my interface to be a bit more on the minimal side, so, I cut out a few UI elements here.
-However, these things are only relevant in the event we are running Emacs in X.
+I love Doom Emacs' and spaceline's appearance! I also like to trim my interface to be a bit more on the minimal side, so, I cut out a few UI elements here. However, these things are only relevant in the event we are running GUI Emacs, so this section gets mostly skipped if started in a terminal.
 
-On top of that, since we might also be starting Emacs as a daemon (without a frame, but intended for X), we defer loading these modifications until we actually have a frame to work with.
+That said, since we might also be starting Emacs as a daemon (without a frame, but intended for GUI clients), we also defer loading these modifications until we actually have a frame to work with when starting it this way.
 #+begin_src emacs-lisp :noweb yes
   (defun arch/set-theme ()
     "Loads and sets my graphical theme customizations"
@@ -139,25 +138,16 @@ And here is all of the actual theming (It gets pulled into the code block above 
 #+end_src
 
 
-* Helper functions
-** WSL stuff
-This is mostly used in Windows, and sometimes it's nice to be able to convert paths to something that Windows understands
-#+begin_src emacs-lisp
-  (defun arch/wsl-buffer-file-name ()
-    "`buffer-file-name`, but one that will give Windows paths on
-  WSL. (Which is handy for calling external non-WSL tools on
-  Windows)"
-    (if (executable-find "wslpath")
-        (string-trim (shell-command-to-string
-                      (concat "wslpath -w " buffer-file-name)))
-      buffer-file-name))
-#+end_src
-
-
 * Global stuff
 Here are a bunch of things that I find handy universally. Which means most of the things in here aren't going to be lazily loaded, and will contribute to how heavy my default Emacs is:
 #+begin_src emacs-lisp
+  ;; Perf things in case this emacs ever does heavy lifting
+  (setq gc-cons-threshold 100000000)
+  (setq read-process-output-max 1000000)
+
   ;; Set up company, and auto-complete-like quickdocs!
+  ;; We bind both tabs because turns out they aren't equivelant between
+  ;; GUI and terminals
   (use-package company-quickhelp
     :ensure t
     :init
@@ -168,14 +158,19 @@ Here are a bunch of things that I find handy universally. Which means most of th
                 ("TAB" . company-complete-selection)))
 
   ;; Projectile using helm's selection framework! I find it makes fuzzy finding
-  ;; files in projects really fast and easy
+  ;; files in projects really fast and easy with C-M-f
   (use-package projectile
     :ensure helm-projectile
-    :init
-    (setq projectile-enable-caching t)
-    (setq projectile-completion-system 'helm)
-    (projectile-mode)
-    :bind (("C-M-f" . helm-projectile)))
+    :init (projectile-mode)
+    :config (require 'helm-projectile)
+    :bind (("C-M-f" . projectile-find-file))
+    :custom
+    (projectile-enable-caching nil)
+    (projectile-completion-system 'helm)
+    (projectile-generic-command
+     (if (executable-find "rg")
+         "rg --files --hidden -0"
+       projectile-generic-command)))
 
   ;; This pops up menus with the continuation of key chords I started using, which
   ;; makes it sigificantly easier to use things that I have a hard time
@@ -185,7 +180,7 @@ Here are a bunch of things that I find handy universally. Which means most of th
     :config (which-key-mode t))
 
   ;; Smart xref jumping is nice without needing tags! This is especially nice with
-  ;; ag installed
+  ;; ripgrep installed
   (use-package dumb-jump
     :ensure t
     :init
@@ -228,7 +223,7 @@ Here are a bunch of things that I find handy universally. Which means most of th
   (define-key special-event-map (kbd "<sigusr1>") 'server-start)
 
   ;; This causes dired to open files in the same buffer as itself when you click
-  ;; things
+  ;; things (Deffered until we actually use dired)
   (with-eval-after-load 'dired
     (define-key dired-mode-map (kbd "<mouse-2>") 'dired-mouse-find-file))
 
@@ -256,9 +251,10 @@ Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely 
 
 ** Clojure
 #+begin_src emacs-lisp
-  ;; CIDER completion! Pulls CIDER in as a dependency, conveniently~
+  ;; CIDER makes Clojure a joy to work with, both in literate org files and outside
   (use-package cider
-    :ensure t)
+    :ensure t
+    :custom (org-babel-clojure-backend 'cider))
 #+end_src
 
 ** Elisp
@@ -274,16 +270,6 @@ My Elisp configuration is largely just setting up =erefactor= and then adding it
                          :fork (:host github :repo "Archenoth/Emacs-erefactor"))
     :hook ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . erefactor-lazy-highlight-turn-on)
     :bind-keymap ("C-c r" . erefactor-map))
-
-  ;; Hook for all ELISP modes that enables refactoring
-  (defun el-hook ()
-    (define-key emacs-lisp-mode-map (kbd "C-c r") erefactor-map)
-    (erefactor-lazy-highlight-turn-on))
-
-  ;; And assigning to said modes
-  (add-hook 'emacs-lisp-mode-hook 'el-hook)
-  (add-hook 'lisp-interaction-mode-hook 'el-hook)
-  (add-hook 'ielm-mode-hook 'el-hook)
 #+end_src
 
 ** HTML, JSP, PHP, and so on...
@@ -293,13 +279,7 @@ For most markup-centric web development, I start up =web-mode=. Having [[https:/
   (use-package web-mode
     :ensure t
     :after yasnippet
-    :mode
-    (("\\.[sj]?html?\\'" . web-mode)
-     ("\\.jsp\\'" . web-mode)
-     ("\\.phtml$" . web-mode)
-     ("\\.php[34]?\\'" . web-mode)
-     ("\\.erb$" . web-mode)
-     ("\\.ejs$" . web-mode))
+    :mode "\\.\\(?:jsp\\|tag\\|erb\\|ejs\\|[sjp]?html?x?\\)$"
     :init
     (setq web-mode-engines-alist '(("jsp" . "\\.tag\\'")))
     (setq web-mode-html-offset 2)
@@ -324,7 +304,7 @@ My JavaScript configuration is largely centered around js2 and it's tremendous J
   ;; heap of other things
   (use-package js2-mode
     :ensure js2-mode
-    :mode "\\.js\\'")
+    :mode "\\.js$")
 
   ;; Uses JS2 to let me rename variables and stuff~
   (use-package js2-refactor
@@ -345,26 +325,18 @@ My JavaScript configuration is largely centered around js2 and it's tremendous J
   ;; Markdown, for Jekyll and stuff!
   (use-package markdown-mode
     :ensure markdown-mode
-    :mode "\\.md$")
+    :mode "\\.\\(?:md\\|markdown\\)$")
 #+end_src
 
 ** Pico-8
 My favorite Pico-8 mode isn't on MELPA and friends, so we end up using straight here.
 
-This is also often run on a WSL system where the =pico8= binary is actually a Windows executable, so in order to get this to read the right file when I try to run =pico8=, I wrote a function to return the Windows path if we have WSL, but otherwise to act normally if we don't.
 #+begin_src emacs-lisp
   ;; Fetches a mode that lets me edit pico-8 file lua with native support,
   ;; documentation file parsing, and support for showing me what graphics look
   ;; like in-buffer
   (use-package pico8-mode
-    :straight (pico8-mode :type git :host github :repo "Kaali/pico8-mode")
-    :config
-    (defun arch/pico8-run ()
-      (interactive)
-      (let ((path (arch/wsl-buffer-file-name)))
-        (start-process "Pico-8" nil "pico8" "-run" path)))
-    :bind (:map pico8-mode-map ("M-." . xref-find-definitions)
-                               ("<f5>" . arch/pico8-run)))
+    :straight (pico8-mode :type git :host github :repo "Kaali/pico8-mode"))
 #+end_src
 
 ** Rust
@@ -372,7 +344,6 @@ Eglot is all the support we need for Rust:
 #+begin_src emacs-lisp
   (use-package rust-mode
     :ensure t
-    :config
     :hook ((rust-mode . eglot-ensure)))
 #+end_src
 
@@ -380,9 +351,8 @@ Eglot is all the support we need for Rust:
 Emacs seems to fail at escaping backslashes in SQL files... So I have slightly modified the syntax entry for the backslash character in SQL files so it acts like a proper escape:
 #+begin_src emacs-lisp
   ;; Fix syntax escaping for SQL modes in buffers
-  (add-hook 'sql-mode-hook
-            (lambda ()
-              (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
+  (use-package sql
+    :config (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table))
 #+end_src
 
 ** VBS
@@ -454,7 +424,7 @@ As for the bindings to use this:
 #+end_src
 
 ** Magit
-One of the best Git frontends! It's good enough that I actually use it instead of the CLI, which I feel very comfortable with~
+One of the best Git frontends! It's good enough that I actually use it instead of the CLI sometimes, which I feel very comfortable with~
 #+begin_src emacs-lisp
   (use-package magit :ensure t)
 #+end_src
@@ -499,12 +469,12 @@ I also add nice looking Unicode bullet points.
   (global-set-key (kbd "C-c c") 'org-capture)
 #+end_src
 
-I've also found that org-roam and its server are really nice for having a little personal wiki for researching things! (Requires sqlite to be installed though!)
-#+begin_src emacs-lisp
-  (use-package org-roam
-    :ensure t
+** grep
+This is a built-in package, but I like to customize it so it uses ripgrep
+#+begin_src emacs-lisp :tangle (if (executable-find "rg") "yes" "no")
+  ;; Use ripgrep; it is extremely fast
+  (use-package grep
     :custom
-    (org-roam-directory "~/Documents/org/roam/"))
-
-  (use-package org-roam-server :ensure t)
+    (grep-command '("rg -n -H --no-heading -e '' $(git rev-parse --show-toplevel || pwd)" . 27))
+    (grep-find-command '("rg -n -H --no-heading -g '*' -e '' $(git rev-parse --show-toplevel || pwd)" . 34)))
 #+end_src
