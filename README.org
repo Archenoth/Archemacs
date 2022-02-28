@@ -33,3 +33,58 @@ So, if you cloned this repo directly into =.emacs.d= (Which is highly recommende
 You might also want to grab =ripgrep= if you don't already have it, because this config uses that for projectile, dumb-jump, and grep (Though nothing should break without it)
 
 If you want the font customization, please follow the instructions in [[./fonts.org][fonts.org]].
+
+* Some tips about how I personally use this
+- My pattern of usage revolves around bookmarking project folders with =C-x r m=, and either clicking them in the dashboard, or by finding them in =C-x r l= (Though note that absolute canonical paths are helpful if you have your Code folder symlinked from somewhere not in your home folder)
+- =C-M-f= is for fuzzy-finding files in projects that I get to with bookmarks
+- I heavily use =M-x grep= to find things when =M-.= won't give me the information I need, so it auto-starts searches in the root of git projects, otherwise, it searches subfolders without needing to add anything to the command line
+- Remember that emmet exists! Write CSS selectors in HTML files and =C-RET= to expand that into the HTML that will be
+- Multiple cursors are set up like the subset I use in other things like VSCode, so =Ctrl + Click= adds new cursors, as do =C-M-up= and =C-M-down=, and =C-d= to mark the next thing that is highlighted.
+
+** Some nice things to configure per system
+ibuffer filter groups! Then you can do something like
+
+#+begin_src elisp :tangle no
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (add-hook 'ibuffer-mode-hook
+    (lambda () (ibuffer-switch-to-saved-filter-groups "Arch")))
+#+end_src
+
+I personally like this general idea:
+#+begin_src elisp :tangle no :eval never
+  (custom-set-variables
+   '(ibuffer-saved-filter-groups
+     '(("Arch"
+        ("Dashboard" (mode . dashboard-mode))
+        ("Git" (mode . magit-status-mode))
+        ("Temp" (filename . "Desktop/"))
+        ("Remote" (filename . "/sshx:"))
+        ("Org files" (filename . ".org"))
+        ("Some Code Project"
+         (and (not (name . "magit"))
+              (filename . "Code/ThatProject")))
+        ("Some Other Code Project"
+         (and (not (name . "magit"))
+              (filename . "Code/ThatProjectAlso")))
+        ("Chat" (mode . erc-mode))
+        ("Processes and info" (starred-name)))))
+   '(ibuffer-show-empty-filter-groups nil))
+#+end_src
+
+That way, I can just =C-x b= to get to a list of my open things, and I can just middle click on the magit buffer for a specific project to get to a place where I can do git things, or =C-M-f= and jump into some code!
+
+It's also nice to be able to click on groups and hit =D= to just delete swaths of buffers I don't actually need anymore. That keeps things light and easy to navigate!
+
+* Tips to go even lighter!
+If this is still too heavy, there are some neat ways to cut down on the things needed, aside from removing language support for things you don't use of course (Which I recommend by putting a =:tangle never= in the headers of the blocks you don't actually want in [[./Archemacs.org][Archemacs.org]] btw)
+
+- Tangle [[./Archemacs.org][Archemacs.org]] with =C-c C-v t= and replace the =(org-babel-load-file "~/.emacs.d/Archemacs/Archemacs.org")= with a =(load-file "~/.emacs.d/Archemacs/Archemacs.el")=. (Just don't forget to re-tangle with if you change anything in there!) This gets rid of the need for org to be loaded on startup
+- You can replace projectile for the most part with =(global-set-key (kbd "C-M-f") 'project-find-file)=. This works great in git folders, and tab will let you fuzzy find things in that folder!
+- You can replace almost all language support with =dumb-jump= on its own with =rg= installed and with judicious setting of =(add-to-list 'auto-mode-alist '("\\.thing$" . thing-mode))= with langauges that are "close enough"
+- Remember that customize will load the modes you assign certain custom variables for, so if you customize a variable for projectile, it will actually *load* that on startup rather than doing that lazily. This can be avoided with =(with-eval-after-load 'the-package ...)= forms that set the right state
+- You can usually replace =multiple-cursors= with macros or find-replace in the active region. (It's just a little bit more clunky)
+- =which-key= can be replaced by remembering that typing a =?= at any point during a key chord will list all the valid keys for your current incomplete chord. Again, just a little more clunky, but still pretty good!
+- =company= usually just hooks into the existing completion, but that is bound to =Alt+Tab= by default, which means something on a lot of computers--but you can get those completions with =ESC Tab= in a pinch too! If you rely on completion, this will be slower--but it's also native Emacs functionality
+- =magit='s git support is stellar, but the built-in vc support is actually surprisingly okay if magit is too heavy for you too! You can get a list of the things you can do with it by typing =C-x v ?=. Of special note: =L= for the log, =D= for the diff of the while project, === for the current file diff. Selective staging and things can be done from these, and =v= is what lets you commit and stuff. (Though I personally prefer to just use CLI git for most things, even when magit is available--I just find it handy for selective staging, browsing changes, and for double-checking things while I am committing them)
+
+Basically, you can remove almost all of the non-theming code and still have a pretty respectable environment that loads pretty fast! I mostly have things in this config for convenience reasons--and even though they all add up to not be a lot, none of it is /reaaaaally/ needed if you are familiar with the vanilla Emacs functionality these things augment.
