@@ -429,6 +429,18 @@ One of the best Git frontends! It's good enough that I actually use it instead o
   (use-package magit :ensure t)
 #+end_src
 
+** Multiple cursors
+This adds multiple-cursor bindings similar to other editors that I find pretty handy!
+
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind (("C-d" . mc/mark-next-like-this)
+           ("C-M-<up>" . mc/mmlte--up)
+           ("C-M-<down>" . mc/mmlte--down)
+           ("C-<down-mouse-1>" . mc/add-cursor-on-click)))
+#+end_src
+
 ** Org Mode
 My Org mode setup includes support for spell checking, grammar checking (Which requires =languagetool-commandline.jar= from [[https://www.languagetool.org/download/snapshots/][here]]), tangling source files from Org mode, =visual-line-mode=, and syntax coloring.
 
