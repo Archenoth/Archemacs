@@ -253,6 +253,7 @@ Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely 
 #+begin_src emacs-lisp
   ;; CIDER makes Clojure a joy to work with, both in literate org files and outside
   (use-package cider
+    :straight (cider :type git :host github :repo "clojure-emacs/cider")
     :ensure t
     :custom (org-babel-clojure-backend 'cider))
 #+end_src
