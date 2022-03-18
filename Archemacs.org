@@ -397,6 +397,15 @@ In here, I define a special =browse-url= function for gopher and gemini links, a
             ("^gemini:" . browse-url-elpher))))
 #+end_src
 
+** Idle highlighting
+This lets me see casually, the way variables and other things are used in programming buffers!
+
+#+begin_src emacs-lisp
+  (use-package idle-highlight-mode
+    :ensure t
+    :hook (prog-mode . idle-highlight-mode))
+#+end_src
+
 ** Hexl
 Hexl lacks some functionality, such as the ability to go to address offsets, so I stole a code block from [[https://emacs.stackexchange.com/a/45805/2039][here]] to do that:
 #+begin_src emacs-lisp
