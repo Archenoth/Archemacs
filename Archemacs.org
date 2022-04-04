@@ -412,6 +412,8 @@ This lets me see casually, the way variables and other things are used in progra
 #+begin_src emacs-lisp
   (use-package idle-highlight-mode
     :ensure t
+    :custom (idle-highlight-exceptions-face
+             '(font-lock-keyword-face font-lock-string-face font-lock-comment-face))
     :hook (prog-mode . idle-highlight-mode))
 #+end_src
 
