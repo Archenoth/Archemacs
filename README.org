@@ -8,27 +8,46 @@
 
 This is my personal configuration for Emacs! It's largely Doom-Emacs themed, and specifically tweaked to be good at the things I personally like doing.
 
-You can use it too if you like! But I can't really attest to the general-purpose nature of the things that are in here.
+You can use it too if you like! But I can't really attest to the general-purpose nature of the things that are in here~
 
 * About
-The way it is constructed, the file is supposed to be a standalone configuration separate from =.emacs=, and simply loaded in.
+/Less than 3 seconds to a usable state!/
+[[./screenshot.png]]
 
-That way, any private configuration or system-specific configuration can take place without making any changes to the core configuration in this repo.
+I've tried my best to make my configuration lightweight based on the things that are actually installed, so when you run the code block below, the =Archemacs.el= file that will result should only contain code blocks for the things you have installed--if you install something new, you'll need to re-run the below code block!
 
-So, if you cloned this repo directly into =.emacs.d= (Which is highly recommended), you can simply include it with:
-
-#+BEGIN_SRC elisp :tangle ~/.emacs :padline no
-  (org-babel-load-file "~/.emacs.d/Archemacs/Archemacs.org")
-#+END_SRC
-
-(You can use =C-c C-v t= while visiting this file in =org-mode= to export that code into =~/.emacs= if that's all you really need, though be warned that *this will overwrite your existing =.emacs=*)
+Besides the language support, this config sets up:
+- Multiple cursors (With bindings similar to VSCode)
+- Idle highlighting (But only in code)
+- Out-of-the-box universal =M-.= jumping (Improved if you have ripgrep)
+- Autocompletion with documentation popups
+- =C-M-f= fuzzy file/project finding
+- Mid-chord key help popups
+- Daemon-friendly lazy GUI initialization
+- Emacs server starting if sent a USR1 signal (=pkill -USR1 emacs= will let you connect to already-running emacs with =emacsclient= if you need to)
+- Language server support (=M-x eglot=)
+- magit
+- Gemini and Gopher client with proper url-handlers
+- epub reader
+- hexl-mode improvements
+- Persistent prompt history, auto-chmod +x for scripts, trailing whitespace cleanup, and a bunch of other little niceties
 
 * Installation in a nutshell
-1. Backup your =~/.emacs=!! *(These steps will overwrite it!)*
-2. Run =git -C ~/.emacs.d clone https://github.com/Archenoth/Archemacs.git=
-3. Open this file in =org-mode=. (=emacs ~/.emacs.d/Archemacs/README.org=)
-4. Tangle with =C-c C-v t=
-5. Restart Emacs.
+- Run =git -C ~/.emacs.d clone https://github.com/Archenoth/Archemacs.git=
+- Open this file in =org-mode= (=emacs ~/.emacs.d/Archemacs/README.org=)
+- Run the code block below with =C-c C-c=:
+
+#+BEGIN_SRC elisp
+  (org-babel-tangle-file "~/.emacs.d/Archemacs/Archemacs.org")
+#+END_SRC
+
+- Add the following line into your =.emacs= or =init.el=:
+
+#+begin_src elisp
+  (load-file "~/.emacs.d/Archemacs/Archemacs.el")
+#+end_src
+
+- Restart Emacs.
 
 You might also want to grab =ripgrep= if you don't already have it, because this config uses that for projectile, dumb-jump, and grep (Though nothing should break without it)
 

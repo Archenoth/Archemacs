@@ -250,7 +250,7 @@ Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely 
 #+end_src
 
 ** Clojure
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle (if (executable-find "clojure") "yes" "no")
   ;; CIDER makes Clojure a joy to work with, both in literate org files and outside
   (use-package cider
     :straight (cider :type git :host github :repo "clojure-emacs/cider")
@@ -259,7 +259,7 @@ Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely 
 #+end_src
 
 ** Fennel
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle (if (executable-find "fennel") "yes" "no")
   ;; A mode for Fennel, which is a cool Clojure-like language I like a lot
   (use-package fennel-mode
     :straight (:repo "https://git.sr.ht/~technomancy/fennel-mode"
@@ -351,7 +351,7 @@ My favorite Pico-8 mode isn't on MELPA and friends, so we end up using straight 
 
 ** Ruby
 Allow for the standard =C-c C-c= keybind to eval the thing under my cursor in Ruby code. (Though this isn't exactly perfect like Lisp evaluation is, but does allow for some nice REPL-based dev in Ruby)
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle (if (or (executable-find "ruby") (executable-find "rvm")) "yes" "no")
   (use-package inf-ruby
     :ensure t
     :bind (:map inf-ruby-minor-mode-map ("C-c C-c" . ruby-send-block)))
@@ -359,7 +359,7 @@ Allow for the standard =C-c C-c= keybind to eval the thing under my cursor in Ru
 
 ** Rust
 Eglot is all the support we need for Rust:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle (if (executable-find "cargo") "yes" "no")
   (use-package rust-mode
     :ensure t
     :hook ((rust-mode . eglot-ensure)))
