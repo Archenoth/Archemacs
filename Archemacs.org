@@ -258,6 +258,15 @@ Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely 
     :custom (org-babel-clojure-backend 'cider))
 #+end_src
 
+** Fennel
+#+begin_src emacs-lisp
+  ;; A mode for Fennel, which is a cool Clojure-like language I like a lot
+  (use-package fennel-mode
+    :straight (:repo "https://git.sr.ht/~technomancy/fennel-mode"
+                     :type git :host nil :branch "main")
+    :mode "\\.fnl$")
+#+end_src
+
 ** Elisp
 My Elisp configuration is largely just setting up =erefactor= and then adding it to the three Elisp modes.
 
