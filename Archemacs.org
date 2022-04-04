@@ -412,9 +412,16 @@ This lets me see casually, the way variables and other things are used in progra
 #+begin_src emacs-lisp
   (use-package idle-highlight-mode
     :ensure t
-    :custom (idle-highlight-exceptions-face
-             '(font-lock-keyword-face font-lock-string-face font-lock-comment-face))
-    :hook (prog-mode . idle-highlight-mode))
+    :custom
+    (idle-highlight-exceptions-face
+     '(font-lock-keyword-face font-lock-string-face font-lock-comment-face))
+    (idle-highlight-ignore-modes
+     '(emacs-lisp-mode lisp-interaction-mode ielm-mode))
+
+    :hook
+    (prog-mode . (lambda ()
+                   (unless (member major-mode idle-highlight-ignore-modes)
+                     (idle-highlight-mode)))))
 #+end_src
 
 ** Hexl
