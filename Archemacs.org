@@ -88,6 +88,7 @@ And here is all of the actual theming (It gets pulled into the code block above 
   (use-package doom-themes
     :if window-system
     :ensure t
+    :after org
     :init
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
@@ -255,6 +256,7 @@ Emacs' [[info:Semantic][Semantic]] mode is pretty good at C! So this is largely 
   (use-package cider
     :straight (cider :type git :host github :repo "clojure-emacs/cider")
     :ensure t
+    :after org
     :custom (org-babel-clojure-backend 'cider))
 #+end_src
 
@@ -487,6 +489,7 @@ I also add nice looking Unicode bullet points.
 
   (use-package org
     :ensure t
+    :straight t
     :init
     (setq org-export-latex-listings 'minted)
     :custom-face
@@ -515,6 +518,31 @@ I also add nice looking Unicode bullet points.
   ;; Global org-mode bindings
   (global-set-key (kbd "C-c a") 'org-agenda)
   (global-set-key (kbd "C-c c") 'org-capture)
+#+end_src
+
+*** org-roam
+I like org-roam! But it is pretty heavy, so I want to defer that to only happen when I actively open a folder with a =.dir-locals.el= containing this init!
+#+begin_src emacs-lisp
+  (defun arch/init-roam ()
+    (when (not (fboundp 'org-roam-mode))
+      (use-package org-roam
+        :straight t
+        :bind (("C-c n l" . org-roam-buffer-toggle)
+               ("C-c n f" . org-roam-node-find)
+               ("C-c n g" . org-roam-graph)
+               ("C-c n i" . org-roam-node-insert)
+               ("C-c n c" . org-roam-capture)
+               ("C-c n j" . org-roam-dailies-capture-today))
+        :config
+        (org-roam-db-autosync-mode)
+        (add-hook 'org-roam-mode-hook 'visual-line-mode))))
+#+end_src
+
+The aforementioned =.dir-locals= would look something like this:
+#+begin_src emacs-lisp :tangle no
+  ((nil . ((eval . (arch/init-roam))
+           (org-roam-directory . "/home/archenoth/Documents/org/brain")
+           (org-roam-db-location . "/home/archenoth/Documents/org/brain/org-roam.db"))))
 #+end_src
 
 ** grep
