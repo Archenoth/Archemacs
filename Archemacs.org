@@ -60,24 +60,9 @@ And then we initialize the package manager, =straight=, and =use-package=:
 I love Doom Emacs' and spaceline's appearance! I also like to trim my interface to be a bit more on the minimal side, so, I cut out a few UI elements here. However, these things are only relevant in the event we are running GUI Emacs, so this section gets mostly skipped if started in a terminal.
 
 That said, since we might also be starting Emacs as a daemon (without a frame, but intended for GUI clients), we also defer loading these modifications until we actually have a frame to work with when starting it this way.
-#+begin_src emacs-lisp :noweb yes
-  (defun arch/set-theme ()
-    "Loads and sets my graphical theme customizations"
-    <<graphical-theme-config>>)
-
-  (defun arch/set-theme-hook (frame)
-    "The hook for setting the above theme in a deferred way"
-    (with-selected-frame frame (arch/set-theme))
-    (remove-hook 'after-make-frame-functions #'arch/set-theme-hook))
-
-  (if (daemonp)
-      (add-hook 'after-make-frame-functions #'arch/set-theme-hook)
-    (arch/set-theme))
-#+end_src
 
 And here is all of the actual theming (It gets pulled into the code block above with noweb):
-#+NAME:graphical-theme-config
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   ;; Not too big on toolbars, and I can't seem to get the scrollbar to look good
   ;; (Which is okay because I navigate with other means usually), soooo...
   (tool-bar-mode 0)
@@ -86,9 +71,7 @@ And here is all of the actual theming (It gets pulled into the code block above 
   ;; Doom dracula is my favorite theme! We also style helm to have a purple color
   ;; instead of its default here
   (use-package doom-themes
-    :if window-system
     :ensure t
-    :after org
     :init
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
@@ -98,7 +81,6 @@ And here is all of the actual theming (It gets pulled into the code block above 
   ;; This configures spaceline to have a fancy swooping curve seperating its
   ;; elements, and also colors it with a pretty purple~
   (use-package spaceline-config
-    :if window-system
     :ensure spaceline
     :config (spaceline-emacs-theme)
     :custom (powerline-default-separator 'wave)
@@ -110,6 +92,7 @@ And here is all of the actual theming (It gets pulled into the code block above 
   ;; And here is my dashboard screen, along with a silly name that I'm finally
   ;; dubbing my config~
   (use-package dashboard
+    :after org
     :ensure t
     :demand t
     :config
@@ -489,6 +472,7 @@ I also add nice looking Unicode bullet points.
 
   (use-package org
     :ensure t
+    :demand t
     :straight t
     :init
     (setq org-export-latex-listings 'minted)
