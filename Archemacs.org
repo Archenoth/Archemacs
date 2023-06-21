@@ -150,11 +150,7 @@ Here are a bunch of things that I find handy universally. Which means most of th
     :bind (("C-M-f" . projectile-find-file))
     :custom
     (projectile-enable-caching nil)
-    (projectile-completion-system 'helm)
-    (projectile-generic-command
-     (if (executable-find "rg")
-         "rg --files --hidden -0"
-       projectile-generic-command)))
+    (projectile-completion-system 'helm))
 
   ;; This pops up menus with the continuation of key chords I started using, which
   ;; makes it sigificantly easier to use things that I have a hard time
