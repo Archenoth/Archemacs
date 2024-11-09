@@ -168,7 +168,11 @@ Here are a bunch of things that I find handy universally. Which means most of th
     (setq xref-show-definitions-function #'xref-show-definitions-completing-read))
 
   ;; LSP support where we want it--hooks into xref and other things too!
-  (use-package eglot :ensure t)
+  (use-package eglot)
+
+  ;; C-o for imenu is almost always nice!
+  (use-package helm
+    :bind ("C-o" . helm-imenu))
 
   ;; I prefer spaces to tabs, because I like to author my code with appearance in
   ;; mind too. (And spaces let me indent things to be on the same column of

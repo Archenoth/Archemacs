@@ -20,6 +20,7 @@ Besides the language support, this config sets up:
 - Multiple cursors (With bindings similar to VSCode)
 - Idle highlighting (But only in code)
 - Out-of-the-box universal =M-.= jumping (Improved if you have ripgrep)
+- =C-o= to jump to major points in any file with =imenu= support!
 - Autocompletion with documentation popups
 - =C-M-f= fuzzy file/project finding
 - Mid-chord key help popups
