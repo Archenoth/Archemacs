@@ -22,7 +22,8 @@ Besides the language support, this config sets up:
 - Out-of-the-box universal =M-.= jumping (Improved if you have ripgrep)
 - =C-o= to jump to major points in any file with =imenu= support!
 - Autocompletion with documentation popups
-- =C-M-f= fuzzy file/project finding
+- =C-p= fuzzy file/project finding
+- =C-S-p= fuzzy commands
 - Mid-chord key help popups
 - Daemon-friendly lazy GUI initialization
 - Emacs server starting if sent a USR1 signal (=pkill -USR1 emacs= will let you connect to already-running emacs with =emacsclient= if you need to)
@@ -56,7 +57,8 @@ If you want the font customization, please follow the instructions in [[./fonts.
 
 * Some tips about how I personally use this
 - My pattern of usage revolves around bookmarking project folders with =C-x r m=, and either clicking them in the dashboard, or by finding them in =C-x r l= (Though note that absolute canonical paths are helpful if you have your Code folder symlinked from somewhere not in your home folder)
-- =C-M-f= is for fuzzy-finding files in projects that I get to with bookmarks
+- =C-p= is for fuzzy-finding files in projects that I get to with bookmarks
+- In pretty much any file, I like to navigate around with =C-o=!
 - I heavily use =M-x grep= to find things when =M-.= won't give me the information I need, so it auto-starts searches in the root of git projects, otherwise, it searches subfolders without needing to add anything to the command line
 - Remember that emmet exists! Write CSS selectors in HTML files and =C-RET= to expand that into the HTML that will be
 - Multiple cursors are set up like the subset I use in other things like VSCode, so =Ctrl + Click= adds new cursors, as do =C-M-up= and =C-M-down=, and =C-d= to mark the next thing that is highlighted.
@@ -91,7 +93,7 @@ I personally like this general idea:
    '(ibuffer-show-empty-filter-groups nil))
 #+end_src
 
-That way, I can just =C-x b= to get to a list of my open things, and I can just middle click on the magit buffer for a specific project to get to a place where I can do git things, or =C-M-f= and jump into some code!
+That way, I can just =C-x b= to get to a list of my open things, and I can just middle click on the magit buffer for a specific project to get to a place where I can do git things, or =C-p= and jump into some code!
 
 It's also nice to be able to click on groups and hit =D= to just delete swaths of buffers I don't actually need anymore. That keeps things light and easy to navigate!
 
@@ -99,7 +101,7 @@ It's also nice to be able to click on groups and hit =D= to just delete swaths o
 If this is still too heavy, there are some neat ways to cut down on the things needed, aside from removing language support for things you don't use of course (Which I recommend by putting a =:tangle never= in the headers of the blocks you don't actually want in [[./Archemacs.org][Archemacs.org]] btw)
 
 - Tangle [[./Archemacs.org][Archemacs.org]] with =C-c C-v t= and replace the =(org-babel-load-file "~/.emacs.d/Archemacs/Archemacs.org")= with a =(load-file "~/.emacs.d/Archemacs/Archemacs.el")=. (Just don't forget to re-tangle with if you change anything in there!) This gets rid of the need for org to be loaded on startup
-- You can replace projectile for the most part with =(global-set-key (kbd "C-M-f") 'project-find-file)=. This works great in git folders, and tab will let you fuzzy find things in that folder!
+- You can replace projectile for the most part with =(global-set-key (kbd "C-p") 'project-find-file)=. This works great in git folders, and tab will let you fuzzy find things in that folder!
 - You can replace almost all language support with =dumb-jump= on its own with =rg= installed and with judicious setting of =(add-to-list 'auto-mode-alist '("\\.thing$" . thing-mode))= with langauges that are "close enough"
 - Remember that customize will load the modes you assign certain custom variables for, so if you customize a variable for projectile, it will actually *load* that on startup rather than doing that lazily. This can be avoided with =(with-eval-after-load 'the-package ...)= forms that set the right state
 - You can usually replace =multiple-cursors= with macros or find-replace in the active region. (It's just a little bit more clunky)

@@ -147,7 +147,7 @@ Here are a bunch of things that I find handy universally. Which means most of th
     :ensure helm-projectile
     :init (projectile-mode)
     :config (require 'helm-projectile)
-    :bind (("C-M-f" . projectile-find-file))
+    :bind ("C-p" . projectile-find-file)
     :custom
     (projectile-enable-caching nil)
     (projectile-completion-system 'helm))
@@ -172,7 +172,10 @@ Here are a bunch of things that I find handy universally. Which means most of th
 
   ;; C-o for imenu is almost always nice!
   (use-package helm
-    :bind ("C-o" . helm-imenu))
+    :bind (("C-o" . helm-imenu)
+           ("C-S-p" . helm-M-x))
+    :custom (helm-M-x-show-short-doc t))
+
 
   ;; I prefer spaces to tabs, because I like to author my code with appearance in
   ;; mind too. (And spaces let me indent things to be on the same column of
