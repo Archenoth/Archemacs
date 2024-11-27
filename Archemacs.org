@@ -147,7 +147,8 @@ Here are a bunch of things that I find handy universally. Which means most of th
     :ensure helm-projectile
     :init (projectile-mode)
     :config (require 'helm-projectile)
-    :bind ("C-p" . projectile-find-file)
+    :bind (("C-M-f" . projectile-find-file)
+           ("C-p" . projectile-find-file))
     :custom
     (projectile-enable-caching nil)
     (projectile-completion-system 'helm))
