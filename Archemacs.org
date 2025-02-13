@@ -215,6 +215,9 @@ Here are a bunch of things that I find handy universally. Which means most of th
   (with-eval-after-load 'dired
     (define-key dired-mode-map (kbd "<mouse-2>") 'dired-mouse-find-file))
 
+  ;; Ctrl + Click for jump to definition is nice!
+  (global-set-key (kbd "C-<mouse-1>") 'xref-find-definitions-at-mouse)
+
   ;; Save my minibuffer history between sessions plz
   (savehist-mode 1)
 #+end_src
@@ -463,7 +466,7 @@ This adds multiple-cursor bindings similar to other editors that I find pretty h
     :bind (("C-d" . mc/mark-next-like-this)
            ("C-M-<up>" . mc/mmlte--up)
            ("C-M-<down>" . mc/mmlte--down)
-           ("C-<down-mouse-1>" . mc/add-cursor-on-click)))
+           ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
 #+end_src
 
 ** Org Mode
