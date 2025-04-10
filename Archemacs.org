@@ -87,25 +87,17 @@ And here is all of the actual theming (It gets pulled into the code block above 
   (use-package dashboard
     :after org
     :ensure t
-    :demand t
-    :config
-    (switch-to-buffer "*dashboard*")
-    (dashboard-insert-startupify-lists)
     :custom
     (dashboard-banner-logo-title "Archemacs")
     (dashboard-startup-banner (expand-file-name "Archemacs/splash.png" user-emacs-directory))
     (dashboard-center-content t)
     (dashboard-show-shortcuts nil)
     (dashboard-set-footer nil)
+    (dashboard-items
+     '((recents  . 5) (bookmarks . 5) (projects . 5) (agenda . 5)))
     (initial-buffer-choice
-     (lambda () (if (buffer-file-name)
-                    (current-buffer)
-                  (get-buffer "*dashboard*"))))
-    (dashboard-items '((recents  . 5)
-                       (bookmarks . 5)
-                       (projects . 5)
-                       (agenda . 5)
-                       (registers . 5)))
+     (lambda ()
+       (if (buffer-file-name) (current-buffer) (dashboard-open))))
     :hook (add-hook 'before-make-frame-hook #'dashboard-refresh-buffer))
 
   ;; And finally, for some reason, helm doesn't seem to want to respect styling in
