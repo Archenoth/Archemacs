@@ -75,8 +75,7 @@ And here is all of the actual theming (It gets pulled into the code block above 
     :init
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-    (load-theme 'doom-dracula t)
-    (doom-themes-org-config))
+    (load-theme 'doom-dracula t))
 
   ;; This configures spaceline to have a fancy swooping curve seperating its
   ;; elements, and also colors it with a pretty purple~
@@ -456,6 +455,7 @@ I also add nice looking Unicode bullet points.
     :straight t
     :init
     (setq org-export-latex-listings 'minted)
+    (doom-themes-org-config)
     :custom-face
     (org-level-1 ((t (:inherit outline-1 :height 1.3))))
     :custom
