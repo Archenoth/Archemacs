@@ -33,12 +33,6 @@ And then we initialize the package manager, =straight=, and =use-package=:
 #+begin_src emacs-lisp
   (package-initialize)
 
-  ;; Installs use-package from the above repos if we don't have it. This is used
-  ;; for pretty much every package from here on out
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-
   ;; Installs straight, which lets me use git repos for packages
   ;; https://github.com/raxod502/straight.el/blob/master/README.md#getting-started
   (defvar bootstrap-version)
