@@ -162,7 +162,6 @@ Here are a bunch of things that I find handy universally. Which means most of th
            ("C-S-p" . helm-M-x))
     :custom (helm-M-x-show-short-doc t))
 
-
   ;; I prefer spaces to tabs, because I like to author my code with appearance in
   ;; mind too. (And spaces let me indent things to be on the same column of
   ;; expressions not at the beginning of lines)
@@ -207,6 +206,13 @@ Here are a bunch of things that I find handy universally. Which means most of th
   (savehist-mode 1)
 #+end_src
 
+#+begin_src emacs-lisp :tangle (if (eq system-type 'darwin) "yes" "no")
+  ;; If running this on mac, it may not have environment variables,
+  ;; which can break things
+  (use-package exec-path-from-shell
+    :ensure t
+    :config (exec-path-from-shell-initialize))
+#+end_src
 
 * Languages
 Language-specific support!
