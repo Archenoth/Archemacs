@@ -346,6 +346,7 @@ Emacs seems to fail at escaping backslashes in SQL files... So I have slightly m
     :config (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table))
 #+end_src
 
+
 * Utility
 Non-language Emacs applications
 
