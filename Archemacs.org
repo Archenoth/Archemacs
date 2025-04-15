@@ -199,6 +199,7 @@ Here are a bunch of things that I find handy universally. Which means most of th
     (define-key dired-mode-map (kbd "<mouse-2>") 'dired-mouse-find-file))
 
   ;; Ctrl + Click for jump to definition is nice!
+  (global-unset-key (kbd "C-<down-mouse-1>"))
   (global-set-key (kbd "C-<mouse-1>") 'xref-find-definitions-at-mouse)
 
   ;; Save my minibuffer history between sessions plz
