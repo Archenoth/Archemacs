@@ -97,8 +97,7 @@ And here is all of the actual theming (It gets pulled into the code block above 
      '((recents  . 5) (bookmarks . 5) (projects . 5) (agenda . 5)))
     (initial-buffer-choice
      (lambda ()
-       (if (buffer-file-name) (current-buffer) (dashboard-open))))
-    :hook (add-hook 'before-make-frame-hook #'dashboard-refresh-buffer))
+       (if (buffer-file-name) (current-buffer) (dashboard-open)))))
 
   ;; And finally, for some reason, helm doesn't seem to want to respect styling in
   ;; use-package unless done explicitly after
