@@ -203,6 +203,11 @@ Here are a bunch of things that I find handy universally. Which means most of th
   (global-unset-key (kbd "C-<down-mouse-1>"))
   (global-set-key (kbd "C-<mouse-1>") 'xref-find-definitions-at-mouse)
 
+  ;; For hiDPI tackpads and stuff!
+  (use-package ultra-scroll
+    :ensure t
+    :config (ultra-scroll-mode 1))
+
   ;; Save my minibuffer history between sessions plz
   (savehist-mode 1)
 #+end_src
