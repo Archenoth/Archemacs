@@ -225,6 +225,9 @@ And some stuff I use when on macs!
   (use-package exec-path-from-shell
     :ensure t
     :config (exec-path-from-shell-initialize))
+
+  (global-set-key (kbd "<end>") 'move-end-of-line)
+  (global-set-key (kbd "<home>") 'move-beginning-of-line)
 #+end_src
 
 * Languages
