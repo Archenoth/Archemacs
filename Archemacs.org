@@ -34,7 +34,7 @@ And then we initialize the package manager, =straight=, and =use-package=:
   (package-initialize)
 
   ;; Installs straight, which lets me use git repos for packages
-  ;; https://github.com/raxod502/straight.el/blob/master/README.md#getting-started
+  ;; https://github.com/raxod502/straight.el/blob/master/README.md
   (defvar bootstrap-version)
   (let ((bootstrap-file
          (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -57,13 +57,14 @@ That said, since we might also be starting Emacs as a daemon (without a frame, b
 
 And here is all of the actual theming (It gets pulled into the code block above with noweb):
 #+begin_src emacs-lisp
-  ;; Not too big on toolbars, and I can't seem to get the scrollbar to look good
-  ;; (Which is okay because I navigate with other means usually), soooo...
+  ;; Not too big on toolbars, and I can't seem to get the scrollbar to
+  ;; look good (Which is okay because I navigate with other means
+  ;; usually), soooo...
   (tool-bar-mode 0)
   (scroll-bar-mode -1)
 
-  ;; Doom dracula is my favorite theme! We also style helm to have a purple color
-  ;; instead of its default here
+  ;; Doom dracula is my favorite theme! We also style helm to have a
+  ;; purple color instead of its default here
   (use-package doom-themes
     :ensure t
     :init
@@ -71,8 +72,8 @@ And here is all of the actual theming (It gets pulled into the code block above 
           doom-themes-enable-italic t)
     (load-theme 'doom-dracula t))
 
-  ;; This configures spaceline to have a fancy swooping curve seperating its
-  ;; elements, and also colors it with a pretty purple~
+  ;; This configures spaceline to have a fancy swooping curve seperating
+  ;; its elements, and also colors it with a pretty purple~
   (use-package spaceline-config
     :ensure spaceline
     :config (spaceline-emacs-theme)
@@ -82,8 +83,8 @@ And here is all of the actual theming (It gets pulled into the code block above 
     (spaceline-highlight-face ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line)))))
     (spaceline-unmodified ((t (:background "orchid4" :foreground "#eee" :inherit (quote mode-line))))))
 
-  ;; And here is my dashboard screen, along with a silly name that I'm finally
-  ;; dubbing my config~
+  ;; And here is my dashboard screen, along with a silly name that I'm
+  ;; finally dubbing my config~
   (use-package dashboard
     :after org
     :ensure t
@@ -99,8 +100,8 @@ And here is all of the actual theming (It gets pulled into the code block above 
      (lambda ()
        (if (buffer-file-name) (current-buffer) (dashboard-open)))))
 
-  ;; And finally, for some reason, helm doesn't seem to want to respect styling in
-  ;; use-package unless done explicitly after
+  ;; And finally, for some reason, helm doesn't seem to want to respect
+  ;; styling in use-package unless done explicitly after
   (custom-set-faces
    '(helm-candidate-number ((t (:foreground "#f1fa8c" :background nil)))))
 #+end_src
@@ -113,9 +114,9 @@ Here are a bunch of things that I find handy universally. Which means most of th
   (setq gc-cons-threshold 100000000)
   (setq read-process-output-max 1000000)
 
-  ;; Set up company, and auto-complete-like quickdocs!
-  ;; We bind both tabs because turns out they aren't equivelant between
-  ;; GUI and terminals
+  ;; Set up company, and auto-complete-like quickdocs!  We bind both
+  ;; tabs because turns out they aren't equivelant between GUI and
+  ;; terminals
   (use-package company-quickhelp
     :ensure t
     :init
@@ -125,8 +126,8 @@ Here are a bunch of things that I find handy universally. Which means most of th
                 ("<tab>" . company-complete-selection)
                 ("TAB" . company-complete-selection)))
 
-  ;; Projectile using helm's selection framework! I find it makes fuzzy finding
-  ;; files in projects really fast and easy with C-M-f
+  ;; Projectile using helm's selection framework! I find it makes fuzzy
+  ;; finding files in projects really fast and easy with C-M-f
   (use-package projectile
     :ensure helm-projectile
     :init (projectile-mode)
@@ -137,15 +138,15 @@ Here are a bunch of things that I find handy universally. Which means most of th
     (projectile-enable-caching nil)
     (projectile-completion-system 'helm))
 
-  ;; This pops up menus with the continuation of key chords I started using, which
-  ;; makes it sigificantly easier to use things that I have a hard time
-  ;; remembering the keys for
+  ;; This pops up menus with the continuation of key chords I started
+  ;; using, which makes it sigificantly easier to use things that I have
+  ;; a hard time remembering the keys for
   (use-package which-key
     :ensure t
     :config (which-key-mode t))
 
-  ;; Smart xref jumping is nice without needing tags! This is especially nice with
-  ;; ripgrep installed
+  ;; Smart xref jumping is nice without needing tags! This is especially
+  ;; nice with ripgrep installed
   (use-package dumb-jump
     :ensure t
     :init
@@ -161,16 +162,16 @@ Here are a bunch of things that I find handy universally. Which means most of th
            ("C-S-p" . helm-M-x))
     :custom (helm-M-x-show-short-doc t))
 
-  ;; I prefer spaces to tabs, because I like to author my code with appearance in
-  ;; mind too. (And spaces let me indent things to be on the same column of
-  ;; expressions not at the beginning of lines)
+  ;; I prefer spaces to tabs, because I like to author my code with
+  ;; appearance in mind too. (And spaces let me indent things to be on
+  ;; the same column of expressions not at the beginning of lines)
   (setq indent-tabs-mode nil)
 
   ;; Squelch the creation of .#<filename> files
   (setq create-lockfiles nil)
 
-  ;; Emacs auto-backups feel nicer when they collect in my ~/.emacs.d/backups
-  ;; instead of the current folder
+  ;; Emacs auto-backups feel nicer when they collect in my
+  ;; ~/.emacs.d/backups instead of the current folder
   (setq backup-directory-alist '((".*" . "~/.emacs.d/backups/"))
         auto-save-file-name-transforms '((".*" "~/.emacs.d/backups/" t)))
 
@@ -189,12 +190,12 @@ Here are a bunch of things that I find handy universally. Which means most of th
   ;; Deletes trailing whitespace before saving
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-  ;; Starts an emacs server I can connect to with emacsclients if I send a USR1
-  ;; signal to Emacs
+  ;; Starts an emacs server I can connect to with emacsclients if I send
+  ;; a USR1 signal to Emacs
   (define-key special-event-map (kbd "<sigusr1>") 'server-start)
 
-  ;; This causes dired to open files in the same buffer as itself when you click
-  ;; things (Deffered until we actually use dired)
+  ;; This causes dired to open files in the same buffer as itself when
+  ;; you click things (Deffered until we actually use dired)
   (with-eval-after-load 'dired
     (define-key dired-mode-map (kbd "<mouse-2>") 'dired-mouse-find-file))
 
@@ -206,6 +207,7 @@ Here are a bunch of things that I find handy universally. Which means most of th
   (savehist-mode 1)
 #+end_src
 
+And some stuff I use when on macs!
 #+begin_src emacs-lisp :tangle (if (eq system-type 'darwin) "yes" "no")
   ;; If running this on mac, it may not have environment variables,
   ;; which can break things
