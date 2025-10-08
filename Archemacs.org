@@ -380,11 +380,7 @@ This lets me see casually, the way variables and other things are used in progra
      '(font-lock-keyword-face font-lock-string-face font-lock-comment-face))
     (idle-highlight-ignore-modes
      '(emacs-lisp-mode lisp-interaction-mode ielm-mode))
-
-    :hook
-    (prog-mode . (lambda ()
-                   (unless (member major-mode idle-highlight-ignore-modes)
-                     (idle-highlight-mode)))))
+    (global-idle-highlight-mode))
 #+end_src
 
 ** Hexl
