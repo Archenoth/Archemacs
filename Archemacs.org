@@ -208,6 +208,12 @@ Here are a bunch of things that I find handy universally. Which means most of th
     :ensure t
     :config (ultra-scroll-mode 1))
 
+  (use-package undo-tree
+    :ensure t
+    :config (global-undo-tree-mode)
+    :custom (undo-tree-history-directory-alist
+             '((".*" . "~/.emacs.d/undo-tree/"))))
+
   ;; Save my minibuffer history between sessions plz
   (savehist-mode 1)
 #+end_src
