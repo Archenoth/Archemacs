@@ -465,6 +465,7 @@ I also add nice looking Unicode bullet points.
     :custom
     (org-hide-emphasis-markers t)
     (org-src-fontify-natively t)
+    (org-imenu-depth 10)
     :hook
     ((org-mode . flyspell-mode)
      (org-mode . visual-line-mode)
