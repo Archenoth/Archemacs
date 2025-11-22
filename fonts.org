@@ -5,7 +5,7 @@
 #+STARTUP: hidestars
 :END:
 
-The font I typically like to use in my configuration is M+ 1m, which can be downloaded and installed from [[https://osdn.net/projects/mplus-fonts/releases/62344][here]]!
+The font I typically like to use in my configuration is M+ 1m, which can be downloaded and installed from [[https://github.com/rayshan/mplus-fonts][here]]!
 
 * =.emacs= snippet
 After installing the above font, the following can be placed in your [[file:~/.emacs][.emacs]] to make it the default font:
