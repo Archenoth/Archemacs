@@ -27,8 +27,6 @@ Besides the language support, this config sets up:
 - Mid-chord key help popups
 - Daemon-friendly lazy GUI initialization
 - Emacs server starting if sent a USR1 signal (=pkill -USR1 emacs= will let you connect to already-running emacs with =emacsclient= if you need to)
-- Language server support (=M-x eglot=)
-- magit
 - Gemini and Gopher client with proper url-handlers
 - epub reader
 - hexl-mode improvements
@@ -39,7 +37,7 @@ Besides the language support, this config sets up:
 - Open this file in =org-mode= (=emacs ~/.emacs.d/Archemacs/README.org=)
 - Run the code block below with =C-c C-c=:
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :results silent
   (org-babel-tangle-file "~/.emacs.d/Archemacs/Archemacs.org")
 #+END_SRC
 
@@ -59,9 +57,8 @@ If you want the font customization, please follow the instructions in [[./fonts.
 - My pattern of usage revolves around bookmarking project folders with =C-x r m=, and either clicking them in the dashboard, or by finding them in =C-x r l= (Though note that absolute canonical paths are helpful if you have your Code folder symlinked from somewhere not in your home folder)
 - =C-p= is for fuzzy-finding files in projects that I get to with bookmarks
 - In pretty much any file, I like to navigate around with =C-o=!
-- I heavily use =M-x grep= to find things when =M-.= won't give me the information I need, so it auto-starts searches in the root of git projects, otherwise, it searches subfolders without needing to add anything to the command line
-- Remember that emmet exists! Write CSS selectors in HTML files and =C-RET= to expand that into the HTML that will be
-- Multiple cursors are set up like the subset I use in other things like VSCode, so =Ctrl + Click= adds new cursors, as do =C-M-up= and =C-M-down=, and =C-d= to mark the next thing that is highlighted.
+- I heavily use =M-x grep= to find things when either =Ctrl + Click= or =M-.= won't give me the information I need; it auto-starts searches in the root of git projects, or searches subfolders of the current one without needing to add anything to the command line
+- Multiple cursors are set up like the subset I use in other things like VSCode, so =Ctrl + Shift + Click= adds new cursors, as do =C-M-up= and =C-M-down=, and =C-d= to mark the next thing that is highlighted.
 
 ** Some nice things to configure per system
 ibuffer filter groups! Then you can do something like
@@ -107,6 +104,5 @@ If this is still too heavy, there are some neat ways to cut down on the things n
 - You can usually replace =multiple-cursors= with macros or find-replace in the active region. (It's just a little bit more clunky)
 - =which-key= can be replaced by remembering that typing a =?= at any point during a key chord will list all the valid keys for your current incomplete chord. Again, just a little more clunky, but still pretty good!
 - =company= usually just hooks into the existing completion, but that is bound to =Alt+Tab= by default, which means something on a lot of computers--but you can get those completions with =ESC Tab= in a pinch too! If you rely on completion, this will be slower--but it's also native Emacs functionality
-- =magit='s git support is stellar, but the built-in vc support is actually surprisingly okay if magit is too heavy for you too! You can get a list of the things you can do with it by typing =C-x v ?=. Of special note: =L= for the log, =D= for the diff of the while project, === for the current file diff. Selective staging and things can be done from these, and =v= is what lets you commit and stuff. (Though I personally prefer to just use CLI git for most things, even when magit is available--I just find it handy for selective staging, browsing changes, and for double-checking things while I am committing them)
 
 Basically, you can remove almost all of the non-theming code and still have a pretty respectable environment that loads pretty fast! I mostly have things in this config for convenience reasons--and even though they all add up to not be a lot, none of it is /reaaaaally/ needed if you are familiar with the vanilla Emacs functionality these things augment.
