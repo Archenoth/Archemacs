@@ -19,13 +19,12 @@ I've tried my best to make my configuration lightweight based on the things that
 Besides the language support, this config sets up:
 - Multiple cursors (With bindings similar to VSCode)
 - Idle highlighting (But only in code)
-- Out-of-the-box universal =M-.= jumping (Improved if you have ripgrep)
+- Out-of-the-box universal =Ctrl + Click= and =M-.= jumping (Improved if you have ripgrep)
 - =C-o= to jump to major points in any file with =imenu= support!
 - Autocompletion with documentation popups
 - =C-p= fuzzy file/project finding
 - =C-S-p= fuzzy commands
 - Mid-chord key help popups
-- Daemon-friendly lazy GUI initialization
 - Emacs server starting if sent a USR1 signal (=pkill -USR1 emacs= will let you connect to already-running emacs with =emacsclient= if you need to)
 - Gemini and Gopher client with proper url-handlers
 - epub reader
